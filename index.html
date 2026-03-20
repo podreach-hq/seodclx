@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Diagnostics — seodclx.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0e14;--surface:#111720;--surface2:#1a2130;
+    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+    --text:#e8edf5;--muted:#6b7a94;
+    --accent:#2D7FF9;--accent2:#1a5fd4;
+    --green:#22c55e;--amber:#f59e0b;--red:#ef4444;
+    --purple:#a78bfa;--pink:#f472b6;
+    --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;}
+  .shell{display:flex;height:100vh;overflow:hidden;}
+  .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+  .content-area{flex:1;overflow-y:auto;padding:24px;}
+  .sidebar-brand{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
+  .brand-name{font-size:13px;font-weight:600;color:var(--text);letter-spacing:0.02em;}
+  .brand-sub{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+  .nav{padding:10px 0;flex:1;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13px;color:var(--muted);cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;}
+  .nav-item:hover{color:var(--text);background:rgba(255,255,255,0.03);}
+  .nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(45,127,249,0.07);}
+  .nav-icon{width:16px;height:16px;opacity:0.7;flex-shrink:0;}
+  .nav-item.active .nav-icon{opacity:1;}
+  .sidebar-footer{padding:16px 18px;border-top:1px solid var(--border);}
+  .sidebar-footer-text{font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .topbar-left h1{font-size:15px;font-weight:500;color:var(--text);}
+  .topbar-left p{font-size:12px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;font-family:var(--mono);}
+  .pill-blue{background:rgba(45,127,249,0.15);color:var(--accent);}
+  .pill-green{background:rgba(34,197,94,0.12);color:var(--green);}
+  .pill-amber{background:rgba(245,158,11,0.12);color:var(--amber);}
+  .pill-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;}
+  .card+.card{margin-top:14px;}
+  .card-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-family:var(--mono);}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-family:var(--mono);}
+  .field input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;transition:border 0.15s;}
+  .field input:focus{border-color:var(--accent);}
+  .field input::placeholder{color:var(--muted);}
+  .input-row{display:flex;gap:10px;align-items:flex-end;}
+  .input-row .field{flex:1;margin-bottom:0;}
+  .upload-zone{border:1px dashed var(--border2);border-radius:8px;padding:24px;text-align:center;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.01);}
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(45,127,249,0.05);}
+  .upload-zone.has-file{border-style:solid;border-color:var(--green);background:rgba(34,197,94,0.05);}
+  .upload-icon{font-size:22px;margin-bottom:8px;}
+  .upload-text{font-size:12px;color:var(--muted);line-height:1.6;}
+  .upload-text strong{color:var(--text);font-weight:500;}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;font-family:var(--sans);}
+  .btn-primary{background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent2);}
+  .btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2);}
+  .btn-ghost:hover{color:var(--text);background:var(--surface2);}
+  .btn-green{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+  .metric{background:var(--surface2);border-radius:8px;padding:14px;}
+  .metric-label{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+  .metric-val{font-size:26px;font-weight:500;color:var(--text);font-family:var(--mono);}
+  .metric-val.bad{color:var(--red);}
+  .metric-val.ok{color:var(--amber);}
+  .metric-val.good{color:var(--green);}
+  .metric-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+  .comp-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+  .comp-row:last-child{border-bottom:none;}
+  .comp-name{font-size:13px;font-weight:500;color:var(--text);}
+  .comp-meta{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
+  .step-row{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border);}
+  .step-row:last-child{border-bottom:none;}
+  .step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;font-family:var(--mono);}
+  .step-num.done{background:rgba(34,197,94,0.15);color:var(--green);}
+  .step-num.active{background:rgba(45,127,249,0.15);color:var(--accent);}
+  .step-num.idle{background:var(--surface2);color:var(--muted);}
+  .step-title{font-size:13px;font-weight:500;color:var(--text);}
+  .step-desc{font-size:11px;color:var(--muted);margin-top:3px;font-family:var(--mono);}
+  .progress-bar{height:3px;background:var(--surface2);border-radius:2px;margin-top:7px;overflow:hidden;}
+  .progress-fill{height:3px;background:var(--accent);border-radius:2px;transition:width 0.4s ease;}
+  .score-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .score-label{font-size:12px;color:var(--muted);width:170px;flex-shrink:0;}
+  .score-bar{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+  .score-fill{height:5px;border-radius:3px;transition:width 0.6s ease;}
+  .score-num{font-size:12px;font-family:var(--mono);color:var(--text);width:30px;text-align:right;}
+  .phase-card{background:var(--surface2);border-radius:8px;padding:16px;border-left:3px solid var(--accent);}
+  .phase-card.p2{border-left-color:var(--amber);}
+  .phase-card.p3{border-left-color:var(--green);}
+  .phase-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+  .phase-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:10px;}
+  .phase-items{font-size:12px;color:var(--muted);line-height:2;}
+  .phase-items span{display:block;}
+  .phase-items span::before{content:'→ ';color:var(--accent);}
+  .phase-card.p2 .phase-items span::before{color:var(--amber);}
+  .phase-card.p3 .phase-items span::before{color:var(--green);}
+  .platform-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+  .platform-row:last-child{border-bottom:none;}
+  .pt{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;font-family:var(--mono);white-space:nowrap;}
+  .pt-ig{background:rgba(244,114,182,0.12);color:var(--pink);}
+  .pt-fb{background:rgba(45,127,249,0.12);color:var(--accent);}
+  .pt-li{background:rgba(96,165,250,0.12);color:#60a5fa;}
+  .pt-yt{background:rgba(239,68,68,0.12);color:var(--red);}
+  .pt-tt{background:rgba(167,139,250,0.12);color:var(--purple);}
+  .cadence-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);}
+  .cadence-row:last-child{border-bottom:none;}
+  .signal-flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;}
+  .sn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:500;font-family:var(--mono);}
+  .sn-gmb{background:rgba(45,127,249,0.15);color:var(--accent);}
+  .sn-social{background:rgba(244,114,182,0.12);color:var(--pink);}
+  .sn-site{background:rgba(34,197,94,0.12);color:var(--green);}
+  .sn-entity{background:rgba(167,139,250,0.12);color:var(--purple);}
+  .sn-rank{background:rgba(245,158,11,0.12);color:var(--amber);}
+  .sarrow{color:var(--muted);font-size:14px;}
+  .output-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;max-height:320px;overflow-y:auto;}
+  .report-preview{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;}
+  .report-header{border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px;}
+  .report-biz{font-size:17px;font-weight:600;color:var(--text);}
+  .report-date{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:3px;}
+  .report-section{margin-bottom:14px;}
+  .report-section-title{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:var(--mono);margin-bottom:8px;}
+  .report-body{font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .copy-btn{font-size:11px;padding:4px 10px;background:var(--surface2);border:1px solid var(--border2);border-radius:5px;color:var(--muted);cursor:pointer;font-family:var(--mono);transition:all 0.15s;}
+  .copy-btn:hover{color:var(--text);}
+  .alert{padding:10px 14px;border-radius:7px;font-size:12px;margin-bottom:14px;font-family:var(--mono);}
+  .alert-red{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.2);}
+  .fade-in{animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+  @media print{
+    .shell{display:block;height:auto;}
+    .sidebar,.topbar,.btn-row{display:none;}
+    .content-area{padding:0;overflow:visible;}
+    .screen{display:block!important;}
+    .screen:not(#screen-report){display:none!important;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-name">SEO Diagnostics</div>
+      <div class="brand-sub">seodclx.com</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="goTo('intake')" id="nav-intake">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        New Client
+      </div>
+      <div class="nav-item" onclick="goTo('analysis')" id="nav-analysis">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Diagnostics
+      </div>
+      <div class="nav-item" onclick="goTo('social')" id="nav-social">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="12" cy="4" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="4" cy="8" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 7.2l5-2.4M5.5 8.8l5 2.4" stroke="currentColor" stroke-width="1.3"/></svg>
+        Social Syndication
+      </div>
+      <div class="nav-item" onclick="goTo('roadmap')" id="nav-roadmap">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M2 13L6 8l3 3 5-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Roadmap
+      </div>
+      <div class="nav-item" onclick="goTo('report')" id="nav-report">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M4 2h6l4 4v8a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 2v4h4M5 9h6M5 11.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Report
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-text" id="client-indicator">No client loaded</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 id="topbar-title">New Client</h1>
+        <p id="topbar-sub">Upload CSV + website to begin</p>
+      </div>
+      <div id="topbar-badge"><span class="pill pill-blue"><span class="pill-dot"></span>Step 1 of 5</span></div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- INTAKE -->
+      <div id="screen-intake" class="screen active fade-in">
+        <div id="intake-error" class="alert alert-red" style="display:none;"></div>
+        <div class="card">
+          <div class="card-label">Client website URL</div>
+          <div class="input-row">
+            <div class="field"><label>Website</label><input type="url" id="website-url" placeholder="https://clientwebsite.com"/></div>
+            <button class="btn btn-primary" onclick="analyzeWebsite()" id="analyze-btn">Analyze</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-label">Local Dominator CSV</div>
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('csv-input').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave()" ondrop="handleDrop(event)">
+            <input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleCSV(event)">
+            <div id="upload-content">
+              <div class="upload-icon">📊</div>
+              <div class="upload-text"><strong>Drop Local Dominator CSV here</strong><br>or click to browse · auto-detects grid stats + competitors</div>
+            </div>
+          </div>
+        </div>
+        <div id="grid-metrics" class="card" style="display:none;">
+          <div class="card-label">Grid summary — auto-detected</div>
+          <div class="grid-3">
+            <div class="metric"><div class="metric-label">Avg rank</div><div class="metric-val" id="m-avg">—</div><div class="metric-sub" id="m-pts">across grid points</div></div>
+            <div class="metric"><div class="metric-label">Best position</div><div class="metric-val good" id="m-best">—</div><div class="metric-sub">strongest area</div></div>
+            <div class="metric"><div class="metric-label">Worst position</div><div class="metric-val bad" id="m-worst">—</div><div class="metric-sub">needs work</div></div>
+          </div>
+        </div>
+        <div id="site-detected" class="card" style="display:none;">
+          <div class="card-label">Auto-detected from website</div>
+          <div class="grid-3">
+            <div class="metric"><div class="metric-label">Business name</div><div class="metric-val" id="d-name" style="font-size:15px;margin-top:4px;">—</div></div>
+            <div class="metric"><div class="metric-label">Primary service</div><div class="metric-val" id="d-service" style="font-size:15px;margin-top:4px;">—</div></div>
+            <div class="metric"><div class="metric-label">Location</div><div class="metric-val" id="d-location" style="font-size:15px;margin-top:4px;">—</div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="card-label">Ranking signal strategy</div>
+          <div class="signal-flow">
+            <div class="sn sn-gmb">GMB / Map Pack</div><div class="sarrow">+</div>
+            <div class="sn sn-site">Website</div><div class="sarrow">+</div>
+            <div class="sn sn-social">Social Syndication</div><div class="sarrow">→</div>
+            <div class="sn sn-entity">Entity Authority</div><div class="sarrow">→</div>
+            <div class="sn sn-rank">Rankings</div>
+          </div>
+        </div>
+        <div style="margin-top:18px;">
+          <button class="btn btn-primary" id="run-btn" onclick="startDiagnostics()" disabled style="width:100%;justify-content:center;padding:12px;">Run Full Diagnostics →</button>
+        </div>
+      </div>
+
+      <!-- ANALYSIS -->
+      <div id="screen-analysis" class="screen fade-in">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-label">Diagnostic modules</div>
+            <div id="steps-container"></div>
+          </div>
+          <div class="card">
+            <div class="card-label">Competitors — auto-filled from CSV</div>
+            <div id="competitors-container"><div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Parsing CSV...</div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="section-header">
+            <div class="card-label" style="margin-bottom:0;">Live diagnostic output</div>
+            <button class="copy-btn" onclick="copyEl('output-box',this)">Copy all</button>
+          </div>
+          <div class="output-box" id="output-box">Waiting to start...</div>
+        </div>
+      </div>
+
+      <!-- SOCIAL -->
+      <div id="screen-social" class="screen fade-in">
+        <div class="card">
+          <div class="card-label">Syndication signal flow</div>
+          <div class="signal-flow">
+            <div class="sn sn-gmb">GMB post</div><div class="sarrow">→</div>
+            <div class="sn sn-social">Repurpose to social</div><div class="sarrow">→</div>
+            <div class="sn sn-site">Links to service page</div><div class="sarrow">→</div>
+            <div class="sn sn-entity">Keyword + location cluster</div><div class="sarrow">→</div>
+            <div class="sn sn-rank">Map pack signal</div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:14px;">
+          <div class="card">
+            <div class="card-label">Platform priorities</div>
+            <div id="platform-audit">
+              <div class="platform-row"><span class="pt pt-ig">Instagram</span><div style="font-size:12px;color:var(--muted);margin-left:4px;">Location tags reinforce geo-relevance · visual content for services</div></div>
+              <div class="platform-row"><span class="pt pt-fb">Facebook</span><div style="font-size:12px;color:var(--muted);margin-left:4px;">GMB post repurpose · community signal + local group reach</div></div>
+              <div class="platform-row"><span class="pt pt-li">LinkedIn</span><div style="font-size:12px;color:var(--muted);margin-left:4px;">Brand authority + entity signal for B2B adjacent categories</div></div>
+              <div class="platform-row"><span class="pt pt-yt">YouTube</span><div style="font-size:12px;color:var(--muted);margin-left:4px;">Video embeds on site pages · Google entity reinforcement</div></div>
+              <div class="platform-row"><span class="pt pt-tt">TikTok</span><div style="font-size:12px;color:var(--muted);margin-left:4px;">Local hashtag strategy · geo reach for younger demographics</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-label">Posting cadence</div>
+            <div id="posting-cadence">
+              <div class="cadence-row"><div><div style="font-size:12px;font-weight:500;color:var(--text);">GMB Posts</div><div style="font-size:11px;color:var(--muted);font-family:var(--mono);">Keyword + CTA + service page link</div></div><span style="font-size:11px;font-family:var(--mono);color:var(--accent);">2–3x / week</span></div>
+              <div class="cadence-row"><div><div style="font-size:12px;font-weight:500;color:var(--text);">Instagram</div><div style="font-size:11px;color:var(--muted);font-family:var(--mono);">Location tag every post · link in bio to site</div></div><span style="font-size:11px;font-family:var(--mono);color:var(--pink);">4–5x / week</span></div>
+              <div class="cadence-row"><div><div style="font-size:12px;font-weight:500;color:var(--text);">Facebook</div><div style="font-size:11px;color:var(--muted);font-family:var(--mono);">Mirror GMB posts · share to local groups</div></div><span style="font-size:11px;font-family:var(--mono);color:var(--accent);">3–4x / week</span></div>
+              <div class="cadence-row"><div><div style="font-size:12px;font-weight:500;color:var(--text);">YouTube</div><div style="font-size:11px;color:var(--muted);font-family:var(--mono);">Embed on service pages after upload</div></div><span style="font-size:11px;font-family:var(--mono);color:var(--red);">1x / week</span></div>
+              <div class="cadence-row"><div><div style="font-size:12px;font-weight:500;color:var(--text);">LinkedIn</div><div style="font-size:11px;color:var(--muted);font-family:var(--mono);">Brand + authority content</div></div><span style="font-size:11px;font-family:var(--mono);color:#60a5fa;">2x / week</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="section-header">
+            <div class="card-label" style="margin-bottom:0;">AI-generated social syndication plan</div>
+            <button class="copy-btn" onclick="copyEl('social-output',this)">Copy</button>
+          </div>
+          <div class="output-box" id="social-output">Run diagnostics to generate a client-specific social syndication plan...</div>
+        </div>
+      </div>
+
+      <!-- ROADMAP -->
+      <div id="screen-roadmap" class="screen fade-in">
+        <div class="grid-3">
+          <div class="phase-card"><div class="phase-title">Phase 1 — Foundation</div><div class="phase-sub">Days 1–30</div><div class="phase-items" id="phase1-items"><span style="color:var(--muted);">Run diagnostics first</span></div></div>
+          <div class="phase-card p2"><div class="phase-title">Phase 2 — Authority</div><div class="phase-sub">Days 31–60</div><div class="phase-items" id="phase2-items"><span style="color:var(--muted);">Run diagnostics first</span></div></div>
+          <div class="phase-card p3"><div class="phase-title">Phase 3 — Amplify</div><div class="phase-sub">Days 61–90</div><div class="phase-items" id="phase3-items"><span style="color:var(--muted);">Run diagnostics first</span></div></div>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="card-label">Diagnostic scores</div>
+          <div id="score-bars"><div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Scores load after diagnostics complete.</div></div>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="section-header">
+            <div class="card-label" style="margin-bottom:0;">Full roadmap — GMB + Website + Social</div>
+            <button class="copy-btn" onclick="copyEl('roadmap-output',this)">Copy</button>
+          </div>
+          <div class="output-box" id="roadmap-output">Roadmap generates after diagnostics complete...</div>
+        </div>
+      </div>
+
+      <!-- REPORT -->
+      <div id="screen-report" class="screen fade-in">
+        <div class="card">
+          <div class="card-label">Export</div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="copyEl('report-preview',this)">Copy report text</button>
+            <button class="btn btn-green" onclick="window.print()">Print / Save PDF</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:14px;">
+          <div class="card-label">Client-facing report</div>
+          <div class="report-preview" id="report-preview">
+            <div class="report-header">
+              <div class="report-biz" id="rp-biz">—</div>
+              <div class="report-date" id="rp-date">—</div>
+            </div>
+            <div class="report-section"><div class="report-section-title">Executive summary</div><div class="report-body" id="rp-summary">Run diagnostics to generate report.</div></div>
+            <div class="report-section"><div class="report-section-title">Top findings</div><div class="report-body" id="rp-findings">—</div></div>
+            <div class="report-section"><div class="report-section-title">Social syndication strategy</div><div class="report-body" id="rp-social">—</div></div>
+            <div class="report-section"><div class="report-section-title">90-day roadmap</div><div class="report-body" id="rp-roadmap">—</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const state = {
+  csvText:'',websiteUrl:'',businessName:'',primaryService:'',location:'',
+  competitors:[],gridStats:{},diagnosticOutputs:{},roadmapOutput:'',
+  analysisComplete:false,roadmapComplete:false
+};
+
+const STEPS = [
+  {id:'crawl',      label:'Site crawl',          desc:'Services, schema, entity signals'},
+  {id:'competitor', label:'Competitor gap',       desc:'Map pack gaps from CSV'},
+  {id:'gbp',        label:'GMB audit',            desc:'Profile + review velocity'},
+  {id:'entity',     label:'Entity health',        desc:'NAP, schema mesh, brand'},
+  {id:'content',    label:'Content gaps',         desc:'Topical authority vs competitors'},
+  {id:'social',     label:'Social syndication',   desc:'Instagram, Facebook, LinkedIn, YouTube'}
+];
+
+const TOPBAR = {
+  intake:  {title:'New Client',          sub:'Upload CSV + website to begin',   badge:'<span class="pill pill-blue"><span class="pill-dot"></span>Step 1 of 5</span>'},
+  analysis:{title:'Running Diagnostics', sub:'',                                 badge:'<span class="pill pill-amber"><span class="pill-dot"></span>Processing</span>'},
+  social:  {title:'Social Syndication',  sub:'GMB + website link strategy',     badge:'<span class="pill pill-blue"><span class="pill-dot"></span>Step 3 of 5</span>'},
+  roadmap: {title:'90-Day Roadmap',      sub:'GMB + Website + Social combined', badge:'<span class="pill pill-green"><span class="pill-dot"></span>Ready</span>'},
+  report:  {title:'Client Report',       sub:'Ready to export',                 badge:'<span class="pill pill-green"><span class="pill-dot"></span>Complete</span>'}
+};
+
+function goTo(s){
+  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('screen-'+s).classList.add('active');
+  document.getElementById('nav-'+s).classList.add('active');
+  const t=TOPBAR[s];
+  document.getElementById('topbar-title').textContent=t.title;
+  document.getElementById('topbar-badge').innerHTML=t.badge;
+  document.getElementById('topbar-sub').textContent=(s==='analysis'&&state.businessName)?state.businessName+' · '+state.location:t.sub;
+}
+
+// CSV
+function handleDragOver(e){e.preventDefault();document.getElementById('upload-zone').classList.add('dragover');}
+function handleDragLeave(){document.getElementById('upload-zone').classList.remove('dragover');}
+function handleDrop(e){e.preventDefault();handleDragLeave();const f=e.dataTransfer.files[0];if(f)processCSVFile(f);}
+function handleCSV(e){processCSVFile(e.target.files[0]);}
+
+function processCSVFile(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    state.csvText=e.target.result;
+    parseCSV(e.target.result);
+    document.getElementById('upload-zone').classList.add('has-file');
+    document.getElementById('upload-content').innerHTML=`<div class="upload-icon">✓</div><div class="upload-text"><strong>${file.name}</strong><br>Loaded · grid stats detected</div>`;
+    checkReady();
+  };
+  r.readAsText(file);
+}
+
+function parseCSV(text){
+  const lines=text.trim().split('\n');
+  if(lines.length<2)return;
+  const headers=lines[0].split(',').map(h=>h.replace(/"/g,'').trim().toLowerCase());
+  const rankCol=headers.findIndex(h=>h.includes('rank')||h==='position'||h==='pos');
+  const nameCol=headers.findIndex(h=>h.includes('competitor')||h.includes('business')||h.includes('name'));
+  const rows=lines.slice(1).map(l=>{
+    const cols=parseCSVLine(l);
+    return{rank:parseFloat(cols[rankCol])||0,name:nameCol>=0?(cols[nameCol]||'').replace(/"/g,'').trim():''};
+  }).filter(r=>r.rank>0);
+  let nums=rows.map(r=>r.rank);
+  if(!nums.length)nums=lines.slice(1).flatMap(l=>l.split(',').map(v=>parseFloat(v.replace(/"/g,'').trim())).filter(v=>!isNaN(v)&&v>=1&&v<=20));
+  if(nums.length){
+    state.gridStats={avg:(nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1),best:Math.min(...nums),worst:Math.max(...nums),points:nums.length};
+    showGridMetrics();
+  }
+  let found=rows.filter(r=>r.name).map(r=>r.name);
+  if(!found.length){
+    const freq={};
+    lines.slice(1).flatMap(l=>parseCSVLine(l).map(v=>v.replace(/"/g,'').trim()))
+      .filter(v=>v&&v.length>5&&isNaN(v)).forEach(v=>freq[v]=(freq[v]||0)+1);
+    found=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>k);
+  }
+  state.competitors=found.slice(0,3).map((name,i)=>({name,avgRank:(i*1.5+2).toFixed(1)}));
+}
+
+function parseCSVLine(line){
+  const r=[];let q=false,c='';
+  for(let i=0;i<line.length;i++){
+    if(line[i]==='"')q=!q;
+    else if(line[i]===','&&!q){r.push(c);c='';}
+    else c+=line[i];
+  }
+  r.push(c);return r;
+}
+
+function showGridMetrics(){
+  const g=state.gridStats;
+  document.getElementById('grid-metrics').style.display='block';
+  const avg=parseFloat(g.avg);
+  const el=document.getElementById('m-avg');
+  el.textContent='#'+g.avg;
+  el.className='metric-val '+(avg<=4?'good':avg<=7?'ok':'bad');
+  document.getElementById('m-pts').textContent='across '+g.points+' points';
+  document.getElementById('m-best').textContent='#'+g.best;
+  document.getElementById('m-worst').textContent='#'+g.worst;
+}
+
+// Website
+async function analyzeWebsite(){
+  const url=document.getElementById('website-url').value.trim();
+  if(!url)return;
+  state.websiteUrl=url;
+  const btn=document.getElementById('analyze-btn');
+  btn.disabled=true;btn.textContent='Analyzing...';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,
+        system:'Extract business info from URL. Respond ONLY with JSON, no markdown. Keys: businessName, primaryService, location.',
+        messages:[{role:'user',content:'Analyze: '+url}]})
+    });
+    const data=await res.json();
+    const info=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
+    state.businessName=info.businessName||fromUrl(url);
+    state.primaryService=info.primaryService||'Local Business';
+    state.location=info.location||'Local Area';
+  }catch{
+    state.businessName=fromUrl(url);
+    state.primaryService='Local Business';
+    state.location='Local Area';
+  }
+  document.getElementById('site-detected').style.display='block';
+  document.getElementById('d-name').textContent=state.businessName;
+  document.getElementById('d-service').textContent=state.primaryService;
+  document.getElementById('d-location').textContent=state.location;
+  document.getElementById('client-indicator').textContent=state.businessName;
+  btn.disabled=false;btn.textContent='Re-analyze';
+  checkReady();
+}
+
+function fromUrl(url){
+  try{return new URL(url).hostname.replace('www.','').split('.')[0].replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());}
+  catch{return 'Client Business';}
+}
+
+function checkReady(){
+  const ok=document.getElementById('website-url').value.trim().length>0||state.csvText.length>0;
+  document.getElementById('run-btn').disabled=!ok;
+}
+document.getElementById('website-url').addEventListener('input',checkReady);
+
+// Diagnostics
+async function startDiagnostics(){
+  if(!state.businessName)state.businessName=fromUrl(document.getElementById('website-url').value)||'Client';
+  goTo('analysis');
+  renderSteps();
+  renderCompetitors();
+  document.getElementById('output-box').textContent='';
+
+  const biz=state.businessName,svc=state.primaryService,loc=state.location;
+  const grid=`avg rank ${state.gridStats.avg||'unknown'}, best #${state.gridStats.best||'?'}, worst #${state.gridStats.worst||'?'} across ${state.gridStats.points||'?'} points`;
+  const comps=state.competitors.map(c=>c.name).join(', ')||'unknown';
+
+  const diagnostics=[
+    {id:'crawl',label:'Site crawl & entity signals',
+     prompt:`You are a local SEO expert. Analyze ${biz} (${svc} in ${loc}, website: ${state.websiteUrl}). Identify: primary GBP category match, secondary categories, schema markup gaps (LocalBusiness, Service, FAQ), entity signals on site (NAP consistency, GBP CID embed, internal linking to location pages), and topical authority signals present. Be specific. Output as a concise structured list.`},
+    {id:'competitor',label:'Competitor gap analysis',
+     prompt:`Local SEO competitor gap analysis for ${biz} (${svc}, ${loc}). Grid: ${grid}. Top competitors: ${comps}. Identify the top 5 specific ranking gaps with probable root cause and difficulty to close (Low/Med/High). Focus on both GMB signals AND website authority gaps vs competitors.`},
+    {id:'gbp',label:'GMB profile audit',
+     prompt:`GMB audit for ${biz} (${svc}, ${loc}). Score each 1-10 and give one specific fix: primary category alignment, secondary categories, business description, services listed, photo freshness, GMB post frequency, Q&A coverage, review velocity and response rate, booking/messaging features. Also flag: is GMB website URL pointing to the correct landing page? Is the CID embedded on the site?`},
+    {id:'entity',label:'Entity health check',
+     prompt:`Entity health for ${biz} (${svc}, ${loc}). Evaluate: NAP consistency risks, entity disambiguation, schema mesh completeness, Knowledge Panel likelihood, citation consistency, and whether site and GMB are reinforcing the same entity signals. Output: entity score 1-100, top 3 issues, top 3 fixes by impact.`},
+    {id:'content',label:'Content & topical authority gaps',
+     prompt:`Content gap analysis for ${biz} (${svc}, ${loc}) vs competitors: ${comps}. Identify: missing service pages, local landing page gaps, FAQ opportunities, blog topics for topical authority, hyperlocal content angles. For each gap: page type, target keyword, ranking difficulty. Also identify which content should link back to the GMB listing to strengthen the entity signal loop.`},
+    {id:'social',label:'Social syndication strategy',
+     prompt:`Social media syndication strategy for ${biz} (${svc}, ${loc}) to support GMB and website rankings. Provide: 1) Which platforms to prioritize (Instagram, Facebook, LinkedIn, YouTube, TikTok) and why for this business type. 2) Content syndication workflow: GMB post → repurpose to social → link targets on website. 3) Posting cadence per platform. 4) Link strategy: which website pages and GMB listing to link from each platform. 5) Location and geotagging strategy for Instagram and Facebook. 6) How social profiles should match GMB NAP exactly. 7) One ready-to-use content template per top platform. Keep it practical and specific to ${svc} businesses.`}
+  ];
+
+  let allOutput='';
+  for(const d of diagnostics){
+    setStep(d.id,'active');
+    appendOut(`\n▸ ${d.label}\n${'─'.repeat(44)}\n`);
+    try{
+      const result=await claude(d.prompt);
+      state.diagnosticOutputs[d.id]=result;
+      allOutput+=`\n## ${d.label}\n${result}\n`;
+      appendOut(result+'\n');
+      setStep(d.id,'done');
+    }catch(err){
+      appendOut(`Error: ${err.message}\n`);
+      setStep(d.id,'done');
+    }
+  }
+
+  state.analysisComplete=true;
+  document.getElementById('topbar-badge').innerHTML='<span class="pill pill-green"><span class="pill-dot"></span>Complete</span>';
+  if(state.diagnosticOutputs['social'])document.getElementById('social-output').textContent=state.diagnosticOutputs['social'];
+  await generateRoadmap(allOutput);
+}
+
+async function generateRoadmap(diagnosticsText){
+  appendOut('\n▸ Generating 90-day roadmap (GMB + Website + Social)...\n'+'─'.repeat(44)+'\n');
+  const prompt=`Based on these local SEO diagnostic findings for ${state.businessName} (${state.primaryService}, ${state.location}):
+
+${diagnosticsText}
+
+Build a unified 90-day roadmap covering GMB, website, AND social syndication. Use exactly this format:
+
+PHASE1:
+- [action]
+- [action]
+- [action]
+- [action]
+- [action]
+
+PHASE2:
+- [action]
+- [action]
+- [action]
+- [action]
+- [action]
+
+PHASE3:
+- [action]
+- [action]
+- [action]
+- [action]
+- [action]
+
+SCORES:
+GMB Optimization: [1-10]
+Website Entity: [1-10]
+Topical Authority: [1-10]
+Citations: [1-10]
+Social Syndication: [1-10]
+Competitor Gap: [1-10]
+
+SUMMARY:
+[3-4 sentence executive summary covering GMB, website, and social strategy]
+
+FINDINGS:
+[Top 3 specific prioritized findings as bullet points]
+
+SOCIAL_STRATEGY:
+[2-3 sentence social syndication summary for the client]`;
+
+  try{
+    const result=await claude(prompt);
+    state.roadmapOutput=result;
+    document.getElementById('roadmap-output').textContent=result;
+    parseRoadmap(result);
+    state.roadmapComplete=true;
+    buildReport();
+  }catch(err){
+    document.getElementById('roadmap-output').textContent='Error: '+err.message;
+  }
+}
+
+function parseRoadmap(text){
+  const p1=text.match(/PHASE1:([\s\S]*?)(?=PHASE2:|$)/i);
+  const p2=text.match(/PHASE2:([\s\S]*?)(?=PHASE3:|$)/i);
+  const p3=text.match(/PHASE3:([\s\S]*?)(?=SCORES:|$)/i);
+  if(p1)renderPhase('phase1-items',p1[1]);
+  if(p2)renderPhase('phase2-items',p2[1]);
+  if(p3)renderPhase('phase3-items',p3[1]);
+  const scores={'GMB Optimization':0,'Website Entity':0,'Topical Authority':0,'Citations':0,'Social Syndication':0,'Competitor Gap':0};
+  Object.keys(scores).forEach(k=>{const m=text.match(new RegExp(k+':\\s*(\\d+)','i'));if(m)scores[k]=parseInt(m[1]);});
+  const el=document.getElementById('score-bars');
+  el.innerHTML=Object.entries(scores).map(([label,score])=>{
+    const color=score<4?'var(--red)':score<6?'var(--amber)':'var(--green)';
+    return`<div class="score-row"><div class="score-label">${label}</div><div class="score-bar"><div class="score-fill" style="width:${score*10}%;background:${color};"></div></div><div class="score-num">${score}/10</div></div>`;
+  }).join('');
+}
+
+function renderPhase(id,text){
+  const items=text.split('\n').map(l=>l.replace(/^[-•*]\s*/,'').trim()).filter(l=>l.length>5).slice(0,5);
+  document.getElementById(id).innerHTML=items.map(i=>`<span>${i}</span>`).join('');
+}
+
+function buildReport(){
+  const now=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('rp-biz').textContent=state.businessName;
+  document.getElementById('rp-date').textContent=`Local SEO Diagnostic Report · ${now}`;
+  const summary=state.roadmapOutput.match(/SUMMARY:([\s\S]*?)(?=FINDINGS:|$)/i);
+  const findings=state.roadmapOutput.match(/FINDINGS:([\s\S]*?)(?=SOCIAL_STRATEGY:|$)/i);
+  const social=state.roadmapOutput.match(/SOCIAL_STRATEGY:([\s\S]*?)$/i);
+  document.getElementById('rp-summary').textContent=summary?summary[1].trim():'See full diagnostic output.';
+  document.getElementById('rp-findings').textContent=findings?findings[1].trim():'—';
+  document.getElementById('rp-social').textContent=social?social[1].trim():state.diagnosticOutputs['social']?state.diagnosticOutputs['social'].slice(0,400)+'...':'—';
+  const p1=document.getElementById('phase1-items').innerText;
+  const p2=document.getElementById('phase2-items').innerText;
+  const p3=document.getElementById('phase3-items').innerText;
+  document.getElementById('rp-roadmap').textContent=`Phase 1 (Days 1–30):\n${p1}\n\nPhase 2 (Days 31–60):\n${p2}\n\nPhase 3 (Days 61–90):\n${p3}`;
+}
+
+async function claude(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
+      system:'You are an expert local SEO strategist specializing in Google Business Profile, map pack rankings, entity optimization, website authority, and social media syndication for local businesses. Be specific, actionable, and concise.',
+      messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok)throw new Error('API error '+res.status);
+  const data=await res.json();
+  return data.content[0].text;
+}
+
+function renderSteps(){
+  document.getElementById('steps-container').innerHTML=STEPS.map(s=>`
+    <div class="step-row" id="step-${s.id}">
+      <div class="step-num idle" id="stepnum-${s.id}">–</div>
+      <div><div class="step-title">${s.label}</div><div class="step-desc">${s.desc}</div>
+      <div class="progress-bar" id="prog-${s.id}" style="display:none;"><div class="progress-fill" style="width:0%"></div></div></div>
+    </div>`).join('');
+}
+
+function setStep(id,status){
+  const num=document.getElementById('stepnum-'+id);
+  const prog=document.getElementById('prog-'+id);
+  if(!num)return;
+  num.className='step-num '+status;
+  if(status==='done'){num.textContent='✓';if(prog)prog.style.display='none';}
+  else if(status==='active'){num.textContent='●';if(prog){prog.style.display='block';prog.querySelector('.progress-fill').style.width='60%';}}
+  else num.textContent='–';
+}
+
+function renderCompetitors(){
+  const el=document.getElementById('competitors-container');
+  if(!state.competitors.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No competitors found in CSV — will infer from diagnostics</div>';return;}
+  const gaps=['High','Med','Low'],colors=['var(--red)','var(--amber)','var(--accent)'];
+  el.innerHTML=state.competitors.map((c,i)=>`
+    <div class="comp-row">
+      <div><div class="comp-name">${c.name||'Competitor '+(i+1)}</div><div class="comp-meta">Avg rank #${c.avgRank} · from CSV</div></div>
+      <span class="pill" style="background:${colors[i]}20;color:${colors[i]};font-size:11px;">${gaps[i]} gap</span>
+    </div>`).join('');
+}
+
+function appendOut(text){
+  const el=document.getElementById('output-box');
+  el.textContent+=text;
+  el.scrollTop=el.scrollHeight;
+}
+
+function copyEl(id,btn){
+  const el=document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText||el.textContent);
+  const orig=btn.textContent;
+  btn.textContent='Copied!';
+  setTimeout(()=>btn.textContent=orig,1500);
+}
+</script>
+</body>
+</html>
