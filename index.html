@@ -573,7 +573,7 @@ async function fetchViaProxy(url) {
   // Use Claude API to fetch the URL content since we can't do direct CORS requests
   try {
     const startTime = Date.now();
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/chat', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514', max_tokens: 4000,
@@ -1510,7 +1510,7 @@ function getBiggest(sA, sB, dir) {
 // CLAUDE API
 // ─────────────────────────────────────────
 async function claudeAPI(prompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch('/api/chat', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       model:'claude-sonnet-4-20250514', max_tokens:1200,
