@@ -718,6 +718,13 @@ function categorizePages() {
 
   S.crawlData.servicePages = S.sitemapPages.filter(url => {
     const slug = url.toLowerCase().split('/').filter(Boolean).pop() || '';
+    const path = url.toLowerCase();
+    // Exclude blog posts, category pages, tag pages, and other non-service pages
+    if (path.includes('/blog') || path.includes('/post') || path.includes('/article') ||
+        path.includes('/category') || path.includes('/tag') || path.includes('/author') ||
+        path.includes('/page/') || path.includes('/feed') || path.includes('/comment') ||
+        // Exclude long slugs that are likely blog posts (more than 5 words = blog title)
+        slug.split('-').length > 6) return false;
     return serviceKeywords.some(k => slug.includes(k));
   });
 
@@ -1295,26 +1302,18 @@ Analyze:
     {
       id: 'social',
       label: 'Social syndication for call signals',
-      prompt: `You are a local SEO expert focused on social signals that support rankings and calls.
+      prompt: `Local SEO social syndication plan for ${ctx.biz} (${ctx.svc}, ${ctx.loc}).
 
-BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
-WEBSITE: ${ctx.site}
-${ctx.mapsInfo}
+REAL DATA: ${ctx.servicePageCount} service pages · click-to-call: ${S.hasClickToCall?'YES':'NO'} · grid avg rank: #${S.gridStats.avg||'?'}
 
-WEBSITE CALL PATH: ${ctx.ctc}
-SERVICE PAGES: ${ctx.servicePageCount} pages found
-
-Social syndication reinforces map pack rankings by building location signals, entity authority, and driving referral traffic to call pages.
-
-Build a practical plan:
-1. Social score: 1-10 for ${ctx.svc} businesses
-2. Top 3 platforms for ${ctx.svc} and why — focus on call intent
-3. GMB post → social repurpose → link to service page workflow
-4. Location tagging strategy (Instagram + Facebook) specific to ${ctx.loc}
-5. NAP matching: how social profiles must match GBP exactly
-6. One post template per top platform with a call CTA for ${ctx.svc}
-7. Realistic posting cadence for a small team
-8. Which service pages (from the ${ctx.servicePageCount} found) should get the most social link traffic?`
+Provide a concise plan:
+1. Top 3 platforms for ${ctx.svc} businesses and why (call intent focus)
+2. GMB post → social repurpose → link to service page workflow
+3. Location tagging strategy for Instagram + Facebook in ${ctx.loc}
+4. NAP matching requirements across social profiles
+5. One post template per top platform with call CTA
+6. Posting cadence for small team
+7. Social score: 1-10 for this business type`
     }
   ];
 
@@ -1336,7 +1335,12 @@ Build a practical plan:
 
   S.analysisComplete = true;
   document.getElementById('topbar-badge').innerHTML = '<span class="pill pill-green"><span class="pill-dot"></span>Complete</span>';
-  await generateRoadmap(allOutput, buildContext());
+  // Generate roadmap from whatever diagnostics completed successfully
+  if (allOutput.length > 100) {
+    await generateRoadmap(allOutput, buildContext());
+  } else {
+    appendOut('\n✗ No diagnostic output to generate roadmap from.');
+  }
 }
 
 // ─────────────────────────────────────────
@@ -1634,16 +1638,21 @@ function getBiggest(sA, sB, dir) {
 // CLAUDE API
 // ─────────────────────────────────────────
 async function claudeAPI(prompt) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
+  try {
   const res = await fetch('/api/chat', {
     method:'POST', headers:{'Content-Type':'application/json'},
+    signal: controller.signal,
     body: JSON.stringify({
-      model:'claude-sonnet-4-20250514', max_tokens:1200,
+      model:'claude-sonnet-4-20250514', max_tokens:1000,
       system:'You are an expert local SEO strategist specializing in driving phone calls for local businesses. You have deep expertise in Google Business Profile, map pack rankings, entity optimization, services gap analysis, entity bleed detection, call conversion paths, and real data interpretation. When given real crawl data, GSC data, or grid data — use it directly in your analysis. Be specific, cite the actual data points, and focus every recommendation on increasing call volume.',
       messages:[{role:'user',content:prompt}]
     })
   });
   if (!res.ok) throw new Error('API error '+res.status);
   return (await res.json()).content[0].text;
+  } finally { clearTimeout(timeout); }
 }
 
 // ─────────────────────────────────────────
