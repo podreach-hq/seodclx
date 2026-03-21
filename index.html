@@ -1292,18 +1292,9 @@ Answer concisely:
     {
       id: 'social',
       label: 'Social syndication for call signals',
-      prompt: `Local SEO social syndication plan for ${ctx.biz} (${ctx.svc}, ${ctx.loc}).
-
-REAL DATA: ${ctx.servicePageCount} service pages · click-to-call: ${S.hasClickToCall?'YES':'NO'} · grid avg rank: #${S.gridStats.avg||'?'}
-
-Provide a concise plan:
-1. Top 3 platforms for ${ctx.svc} businesses and why (call intent focus)
-2. GMB post → social repurpose → link to service page workflow
-3. Location tagging strategy for Instagram + Facebook in ${ctx.loc}
-4. NAP matching requirements across social profiles
-5. One post template per top platform with call CTA
-6. Posting cadence for small team
-7. Social score: 1-10 for this business type`
+      prompt: `Social syndication plan for ${ctx.biz} (${ctx.svc}, ${ctx.loc}). Be very brief.
+Data: ${ctx.servicePageCount} service pages, grid avg #${S.gridStats.avg||'?'}, CTC: ${S.hasClickToCall?'YES':'NO'}
+Give: top 2 platforms + why, GMB→social workflow in 2 sentences, posting cadence, 1 post template with call CTA, social score 1-10.`
     }
   ];
 
@@ -1318,17 +1309,21 @@ Provide a concise plan:
       appendOut(result + '\n');
       setStep(d.id, 'done');
     } catch(err) {
-      appendOut(`Error: ${err.message}\n`);
-      setStep(d.id, 'done');
+      appendOut(`⚠ ${d.label} skipped: ${err.message}\n`);
+      setStep(d.id, 'warn');
     }
   }
 
+  // Always generate roadmap regardless of how many modules completed
   S.analysisComplete = true;
   document.getElementById('topbar-badge').innerHTML = '<span class="pill pill-green"><span class="pill-dot"></span>Complete</span>';
-  // Generate roadmap from whatever completed — even partial output is enough
   const completedModules = Object.keys(S.diagnosticOutputs).length;
-  appendOut(`\n✓ ${completedModules}/7 modules completed. Generating roadmap...\n`);
-  await generateRoadmap(allOutput || 'Limited data available — generate best-effort roadmap.', buildContext());
+  appendOut(`\n✓ ${completedModules}/7 modules completed.\n▸ Generating roadmap...\n`);
+  try {
+    await generateRoadmap(allOutput || 'Generate a best-effort roadmap based on business type.', buildContext());
+  } catch(roadmapErr) {
+    appendOut(`\n✗ Roadmap error: ${roadmapErr.message}`);
+  }
 }
 
 // ─────────────────────────────────────────
@@ -1620,21 +1615,23 @@ function getBiggest(sA, sB, dir) {
 // CLAUDE API
 // ─────────────────────────────────────────
 async function claudeAPI(prompt) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 25000);
-  try {
-  const res = await fetch('/api/chat', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    signal: controller.signal,
-    body: JSON.stringify({
-      model:'claude-sonnet-4-20250514', max_tokens:800,
-      system:'You are a local SEO expert focused on driving phone calls. Analyze real data directly. Be specific and concise. Always cite actual data points provided.',
-      messages:[{role:'user',content:prompt}]
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('Request timed out after 25s')), 25000);
+    fetch('/api/chat', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:800,
+        system:'You are a local SEO expert focused on driving phone calls. Analyze real data directly. Be specific and concise. Always cite actual data points provided.',
+        messages:[{role:'user',content:prompt}]
+      })
     })
+    .then(res => { clearTimeout(timeout); return res.json(); })
+    .then(data => {
+      if (data.content && data.content[0]) resolve(data.content[0].text);
+      else reject(new Error('Empty API response'));
+    })
+    .catch(err => { clearTimeout(timeout); reject(err); });
   });
-  if (!res.ok) throw new Error('API error '+res.status);
-  return (await res.json()).content[0].text;
-  } finally { clearTimeout(timeout); }
 }
 
 // ─────────────────────────────────────────
