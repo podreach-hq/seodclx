@@ -556,6 +556,13 @@ async function crawlWebsite() {
       if (homepageData) extractLinksFromHTML(homepageData, base);
     }
 
+    // Fallback: if sitemap found too few pages, extract from homepage links
+    if (S.sitemapPages.length < 20 && homepageData) {
+      addLog(`⚠ Only ${S.sitemapPages.length} pages from sitemap — extracting from homepage nav...`);
+      extractLinksFromHTML(homepageData, base);
+      addLog(`✓ Found ${S.sitemapPages.length} pages via nav extraction`);
+    }
+
     addLog(`✓ Total pages found: ${S.sitemapPages.length}`);
     categorizePages();
     addLog(`✓ Service pages detected: ${S.crawlData.servicePages ? S.crawlData.servicePages.length : 0}`);
@@ -645,8 +652,15 @@ function extractLinksFromHTML(html, base) {
     .map(m => m.match(/href="([^"]+)"/)[1])
     .filter(l => l.startsWith('/') || l.startsWith(base))
     .map(l => l.startsWith('/') ? base + l : l)
-    .filter(l => !l.includes('#') && !l.includes('?') && !l.match(/\.(jpg|png|gif|pdf|zip)/i));
-  S.sitemapPages = [...new Set(links)].slice(0, 50);
+    .filter(l => {
+      if (l.includes('#')) return false;
+      if (l.match(/\.(jpg|jpeg|png|gif|pdf|zip|svg|webp|ico|css|js)/i)) return false;
+      if (l.includes('wp-content') || l.includes('wp-admin') || l.includes('wp-login')) return false;
+      if (l.includes('feed') || l.includes('xmlrpc') || l.includes('wp-json')) return false;
+      return true;
+    });
+  // Merge with existing pages, don't overwrite
+  S.sitemapPages = [...new Set([...S.sitemapPages, ...links])].slice(0, 300);
 }
 
 function categorizePages() {
