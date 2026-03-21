@@ -613,28 +613,27 @@ function analyzeHomepage(html, base) {
 }
 
 async function parseSitemap(xml, base) {
-  // Extract all <loc> URLs
   const urlMatches = xml.match(/<loc>([^<]+)<\/loc>/g) || [];
   const urls = urlMatches.map(m => m.replace(/<\/?loc>/g,'').trim()).filter(u => u.startsWith('http'));
 
-  // Separate sitemap index entries from page URLs
-  const subSitemaps = urls.filter(u => u.includes('sitemap') && (u.endsWith('.xml') || u.includes('sitemap')));
-  const pageUrls = urls.filter(u => !u.includes('sitemap') || !u.endsWith('.xml'));
+  // WordPress sitemap_index.xml contains sub-sitemap URLs ending in -sitemap.xml
+  // Follow ALL of them to get the actual page URLs
+  const subSitemaps = urls.filter(u => u.match(/sitemap.*\.xml$/i) || u.match(/-sitemap\.xml$/i));
+  const pageUrls = urls.filter(u => !u.match(/sitemap.*\.xml$/i) && !u.match(/-sitemap\.xml$/i));
 
-  // Add page URLs we found directly
   S.sitemapPages = [...new Set([...S.sitemapPages, ...pageUrls])];
 
-  // Follow sub-sitemaps (sitemap index)
-  for (const subUrl of subSitemaps.slice(0, 10)) {
+  for (const subUrl of subSitemaps.slice(0, 15)) {
     try {
       const subData = await fetchViaProxy(subUrl);
       if (subData && subData.includes('<loc>')) {
         const subMatches = subData.match(/<loc>([^<]+)<\/loc>/g) || [];
-        const subUrls = subMatches.map(m => m.replace(/<\/?loc>/g,'').trim())
-          .filter(u => u.startsWith('http') && !u.includes('sitemap'));
+        const subUrls = subMatches
+          .map(m => m.replace(/<\/?loc>/g,'').trim())
+          .filter(u => u.startsWith('http') && !u.match(/sitemap.*\.xml$/i));
         S.sitemapPages = [...new Set([...S.sitemapPages, ...subUrls])];
       }
-    } catch(e) { /* skip failed sub-sitemaps */ }
+    } catch(e) {}
   }
 
   S.sitemapPages = S.sitemapPages.slice(0, 300);
