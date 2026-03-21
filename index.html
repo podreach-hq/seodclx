@@ -1277,27 +1277,17 @@ Analyze:
     {
       id: 'lsa_ai',
       label: 'LSA & AI Overview eligibility',
-      prompt: `You are a local SEO expert on paid local presence and AI search impact.
+      prompt: `LSA and AI Overview analysis for ${ctx.biz} (${ctx.svc}, ${ctx.loc}).
 
-BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
-WEBSITE: ${ctx.site}
-SCHEMA: ${ctx.schema}
+DATA: ${ctx.grid} · schema: ${ctx.schema} · GSC impressions: ${S.topQueries.slice(0,5).reduce((a,r)=>a+r.impressions,0)}
 
-GSC impressions data (AI Overview impact indicator):
-Total impressions across top queries: ${S.topQueries.slice(0,10).reduce((a,r)=>a+r.impressions,0)}
-Average CTR: ${S.topQueries.length ? (S.topQueries.slice(0,10).reduce((a,r)=>a+r.ctr,0)/Math.min(10,S.topQueries.length)).toFixed(1) : 0}%
-
-Low CTR despite good positions often signals AI Overviews stealing clicks.
-
-Analyze:
-1. LSA eligibility score: 1-10
-2. Is ${ctx.svc} Google Guaranteed or Google Screened eligible?
-3. AI Overview threat: low CTR despite positions suggests AI answers — is this happening for ${ctx.svc} queries?
-4. Schema for AI Overview: ${ctx.schema} — what structured data would get this business cited in AI answers?
-5. Estimated LSA CPL for ${ctx.svc} in this market
-6. Should this client prioritize LSA? ROI case based on typical ${ctx.svc} job value
-7. Featured snippet opportunities from GSC query data
-8. Overall recommendation: organic vs LSA vs both`
+Answer concisely:
+1. LSA eligibility score 1-10 — is ${ctx.svc} Google Guaranteed eligible?
+2. AI Overview threat — are ${ctx.svc} queries being answered by AI without clicks?
+3. Top 2 schema additions to get cited in AI answers
+4. Estimated LSA CPL for ${ctx.svc} in this market
+5. Recommendation: LSA now or organic first? ROI case in 3 sentences
+6. Overall LSA & AI score: 1-10`
     },
     {
       id: 'social',
@@ -1335,12 +1325,10 @@ Provide a concise plan:
 
   S.analysisComplete = true;
   document.getElementById('topbar-badge').innerHTML = '<span class="pill pill-green"><span class="pill-dot"></span>Complete</span>';
-  // Generate roadmap from whatever diagnostics completed successfully
-  if (allOutput.length > 100) {
-    await generateRoadmap(allOutput, buildContext());
-  } else {
-    appendOut('\n✗ No diagnostic output to generate roadmap from.');
-  }
+  // Generate roadmap from whatever completed — even partial output is enough
+  const completedModules = Object.keys(S.diagnosticOutputs).length;
+  appendOut(`\n✓ ${completedModules}/7 modules completed. Generating roadmap...\n`);
+  await generateRoadmap(allOutput || 'Limited data available — generate best-effort roadmap.', buildContext());
 }
 
 // ─────────────────────────────────────────
@@ -1349,23 +1337,17 @@ Provide a concise plan:
 async function generateRoadmap(diagnosticsText, ctx) {
   appendOut('\n▸ Generating call-focused 90-day roadmap...\n' + '─'.repeat(48) + '\n');
 
-  const prompt = `Based on REAL diagnostic data for ${ctx.biz} (${ctx.svc}, ${ctx.loc}):
+  const prompt = `90-day call-focused roadmap for ${ctx.biz} (${ctx.svc}, ${ctx.loc}).
 
-REAL DATA CONTEXT:
-- Website pages: ${ctx.pageCount} total, ${ctx.servicePageCount} service pages
-- Schema: ${ctx.schema}
-- Click-to-call: ${ctx.ctc}
-- Grid: ${ctx.grid}
-- GSC top query: ${S.topQueries[0] ? '"'+S.topQueries[0].query+'" — pos '+S.topQueries[0].position.toFixed(1) : 'no data'}
-- Low CTR opportunities: ${S.lowCTRQueries.length}
+KEY DATA: ${ctx.pageCount} pages, ${ctx.servicePageCount} service pages, schema: ${ctx.schema}, CTC: ${S.hasClickToCall?'YES':'NO'}, grid avg #${S.gridStats.avg||'?'}, top-3 coverage ${S.gridStats.top3pct||'?'}%, GBP rating: ${S.gbpRating||'unknown'}, reviews: ${S.gbpReviewCount||'unknown'}
 
-DIAGNOSTIC FINDINGS:
-${diagnosticsText}
+DIAGNOSTIC FINDINGS SUMMARY:
+${allOutput.slice(0, 3000)}
 
-Build a 90-day roadmap focused entirely on driving MORE CALLS. Every action must connect directly to: ranking top 3, fixing the call path, or converting searchers to callers.
+Output ONLY this format:
 
 PHASE1:
-- [specific action with exact detail]
+- [action]
 - [action]
 - [action]
 - [action]
@@ -1395,10 +1377,10 @@ lsa_ai: [1-10]
 social: [1-10]
 
 SUMMARY:
-[3-4 sentences — what is killing calls RIGHT NOW and the fix priority order]
+[3 sentences max on what is killing calls and fix priority]
 
 FINDINGS:
-[Top 3 call killers as bullets with specific impact]`;
+[3 bullet points — top call killers]`;
 
   try {
     const result = await claudeAPI(prompt);
@@ -1645,8 +1627,8 @@ async function claudeAPI(prompt) {
     method:'POST', headers:{'Content-Type':'application/json'},
     signal: controller.signal,
     body: JSON.stringify({
-      model:'claude-sonnet-4-20250514', max_tokens:1000,
-      system:'You are an expert local SEO strategist specializing in driving phone calls for local businesses. You have deep expertise in Google Business Profile, map pack rankings, entity optimization, services gap analysis, entity bleed detection, call conversion paths, and real data interpretation. When given real crawl data, GSC data, or grid data — use it directly in your analysis. Be specific, cite the actual data points, and focus every recommendation on increasing call volume.',
+      model:'claude-sonnet-4-20250514', max_tokens:800,
+      system:'You are a local SEO expert focused on driving phone calls. Analyze real data directly. Be specific and concise. Always cite actual data points provided.',
       messages:[{role:'user',content:prompt}]
     })
   });
