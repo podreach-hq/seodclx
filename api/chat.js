@@ -25,7 +25,7 @@ export default async function handler(req) {
     if (body.fetchUrl) {
       try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
+        const timeout = setTimeout(() => controller.abort(), 20000);
 
         const fetchRes = await fetch(body.fetchUrl, {
           headers: {
