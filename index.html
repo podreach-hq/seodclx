@@ -1099,13 +1099,22 @@ function buildContext() {
 
   return {biz, svc, loc, site, comps, grid,
           pageCount, servicePageCount, servicePageList, locationPages,
-          schema, ctc, speed, topQueriesText, lowCTRText, nearMissText, mapsInfo};
+          schema, ctc, speed, topQueriesText, lowCTRText, nearMissText, mapsInfo, napMatch, gbpInfo};
 }
 
 // ─────────────────────────────────────────
 // RUN DIAGNOSTICS
 // ─────────────────────────────────────────
 async function startDiagnostics() {
+  // Auto-crawl if URL entered but crawl not done yet
+  const url = document.getElementById('website-url').value.trim();
+  if (url && S.sitemapPages.length === 0) {
+    await crawlWebsite();
+  }
+
+  // If still no business name, extract from URL
+  if (!S.businessName && url) S.businessName = fromUrl(url);
+
   goTo('analysis');
   renderSteps();
   renderDataSourcesActive();
@@ -1159,7 +1168,7 @@ REAL DATA INDICATORS:
 - CID detected: ${S.cid || 'not detected'}
 - GBP Phone: ${S.gbpPhone || 'not extracted'}
 - Website Phone: ${S.detectedPhone || 'not found in crawl'}
-- NAP Check: ${napMatch}
+- NAP Check: ${ctx.napMatch}
 - GBP Rating: ${S.gbpRating || 'unknown'} stars | Reviews: ${S.gbpReviewCount || 'unknown'}
 - GBP Address: ${S.gbpAddress || 'not extracted'}
 
