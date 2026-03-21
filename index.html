@@ -216,6 +216,10 @@
               <label>Website URL</label>
               <input type="url" id="website-url" placeholder="https://clientwebsite.com"/>
             </div>
+            <div class="field" style="margin-top:10px;">
+              <label>GBP Share URL — paste from Google Maps → Share</label>
+              <input type="url" id="gbp-share-url" placeholder="https://maps.app.goo.gl/..."/>
+            </div>
             <button class="btn btn-primary" id="crawl-btn" onclick="crawlWebsite()" style="width:100%;justify-content:center;">
               Crawl Sitemap →
             </button>
@@ -264,10 +268,14 @@
         <!-- Detected data summary -->
         <div id="data-summary" class="card" style="display:none;margin-top:14px;">
           <div class="card-label">Data loaded — ready to diagnose</div>
-          <div class="grid-4">
+          <div class="grid-3">
             <div class="metric"><div class="metric-label">Pages crawled</div><div class="metric-val good" id="ds-pages">0</div><div class="metric-sub">from sitemap</div></div>
             <div class="metric"><div class="metric-label">GSC queries</div><div class="metric-val good" id="ds-queries">0</div><div class="metric-sub">from export</div></div>
             <div class="metric"><div class="metric-label">Grid points</div><div class="metric-val" id="ds-grid">0</div><div class="metric-sub" id="ds-avg">avg rank —</div></div>
+          </div>
+          <div class="grid-3" style="margin-top:10px;">
+            <div class="metric"><div class="metric-label">GBP Rating</div><div class="metric-val good" id="ds-rating">—</div><div class="metric-sub" id="ds-reviews">— reviews</div></div>
+            <div class="metric"><div class="metric-label">NAP Match</div><div class="metric-val" id="ds-nap">—</div><div class="metric-sub">phone vs site</div></div>
             <div class="metric"><div class="metric-label">Category</div><div class="metric-val" id="ds-category" style="font-size:13px;margin-top:4px;">—</div><div class="metric-sub" id="ds-location">—</div></div>
           </div>
         </div>
@@ -442,8 +450,8 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 // ─────────────────────────────────────────
 const S = {
   // inputs
-  websiteUrl: '', businessName: '', primaryService: '', location: '',
-  category: '', mapsUrl: '', cid: '',
+  websiteUrl: '', gbpShareUrl: '', gbpResolvedUrl: '', businessName: '', primaryService: '', location: '',
+  category: '', mapsUrl: '', cid: '', gbpPhone: '', gbpAddress: '', gbpCategory: '', gbpRating: '', gbpReviewCount: '',
   // crawl data
   sitemapPages: [], crawlData: {}, schemaTypes: [], hasClickToCall: false,
   loadTime: 0, titleTags: {}, metaDescs: {},
@@ -508,6 +516,7 @@ async function crawlWebsite() {
   const url = document.getElementById('website-url').value.trim();
   if (!url) return;
   S.websiteUrl = url;
+  S.gbpShareUrl = (document.getElementById('gbp-share-url') ? document.getElementById('gbp-share-url').value : '').trim();
   const btn = document.getElementById('crawl-btn');
   btn.disabled = true; btn.textContent = 'Crawling...';
   document.getElementById('crawl-status').style.display = 'block';
@@ -528,6 +537,44 @@ async function crawlWebsite() {
       addLog(`✓ Homepage: ${S.hasClickToCall ? 'click-to-call found' : 'no click-to-call detected'}`);
       addLog(`✓ Schema types: ${S.schemaTypes.length ? S.schemaTypes.join(', ') : 'none detected'}`);
       addLog(`✓ Load time estimate: ${S.loadTime}ms`);
+    }
+
+    // Fetch and parse GBP share URL
+    if (S.gbpShareUrl) {
+      addLog('→ Fetching GBP listing...');
+      try {
+        const gbpData = await fetchViaProxy(S.gbpShareUrl);
+        if (gbpData) {
+          // Extract CID from resolved URL or page content
+          const cidMatch = gbpData.match(/[?&]cid=(\d+)/) || gbpData.match(/maps\/place\/[^/]+\/([^/]+)/) || gbpData.match(/"cid":"(\d+)"/);
+          if (cidMatch) S.cid = cidMatch[1];
+
+          // Extract phone
+          const phoneMatch = gbpData.match(/\+?1?\s*\(?(\d{3})\)?[\s.-](\d{3})[\s.-](\d{4})/);
+          if (phoneMatch) S.gbpPhone = phoneMatch[0].trim();
+
+          // Extract rating
+          const ratingMatch = gbpData.match(/"(\d+\.\d+)"\s*stars/) || gbpData.match(/(\d+\.\d+)\s*out of 5/) || gbpData.match(/"ratingValue":"?(\d+\.?\d*)/) || gbpData.match(/(\d\.\d)\s*★/);
+          if (ratingMatch) S.gbpRating = ratingMatch[1];
+
+          // Extract review count
+          const reviewMatch = gbpData.match(/(\d+)\s*reviews?/i) || gbpData.match(/(\d+)\s*Google reviews/i);
+          if (reviewMatch) S.gbpReviewCount = reviewMatch[1];
+
+          // Extract category
+          const catMatch = gbpData.match(/"primaryTypeDisplayName":\s*"([^"]+)"/) || gbpData.match(/category['":\s]+([A-Za-z\s]+)(?:,|\.|<)/);
+          if (catMatch && !S.category) S.category = catMatch[1].trim();
+
+          // Extract address
+          const addrMatch = gbpData.match(/(\d+\s+[A-Za-z\s]+(?:St|Ave|Rd|Blvd|Dr|Ln|Ct|Circle|Way|Pl)[.,]?\s+[A-Za-z\s]+,\s+[A-Z]{2}\s+\d{5})/i);
+          if (addrMatch) S.gbpAddress = addrMatch[1].trim();
+
+          S.gbpResolvedUrl = S.gbpShareUrl;
+          addLog('✓ GBP data extracted: ' + (S.gbpPhone || 'phone not found') + ' · ' + (S.gbpRating ? S.gbpRating + '★' : 'rating not found') + ' · ' + (S.gbpReviewCount ? S.gbpReviewCount + ' reviews' : 'review count not found'));
+        }
+      } catch(e) {
+        addLog('⚠ GBP fetch failed: ' + e.message);
+      }
     }
 
     // Try sitemap
@@ -884,6 +931,24 @@ function updateDataSummary() {
   document.getElementById('ds-avg').textContent      = S.gridStats.avg ? 'avg rank #'+S.gridStats.avg : '—';
   document.getElementById('ds-category').textContent = S.category || S.primaryService || '—';
   document.getElementById('ds-location').textContent = S.location || '—';
+  // GBP data
+  if (document.getElementById('ds-rating')) {
+    const ratingEl = document.getElementById('ds-rating');
+    ratingEl.textContent = S.gbpRating ? S.gbpRating+'★' : '—';
+    ratingEl.className = 'metric-val ' + (parseFloat(S.gbpRating)>=4.5?'good':parseFloat(S.gbpRating)>=4.0?'ok':'bad');
+    document.getElementById('ds-reviews').textContent = S.gbpReviewCount ? S.gbpReviewCount+' reviews' : '— reviews';
+  }
+  if (document.getElementById('ds-nap')) {
+    const napEl = document.getElementById('ds-nap');
+    if (S.gbpPhone && S.detectedPhone) {
+      const match = S.gbpPhone.replace(/\D/g,'').slice(-10) === S.detectedPhone.replace(/\D/g,'').slice(-10);
+      napEl.textContent = match ? '✓ Match' : '✗ Mismatch';
+      napEl.className = 'metric-val ' + (match ? 'good' : 'bad');
+    } else {
+      napEl.textContent = S.gbpShareUrl ? 'Check' : 'No GBP';
+      napEl.className = 'metric-val ok';
+    }
+  }
   document.getElementById('client-indicator').textContent = S.businessName || 'Client loaded';
 }
 
@@ -1015,7 +1080,22 @@ function buildContext() {
     `"${r.query}" — pos ${(r.position||0).toFixed(1)}, ${r.impressions} impressions`
   ).join('\n') || 'none' : 'none';
 
-  const mapsInfo = S.mapsUrl ? `Maps URL: ${S.mapsUrl}` + (S.cid ? ` | CID: ${S.cid}` : '') : 'Maps URL not found in CSV';
+  const gbpInfo = [
+    S.gbpShareUrl ? `GBP Share URL: ${S.gbpShareUrl}` : 'GBP URL not provided',
+    S.gbpPhone    ? `GBP Phone: ${S.gbpPhone}`         : 'GBP phone not extracted',
+    S.gbpAddress  ? `GBP Address: ${S.gbpAddress}`     : 'GBP address not extracted',
+    S.gbpCategory ? `GBP Category: ${S.gbpCategory}`   : '',
+    S.gbpRating   ? `GBP Rating: ${S.gbpRating} stars` : 'GBP rating not found',
+    S.gbpReviewCount ? `GBP Reviews: ${S.gbpReviewCount}` : 'GBP review count not found',
+    S.cid         ? `CID: ${S.cid}`                    : 'CID not detected',
+    S.detectedPhone ? `Website Phone: ${S.detectedPhone}` : 'Website phone not detected'
+  ].filter(Boolean).join(' | ');
+  const mapsInfo = gbpInfo;
+
+  // NAP match check
+  const napMatch = S.gbpPhone && S.detectedPhone ?
+    (S.gbpPhone.replace(/\D/g,'').slice(-10) === S.detectedPhone.replace(/\D/g,'').slice(-10) ? 'NAP PHONE MATCH ✓' : 'NAP PHONE MISMATCH ✗ — GBP: '+S.gbpPhone+' vs Site: '+S.detectedPhone) :
+    'NAP phone comparison not available';
 
   return {biz, svc, loc, site, comps, grid,
           pageCount, servicePageCount, servicePageList, locationPages,
@@ -1076,8 +1156,12 @@ CLICK-TO-CALL: ${ctx.ctc}
 
 REAL DATA INDICATORS:
 - Schema present: ${ctx.schema}
-- CID in Maps URL: ${S.cid || 'not detected'}
-- Phone detected on site: ${S.detectedPhone || 'not found in crawl'}
+- CID detected: ${S.cid || 'not detected'}
+- GBP Phone: ${S.gbpPhone || 'not extracted'}
+- Website Phone: ${S.detectedPhone || 'not found in crawl'}
+- NAP Check: ${napMatch}
+- GBP Rating: ${S.gbpRating || 'unknown'} stars | Reviews: ${S.gbpReviewCount || 'unknown'}
+- GBP Address: ${S.gbpAddress || 'not extracted'}
 
 Entity bleed kills rankings and calls. Analyze:
 1. Entity bleed risk score: 1-10 (10 = clean entity)
@@ -1154,7 +1238,10 @@ Based on REAL data:
 
 BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
 COMPETITORS: ${ctx.comps}
-${ctx.mapsInfo}
+REAL GBP DATA:
+- Rating: ${S.gbpRating ? S.gbpRating+' stars' : 'not extracted — estimate from business age/type'}
+- Review count: ${S.gbpReviewCount ? S.gbpReviewCount+' reviews' : 'not extracted'}
+- ${S.gbpShareUrl ? 'GBP listing provided' : 'GBP URL not provided'}
 
 GSC brand queries (indicator of review-driven trust):
 ${S.topQueries.filter(r=>r.query&&r.query.toLowerCase().includes(ctx.biz.toLowerCase().split(' ')[0])).slice(0,5).map(r=>`"${r.query}" — ${r.clicks} clicks`).join('\n') || 'No brand queries detected'}
@@ -1348,6 +1435,7 @@ function buildReport(ctx) {
   document.getElementById('rp-findings').textContent = findings ? findings[1].trim() : '—';
   document.getElementById('rp-data').textContent =
     `Website: ${ctx.pageCount} pages · ${ctx.servicePageCount} service pages · Schema: ${ctx.schema} · Click-to-call: ${S.hasClickToCall?'YES':'NO'}\n` +
+    `GBP: ${S.gbpRating ? S.gbpRating+'★' : 'rating unknown'} · ${S.gbpReviewCount ? S.gbpReviewCount+' reviews' : 'review count unknown'} · NAP: ${S.gbpPhone && S.detectedPhone ? (S.gbpPhone.replace(/\D/g,'').slice(-10)===S.detectedPhone.replace(/\D/g,'').slice(-10)?'MATCH ✓':'MISMATCH ✗') : 'not verified'}\n` +
     `Grid: ${ctx.grid}\n` +
     `GSC: ${S.gscRows.length} queries · Top: "${S.topQueries[0]?.query||'—'}" · Low-CTR opportunities: ${S.lowCTRQueries.length}`;
   const p1 = document.getElementById('phase1-items').innerText;
