@@ -556,11 +556,12 @@ async function crawlWebsite() {
       if (homepageData) extractLinksFromHTML(homepageData, base);
     }
 
-    // Fallback: if sitemap found too few pages, extract from homepage links
-    if (S.sitemapPages.length < 20 && homepageData) {
-      addLog(`⚠ Only ${S.sitemapPages.length} pages from sitemap — extracting from homepage nav...`);
+    // Always merge homepage nav links to catch anything the sitemap missed
+    if (homepageData) {
+      const before = S.sitemapPages.length;
       extractLinksFromHTML(homepageData, base);
-      addLog(`✓ Found ${S.sitemapPages.length} pages via nav extraction`);
+      const added = S.sitemapPages.length - before;
+      if (added > 0) addLog(`✓ Added ${added} more pages from homepage nav`);
     }
 
     addLog(`✓ Total pages found: ${S.sitemapPages.length}`);
