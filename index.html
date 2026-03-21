@@ -624,24 +624,25 @@ async function parseSitemap(xml, base) {
   const urlMatches = xml.match(/<loc>([^<]+)<\/loc>/g) || [];
   const urls = urlMatches.map(m => m.replace(/<\/?loc>/g,'').trim()).filter(u => u.startsWith('http'));
 
-  // WordPress sitemap_index.xml contains sub-sitemap URLs ending in -sitemap.xml
-  // Follow ALL of them to get the actual page URLs
   const subSitemaps = urls.filter(u => u.match(/sitemap.*\.xml$/i) || u.match(/-sitemap\.xml$/i));
   const pageUrls = urls.filter(u => !u.match(/sitemap.*\.xml$/i) && !u.match(/-sitemap\.xml$/i));
 
   S.sitemapPages = [...new Set([...S.sitemapPages, ...pageUrls])];
 
-  for (const subUrl of subSitemaps.slice(0, 15)) {
-    try {
-      const subData = await fetchViaProxy(subUrl);
-      if (subData && subData.includes('<loc>')) {
-        const subMatches = subData.match(/<loc>([^<]+)<\/loc>/g) || [];
+  // Fetch all sub-sitemaps in PARALLEL instead of sequentially
+  if (subSitemaps.length > 0) {
+    const results = await Promise.allSettled(
+      subSitemaps.slice(0, 10).map(subUrl => fetchViaProxy(subUrl))
+    );
+    for (const result of results) {
+      if (result.status === 'fulfilled' && result.value && result.value.includes('<loc>')) {
+        const subMatches = result.value.match(/<loc>([^<]+)<\/loc>/g) || [];
         const subUrls = subMatches
           .map(m => m.replace(/<\/?loc>/g,'').trim())
           .filter(u => u.startsWith('http') && !u.match(/sitemap.*\.xml$/i));
         S.sitemapPages = [...new Set([...S.sitemapPages, ...subUrls])];
       }
-    } catch(e) {}
+    }
   }
 
   S.sitemapPages = S.sitemapPages.slice(0, 300);
