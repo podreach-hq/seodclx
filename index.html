@@ -5,1695 +5,1061 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEO Diagnostics — seodclx.com</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0a0e14;--surface:#111720;--surface2:#1a2130;
-    --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
-    --text:#e8edf5;--muted:#6b7a94;
-    --accent:#2D7FF9;--accent2:#1a5fd4;
-    --green:#22c55e;--amber:#f59e0b;--red:#ef4444;
-    --purple:#a78bfa;--pink:#f472b6;
-    --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;}
-  .shell{display:flex;height:100vh;overflow:hidden;}
-  .sidebar{width:230px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
-  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-  .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-  .content-area{flex:1;overflow-y:auto;padding:24px;}
-  .sidebar-brand{padding:20px 18px 16px;border-bottom:1px solid var(--border);}
-  .brand-name{font-size:13px;font-weight:600;color:var(--text);}
-  .brand-sub{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
-  .nav{padding:10px 0;flex:1;}
-  .nav-section{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:0.1em;text-transform:uppercase;padding:12px 18px 4px;}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:8px 18px;font-size:13px;color:var(--muted);cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;}
-  .nav-item:hover{color:var(--text);background:rgba(255,255,255,0.03);}
-  .nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(45,127,249,0.07);}
-  .nav-icon{width:15px;height:15px;opacity:0.7;flex-shrink:0;}
-  .nav-item.active .nav-icon{opacity:1;}
-  .sidebar-footer{padding:14px 18px;border-top:1px solid var(--border);}
-  .client-chip{font-size:11px;color:var(--muted);font-family:var(--mono);background:var(--surface2);padding:6px 10px;border-radius:6px;border:1px solid var(--border);word-break:break-all;}
-  .topbar-left h1{font-size:15px;font-weight:500;color:var(--text);}
-  .topbar-left p{font-size:12px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
-  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;font-family:var(--mono);}
-  .pill-blue{background:rgba(45,127,249,0.15);color:var(--accent);}
-  .pill-green{background:rgba(34,197,94,0.12);color:var(--green);}
-  .pill-amber{background:rgba(245,158,11,0.12);color:var(--amber);}
-  .pill-red{background:rgba(239,68,68,0.1);color:var(--red);}
-  .pill-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;}
-  .card+.card{margin-top:14px;}
-  .card-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-family:var(--mono);}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
-  .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
-  .field{margin-bottom:14px;}
-  .field label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-family:var(--mono);}
-  .field input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;transition:border 0.15s;}
-  .field input:focus{border-color:var(--accent);}
-  .field input::placeholder{color:var(--muted);}
-  .upload-zone{border:1px dashed var(--border2);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:all 0.15s;background:rgba(255,255,255,0.01);}
-  .upload-zone:hover,.upload-zone.dragover{border-color:var(--accent);background:rgba(45,127,249,0.05);}
-  .upload-zone.has-file{border-style:solid;border-color:var(--green);background:rgba(34,197,94,0.05);}
-  .upload-text{font-size:12px;color:var(--muted);line-height:1.6;}
-  .upload-text strong{color:var(--text);font-weight:500;}
-  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;font-family:var(--sans);}
-  .btn-primary{background:var(--accent);color:#fff;}
-  .btn-primary:hover{background:var(--accent2);}
-  .btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
-  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border2);}
-  .btn-ghost:hover{color:var(--text);background:var(--surface2);}
-  .btn-green{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
-  .btn-row{display:flex;gap:10px;flex-wrap:wrap;}
-  .metric{background:var(--surface2);border-radius:8px;padding:14px;position:relative;}
-  .metric-label{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
-  .metric-val{font-size:22px;font-weight:500;color:var(--text);font-family:var(--mono);}
-  .metric-val.bad{color:var(--red);}
-  .metric-val.ok{color:var(--amber);}
-  .metric-val.good{color:var(--green);}
-  .metric-sub{font-size:11px;color:var(--muted);margin-top:4px;}
-  .metric-delta{position:absolute;top:10px;right:10px;font-size:11px;font-family:var(--mono);font-weight:500;}
-  .delta-up{color:var(--green);}
-  .delta-down{color:var(--red);}
-  .step-row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
-  .step-row:last-child{border-bottom:none;}
-  .step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;font-family:var(--mono);}
-  .step-num.done{background:rgba(34,197,94,0.15);color:var(--green);}
-  .step-num.active{background:rgba(45,127,249,0.15);color:var(--accent);}
-  .step-num.idle{background:var(--surface2);color:var(--muted);}
-  .step-num.warn{background:rgba(245,158,11,0.15);color:var(--amber);}
-  .step-title{font-size:13px;font-weight:500;color:var(--text);}
-  .step-desc{font-size:11px;color:var(--muted);margin-top:2px;font-family:var(--mono);}
-  .progress-bar{height:3px;background:var(--surface2);border-radius:2px;margin-top:6px;overflow:hidden;}
-  .progress-fill{height:3px;background:var(--accent);border-radius:2px;transition:width 0.4s ease;}
-  .score-row{display:flex;align-items:center;gap:12px;margin-bottom:11px;}
-  .score-label{font-size:12px;color:var(--muted);width:200px;flex-shrink:0;}
-  .score-bar-wrap{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;}
-  .score-fill{height:5px;border-radius:3px;transition:width 0.8s ease;}
-  .score-num{font-size:12px;font-family:var(--mono);color:var(--text);width:30px;text-align:right;}
-  .score-delta-col{font-size:11px;font-family:var(--mono);width:28px;text-align:right;}
-  .phase-card{background:var(--surface2);border-radius:8px;padding:16px;border-left:3px solid var(--accent);}
-  .phase-card.p2{border-left-color:var(--amber);}
-  .phase-card.p3{border-left-color:var(--green);}
-  .phase-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
-  .phase-sub{font-size:11px;color:var(--muted);font-family:var(--mono);margin-bottom:10px;}
-  .phase-items{font-size:12px;color:var(--muted);line-height:2.1;}
-  .phase-items span{display:block;}
-  .phase-items span::before{content:'→ ';color:var(--accent);}
-  .phase-card.p2 .phase-items span::before{color:var(--amber);}
-  .phase-card.p3 .phase-items span::before{color:var(--green);}
-  .output-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;max-height:360px;overflow-y:auto;}
-  .data-table{width:100%;font-size:12px;border-collapse:collapse;}
-  .data-table th{text-align:left;padding:6px 10px;font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border);}
-  .data-table td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);}
-  .data-table tr:last-child td{border-bottom:none;}
-  .data-table tr:hover td{background:rgba(255,255,255,0.02);}
-  .tag{display:inline-flex;padding:2px 7px;border-radius:4px;font-size:10px;font-family:var(--mono);font-weight:500;}
-  .tag-red{background:rgba(239,68,68,0.12);color:var(--red);}
-  .tag-green{background:rgba(34,197,94,0.12);color:var(--green);}
-  .tag-amber{background:rgba(245,158,11,0.12);color:var(--amber);}
-  .tag-blue{background:rgba(45,127,249,0.12);color:var(--accent);}
-  .tag-muted{background:var(--surface2);color:var(--muted);}
-  .history-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;border-radius:4px;padding-left:4px;}
-  .history-row:hover{background:rgba(255,255,255,0.02);}
-  .history-row:last-child{border-bottom:none;}
-  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .copy-btn{font-size:11px;padding:4px 10px;background:var(--surface2);border:1px solid var(--border2);border-radius:5px;color:var(--muted);cursor:pointer;font-family:var(--mono);transition:all 0.15s;}
-  .copy-btn:hover{color:var(--text);}
-  .alert{padding:10px 14px;border-radius:7px;font-size:12px;margin-bottom:14px;font-family:var(--mono);}
-  .alert-red{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.2);}
-  .alert-green{background:rgba(34,197,94,0.08);color:#86efac;border:1px solid rgba(34,197,94,0.2);}
-  .alert-blue{background:rgba(45,127,249,0.08);color:#93c5fd;border:1px solid rgba(45,127,249,0.2);}
-  .alert-amber{background:rgba(245,158,11,0.08);color:#fcd34d;border:1px solid rgba(245,158,11,0.2);}
-  .divider{height:1px;background:var(--border);margin:16px 0;}
-  .crawl-log{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;font-family:var(--mono);font-size:11px;color:var(--muted);max-height:120px;overflow-y:auto;line-height:1.7;}
-  .screen{display:none;}
-  .screen.active{display:block;}
-  .fade-in{animation:fadeIn 0.3s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-  ::-webkit-scrollbar{width:5px;}
-  ::-webkit-scrollbar-track{background:transparent;}
-  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
-  @media print{
-    .shell{display:block;height:auto;}
-    .sidebar,.topbar,.btn-row{display:none;}
-    .content-area{padding:0;overflow:visible;}
-    .screen{display:block!important;}
-    .screen:not(#screen-report){display:none!important;}
-  }
+:root {
+  --bg: #080c12;
+  --surface: #0f1520;
+  --surface2: #161f2e;
+  --surface3: #1c2738;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --text: #dde4f0;
+  --muted: #5a6a84;
+  --muted2: #8896b0;
+  --accent: #2D7FF9;
+  --accent-dim: rgba(45,127,249,0.12);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.1);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.1);
+  --red: #ef4444;
+  --red-dim: rgba(239,68,68,0.1);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,0.1);
+  --cyan: #22d3ee;
+  --cyan-dim: rgba(34,211,238,0.1);
+  --orange: #fb923c;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; overflow: hidden; }
+
+/* ── LAYOUT ─────────────────────────────────── */
+.shell { display: flex; height: 100vh; }
+.sidebar { width: 214px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 22px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.content { flex: 1; overflow-y: auto; padding: 20px 22px; }
+
+/* ── SIDEBAR ─────────────────────────────────── */
+.brand { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); }
+.brand-name { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
+.brand-sub { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 3px; }
+
+.nav { padding: 8px 0; flex: 1; overflow-y: auto; }
+.nav-section { padding: 14px 16px 6px; font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 16px; font-size: 12.5px; color: var(--muted2); cursor: pointer; transition: all 0.12s; border-left: 2px solid transparent; user-select: none; }
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+.nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex-shrink: 0; transition: background 0.12s; }
+.nav-item.active .nav-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.nav-item.done .nav-dot { background: var(--green); }
+.nav-badge { margin-left: auto; font-size: 10px; font-family: var(--mono); background: var(--surface3); border: 1px solid var(--border2); border-radius: 4px; padding: 1px 5px; color: var(--muted2); }
+
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); }
+.build-info { font-size: 10px; font-family: var(--mono); color: var(--muted); line-height: 1.6; }
+
+/* ── TOPBAR ─────────────────────────────────── */
+.topbar-title { font-size: 13px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--mono); padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border2); }
+.pill-dot { width: 5px; height: 5px; border-radius: 50%; }
+.pill-idle { color: var(--muted2); }
+.pill-idle .pill-dot { background: var(--muted); }
+.pill-running { color: var(--amber); border-color: rgba(245,158,11,0.3); background: var(--amber-dim); }
+.pill-running .pill-dot { background: var(--amber); animation: pulse 1s infinite; }
+.pill-green { color: var(--green); border-color: rgba(34,197,94,0.3); background: var(--green-dim); }
+.pill-green .pill-dot { background: var(--green); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── CARDS ─────────────────────────────────── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.card + .card { margin-top: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+/* ── SCREENS ─────────────────────────────────── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── FORM ─────────────────────────────────── */
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 11px; font-weight: 500; color: var(--muted2); margin-bottom: 5px; letter-spacing: 0.04em; }
+.field input, .field select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; padding: 9px 12px; font-size: 13px; font-family: var(--sans); color: var(--text); outline: none; transition: border-color 0.15s; }
+.field input:focus, .field select:focus { border-color: var(--accent); }
+.field input::placeholder { color: var(--muted); }
+.field select option { background: var(--surface2); }
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; font-family: var(--sans); cursor: pointer; transition: all 0.15s; border: none; outline: none; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #1a6fe8; }
+.btn-primary:disabled { background: var(--surface3); color: var(--muted); cursor: not-allowed; }
+.btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted2); }
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
+
+/* ── OUTPUT BOX ─────────────────────────────────── */
+.output-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; color: var(--muted2); max-height: 340px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.copy-btn { font-size: 11px; font-family: var(--mono); padding: 3px 9px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted2); cursor: pointer; transition: all 0.12s; }
+.copy-btn:hover { color: var(--text); border-color: var(--border2); }
+
+/* ── STEP LIST ─────────────────────────────────── */
+.step-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.step-item:last-child { border-bottom: none; }
+.step-icon { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.step-icon.idle { background: var(--surface3); border: 1px solid var(--border2); }
+.step-icon.active { background: var(--amber-dim); border: 1px solid rgba(245,158,11,0.4); animation: pulse 1s infinite; }
+.step-icon.done { background: var(--green-dim); border: 1px solid rgba(34,197,94,0.4); }
+.step-dot { width: 5px; height: 5px; border-radius: 50%; }
+.step-icon.idle .step-dot { background: var(--muted); }
+.step-icon.active .step-dot { background: var(--amber); }
+.step-icon.done .step-dot { background: var(--green); }
+.step-label { font-size: 12.5px; color: var(--muted2); line-height: 1.4; }
+.step-item.active .step-label { color: var(--text); }
+.step-item.done .step-label { color: var(--muted2); }
+.step-tag { font-size: 9.5px; font-family: var(--mono); margin-top: 2px; color: var(--muted); }
+
+/* ── SIGNAL FLOW ─────────────────────────────────── */
+.signal-flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.signal-node { font-size: 11px; font-family: var(--mono); padding: 5px 10px; border-radius: 5px; border: 1px solid var(--border2); }
+.sn-gmb { background: rgba(45,127,249,0.1); color: var(--accent); border-color: rgba(45,127,249,0.3); }
+.sn-site { background: rgba(167,139,250,0.1); color: var(--purple); border-color: rgba(167,139,250,0.3); }
+.sn-social { background: rgba(34,211,238,0.1); color: var(--cyan); border-color: rgba(34,211,238,0.3); }
+.sn-schema { background: rgba(251,146,60,0.1); color: var(--orange); border-color: rgba(251,146,60,0.3); }
+.sn-entity { background: rgba(34,197,94,0.1); color: var(--green); border-color: rgba(34,197,94,0.3); }
+.signal-arrow { color: var(--muted); font-size: 12px; font-family: var(--mono); }
+
+/* ── METRICS ─────────────────────────────────── */
+.metric { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
+.metric-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.metric-val { font-size: 22px; font-family: var(--mono); font-weight: 500; margin-top: 5px; line-height: 1; }
+.metric-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ── SCORE BAR ─────────────────────────────────── */
+.score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.score-label { font-size: 12px; color: var(--muted2); width: 160px; flex-shrink: 0; }
+.score-track { flex: 1; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+.score-num { font-size: 11px; font-family: var(--mono); color: var(--muted2); width: 28px; text-align: right; flex-shrink: 0; }
+
+/* ── ROADMAP PHASES ─────────────────────────────────── */
+.phase-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.phase-num { font-size: 10px; font-family: var(--mono); font-weight: 600; padding: 3px 8px; border-radius: 4px; }
+.phase-1 .phase-num { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+.phase-2 .phase-num { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.phase-3 .phase-num { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+.phase-title { font-size: 13px; font-weight: 500; }
+.phase-item { display: flex; gap: 8px; padding: 4px 0; font-size: 12.5px; color: var(--muted2); line-height: 1.5; }
+.phase-bullet { color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+
+/* ── FIX PLAN ─────────────────────────────────── */
+.fix-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+.fix-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.fix-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+.priority-badge { font-size: 9.5px; font-family: var(--mono); font-weight: 600; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-top: 1px; letter-spacing: 0.05em; }
+.p-high { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+.p-medium { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+.p-low { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+.fix-module { font-size: 10px; font-family: var(--mono); color: var(--muted); margin-bottom: 8px; }
+.fix-steps { padding-left: 4px; }
+.fix-step { display: flex; gap: 9px; padding: 4px 0; font-size: 12px; color: var(--muted2); line-height: 1.5; }
+.fix-step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); flex-shrink: 0; min-width: 18px; margin-top: 1px; }
+
+/* ── REPORT ─────────────────────────────────── */
+.report-section { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+.report-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.report-text { font-size: 12.5px; color: var(--muted2); line-height: 1.7; white-space: pre-wrap; font-family: var(--mono); }
+
+/* ── SOCIAL ─────────────────────────────────── */
+.platform-tag { font-size: 10px; font-family: var(--mono); font-weight: 500; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
+.pt-instagram { background: rgba(251,146,60,0.12); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
+.pt-facebook { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(45,127,249,0.3); }
+.pt-linkedin { background: var(--cyan-dim); color: var(--cyan); border: 1px solid rgba(34,211,238,0.3); }
+.pt-youtube { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+.pt-tiktok { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+
+/* ── COMPETITOR ─────────────────────────────────── */
+.competitor-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.competitor-item:last-child { border-bottom: none; }
+.competitor-rank { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
+
+/* ── EMPTY STATE ─────────────────────────────────── */
+.empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+.empty-state .icon { font-size: 28px; margin-bottom: 12px; opacity: 0.4; }
+.empty-state p { font-size: 13px; line-height: 1.6; }
+
+/* ── SCROLLBAR ─────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+/* ── TABS ─────────────────────────────────── */
+.tab-bar { display: flex; gap: 2px; background: var(--surface2); border-radius: 7px; padding: 3px; margin-bottom: 14px; border: 1px solid var(--border); }
+.tab-btn { flex: 1; padding: 6px 10px; font-size: 11.5px; font-family: var(--sans); font-weight: 500; border: none; background: transparent; color: var(--muted2); border-radius: 5px; cursor: pointer; transition: all 0.12s; }
+.tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.fade-in { animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
 </style>
 </head>
 <body>
 <div class="shell">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-name">SEO Diagnostics</div>
-      <div class="brand-sub">seodclx.com</div>
+<!-- ══ SIDEBAR ══════════════════════════════════════ -->
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-name">SEO Diagnostics</div>
+    <div class="brand-sub">seodclx.com · v2.1</div>
+  </div>
+  <div class="nav">
+    <div class="nav-section">Workflow</div>
+    <div class="nav-item active" onclick="showScreen('setup')" id="nav-setup">
+      <div class="nav-dot"></div> Setup
     </div>
-    <nav class="nav">
-      <div class="nav-section">Intake</div>
-      <div class="nav-item active" onclick="goTo('intake')" id="nav-intake">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        New Client Run
-      </div>
-      <div class="nav-section">Results</div>
-      <div class="nav-item" onclick="goTo('data')" id="nav-data">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="9" width="3" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="6.5" y="5" width="3" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="3" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
-        Real Data Preview
-      </div>
-      <div class="nav-item" onclick="goTo('analysis')" id="nav-analysis">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Diagnostics
-      </div>
-      <div class="nav-item" onclick="goTo('roadmap')" id="nav-roadmap">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M2 13L6 8l3 3 5-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Roadmap
-      </div>
-      <div class="nav-section">History</div>
-      <div class="nav-item" onclick="goTo('history')" id="nav-history">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M8 4v4l2.5 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.3"/></svg>
-        Run History
-      </div>
-      <div class="nav-item" onclick="goTo('compare')" id="nav-compare">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M3 8h4M9 8h4M5 5l-2 3 2 3M11 5l2 3-2 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Compare Runs
-      </div>
-      <div class="nav-section">Output</div>
-      <div class="nav-item" onclick="goTo('report')" id="nav-report">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none"><path d="M4 2h6l4 4v8a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3"/><path d="M9 2v4h4M5 9h6M5 11.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-        Client Report
-      </div>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="client-chip" id="client-indicator">No client loaded</div>
+    <div class="nav-item" onclick="showScreen('analysis')" id="nav-analysis">
+      <div class="nav-dot"></div> Analysis
+    </div>
+    <div class="nav-section">Results</div>
+    <div class="nav-item" onclick="showScreen('fixplan')" id="nav-fixplan">
+      <div class="nav-dot"></div> Fix Plan
+      <span class="nav-badge" id="fix-count-badge">—</span>
+    </div>
+    <div class="nav-item" onclick="showScreen('roadmap')" id="nav-roadmap">
+      <div class="nav-dot"></div> Roadmap
+    </div>
+    <div class="nav-item" onclick="showScreen('social')" id="nav-social">
+      <div class="nav-dot"></div> Social
+    </div>
+    <div class="nav-item" onclick="showScreen('report')" id="nav-report">
+      <div class="nav-dot"></div> Report
     </div>
   </div>
-
-  <!-- MAIN -->
-  <div class="main">
-    <div class="topbar">
-      <div class="topbar-left">
-        <h1 id="topbar-title">New Client Run</h1>
-        <p id="topbar-sub">Three data sources · real audit</p>
-      </div>
-      <div id="topbar-badge"><span class="pill pill-blue"><span class="pill-dot"></span>Ready</span></div>
-    </div>
-
-    <div class="content-area">
-
-      <!-- ═══ INTAKE ═══ -->
-      <div id="screen-intake" class="screen active fade-in">
-
-        <div class="grid-2">
-          <!-- Website -->
-          <div class="card">
-            <div class="card-label">① Website — crawl via sitemap</div>
-            <div class="field">
-              <label>Website URL</label>
-              <input type="url" id="website-url" placeholder="https://clientwebsite.com"/>
-            </div>
-            <div class="field" style="margin-top:10px;">
-              <label>GBP Share URL — paste from Google Maps → Share</label>
-              <input type="url" id="gbp-share-url" placeholder="https://maps.app.goo.gl/..."/>
-            </div>
-            <button class="btn btn-primary" id="crawl-btn" onclick="crawlWebsite()" style="width:100%;justify-content:center;">
-              Crawl Sitemap →
-            </button>
-            <div id="crawl-status" style="margin-top:10px;display:none;">
-              <div class="crawl-log" id="crawl-log"></div>
-            </div>
-          </div>
-
-          <!-- Local Dominator CSV -->
-          <div class="card">
-            <div class="card-label">② Local Dominator CSV — grid + category</div>
-            <div class="upload-zone" id="ld-zone" onclick="document.getElementById('ld-input').click()" ondragover="ev(event)" ondragleave="el()" ondrop="ed(event)">
-              <input type="file" id="ld-input" accept=".csv" style="display:none" onchange="handleLD(event)">
-              <div id="ld-content">
-                <div style="font-size:20px;margin-bottom:6px;">📊</div>
-                <div class="upload-text"><strong>Drop Local Dominator CSV</strong><br>Auto-extracts grid stats, competitors, category + Maps URL</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- GSC -->
-        <div class="card" style="margin-top:14px;">
-          <div class="card-label">③ Google Search Console CSV — queries + performance</div>
-          <div class="grid-2">
-            <div class="upload-zone" id="gsc-zone" onclick="document.getElementById('gsc-input').click()" ondragover="ev(event)" ondragleave="el()" ondrop="eg(event)">
-              <input type="file" id="gsc-input" accept=".csv" style="display:none" onchange="handleGSC(event)">
-              <div id="gsc-content">
-                <div style="font-size:20px;margin-bottom:6px;">📈</div>
-                <div class="upload-text"><strong>Drop GSC export CSV</strong><br>Search Console → Performance → Export · queries + clicks + impressions + CTR + position</div>
-              </div>
-            </div>
-            <div style="padding:4px 0;">
-              <div style="font-size:12px;color:var(--muted);line-height:1.8;">
-                <div style="color:var(--text);font-weight:500;margin-bottom:6px;font-size:13px;">How to export from GSC:</div>
-                1. Open Search Console<br>
-                2. Performance → Search results<br>
-                3. Set date range (last 3 months)<br>
-                4. Click Export → Download CSV<br>
-                5. Drop the file here
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Detected data summary -->
-        <div id="data-summary" class="card" style="display:none;margin-top:14px;">
-          <div class="card-label">Data loaded — ready to diagnose</div>
-          <div class="grid-3">
-            <div class="metric"><div class="metric-label">Pages crawled</div><div class="metric-val good" id="ds-pages">0</div><div class="metric-sub">from sitemap</div></div>
-            <div class="metric"><div class="metric-label">GSC queries</div><div class="metric-val good" id="ds-queries">0</div><div class="metric-sub">from export</div></div>
-            <div class="metric"><div class="metric-label">Grid points</div><div class="metric-val" id="ds-grid">0</div><div class="metric-sub" id="ds-avg">avg rank —</div></div>
-          </div>
-          <div class="grid-3" style="margin-top:10px;">
-            <div class="metric"><div class="metric-label">GBP Rating</div><div class="metric-val good" id="ds-rating">—</div><div class="metric-sub" id="ds-reviews">— reviews</div></div>
-            <div class="metric"><div class="metric-label">NAP Match</div><div class="metric-val" id="ds-nap">—</div><div class="metric-sub">phone vs site</div></div>
-            <div class="metric"><div class="metric-label">Category</div><div class="metric-val" id="ds-category" style="font-size:13px;margin-top:4px;">—</div><div class="metric-sub" id="ds-location">—</div></div>
-          </div>
-        </div>
-
-        <button class="btn btn-primary" id="run-btn" onclick="startDiagnostics()" disabled style="width:100%;justify-content:center;padding:13px;margin-top:16px;font-size:14px;">
-          Run Full Diagnostic →
-        </button>
-      </div>
-
-      <!-- ═══ DATA PREVIEW ═══ -->
-      <div id="screen-data" class="screen fade-in">
-        <!-- Website crawl results -->
-        <div class="card">
-          <div class="section-header">
-            <div class="card-label" style="margin-bottom:0;">Website crawl results</div>
-            <span id="schema-badge" class="tag tag-muted">Schema: checking...</span>
-          </div>
-          <div class="grid-4" style="margin-bottom:16px;">
-            <div class="metric"><div class="metric-label">Total pages</div><div class="metric-val" id="dp-pages">—</div></div>
-            <div class="metric"><div class="metric-label">Service pages</div><div class="metric-val" id="dp-service-pages">—</div></div>
-            <div class="metric"><div class="metric-label">Has click-to-call</div><div class="metric-val" id="dp-ctc">—</div></div>
-            <div class="metric"><div class="metric-label">Load time</div><div class="metric-val" id="dp-speed">—</div></div>
-          </div>
-          <div class="card-label">Pages found</div>
-          <div id="pages-table" style="max-height:180px;overflow-y:auto;">
-            <div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Crawl website first...</div>
-          </div>
-        </div>
-
-        <!-- GSC top queries -->
-        <div class="card" style="margin-top:14px;">
-          <div class="section-header">
-            <div class="card-label" style="margin-bottom:0;">GSC — top queries by impressions</div>
-            <span class="tag tag-blue" id="gsc-opportunity-count">0 opportunities</span>
-          </div>
-          <div id="gsc-table">
-            <div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Upload GSC CSV first...</div>
-          </div>
-        </div>
-
-        <!-- Grid summary -->
-        <div class="card" style="margin-top:14px;">
-          <div class="card-label">Grid performance</div>
-          <div class="grid-4">
-            <div class="metric"><div class="metric-label">Avg rank</div><div class="metric-val" id="gp-avg">—</div></div>
-            <div class="metric"><div class="metric-label">Top 3 coverage</div><div class="metric-val" id="gp-top3">—</div></div>
-            <div class="metric"><div class="metric-label">Best position</div><div class="metric-val good" id="gp-best">—</div></div>
-            <div class="metric"><div class="metric-label">Worst position</div><div class="metric-val bad" id="gp-worst">—</div></div>
-          </div>
-          <div style="margin-top:14px;">
-            <div class="card-label">Top competitors from grid</div>
-            <div id="dp-competitors"><div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Upload grid CSV...</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ═══ ANALYSIS ═══ -->
-      <div id="screen-analysis" class="screen fade-in">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-label">Diagnostic modules</div>
-            <div id="steps-container"></div>
-          </div>
-          <div class="card">
-            <div class="card-label">Data sources active</div>
-            <div id="data-sources-active"></div>
-          </div>
-        </div>
-        <div class="card" style="margin-top:14px;">
-          <div class="section-header">
-            <div class="card-label" style="margin-bottom:0;">Live diagnostic output</div>
-            <button class="copy-btn" onclick="copyEl('output-box',this)">Copy all</button>
-          </div>
-          <div class="output-box" id="output-box">Starting...</div>
-        </div>
-      </div>
-
-      <!-- ═══ ROADMAP ═══ -->
-      <div id="screen-roadmap" class="screen fade-in">
-        <div class="grid-3">
-          <div class="phase-card"><div class="phase-title">Phase 1 — Fix the Leaks</div><div class="phase-sub">Days 1–30 · quick call wins</div><div class="phase-items" id="phase1-items"><span style="color:var(--muted);">Run diagnostics first</span></div></div>
-          <div class="phase-card p2"><div class="phase-title">Phase 2 — Build Authority</div><div class="phase-sub">Days 31–60 · ranking signals</div><div class="phase-items" id="phase2-items"><span style="color:var(--muted);">Run diagnostics first</span></div></div>
-          <div class="phase-card p3"><div class="phase-title">Phase 3 — Dominate</div><div class="phase-sub">Days 61–90 · own the pack</div><div class="phase-items" id="phase3-items"><span style="color:var(--muted);">Run diagnostics first</span></div></div>
-        </div>
-        <div class="card" style="margin-top:14px;">
-          <div class="card-label">Diagnostic scores — grounded in real data</div>
-          <div id="score-bars"><div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Scores load after diagnostics.</div></div>
-        </div>
-        <div class="card" style="margin-top:14px;">
-          <div class="section-header">
-            <div class="card-label" style="margin-bottom:0;">Full roadmap</div>
-            <button class="copy-btn" onclick="copyEl('roadmap-output',this)">Copy</button>
-          </div>
-          <div class="output-box" id="roadmap-output">Generating after diagnostics complete...</div>
-        </div>
-      </div>
-
-      <!-- ═══ HISTORY ═══ -->
-      <div id="screen-history" class="screen fade-in">
-        <div class="card">
-          <div class="section-header">
-            <div class="card-label" style="margin-bottom:0;">All saved runs</div>
-            <button class="btn-ghost btn" style="font-size:12px;padding:5px 12px;" onclick="loadHistory()">Refresh</button>
-          </div>
-          <div id="history-list"><div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Loading...</div></div>
-        </div>
-      </div>
-
-      <!-- ═══ COMPARE ═══ -->
-      <div id="screen-compare" class="screen fade-in">
-        <div class="card">
-          <div class="card-label">Compare two runs</div>
-          <div class="grid-2">
-            <div class="field"><label>Run A — older baseline</label>
-              <select id="compare-a" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:var(--sans);"><option value="">Select...</option></select>
-            </div>
-            <div class="field"><label>Run B — most recent</label>
-              <select id="compare-b" style="width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:var(--sans);"><option value="">Select...</option></select>
-            </div>
-          </div>
-          <button class="btn btn-primary" onclick="compareRuns()">Compare →</button>
-        </div>
-        <div id="compare-output" style="display:none;">
-          <div class="card" style="margin-top:14px;">
-            <div class="card-label">Score delta</div>
-            <div id="compare-scores"></div>
-          </div>
-          <div class="card" style="margin-top:14px;">
-            <div class="card-label">Key changes</div>
-            <div class="output-box" id="compare-notes" style="max-height:200px;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ═══ REPORT ═══ -->
-      <div id="screen-report" class="screen fade-in">
-        <div class="card">
-          <div class="card-label">Export</div>
-          <div class="btn-row">
-            <button class="btn btn-ghost" onclick="copyEl('report-preview',this)">Copy report text</button>
-            <button class="btn btn-green" onclick="window.print()">Print / Save PDF</button>
-          </div>
-        </div>
-        <div class="card" style="margin-top:14px;">
-          <div class="card-label">Client-facing report</div>
-          <div id="report-preview" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:20px;">
-            <div style="border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px;">
-              <div style="font-size:17px;font-weight:600;color:var(--text);" id="rp-biz">—</div>
-              <div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:3px;" id="rp-date">—</div>
-            </div>
-            <div style="margin-bottom:14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:var(--mono);margin-bottom:8px;">Executive summary</div><div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;" id="rp-summary">Run diagnostics first.</div></div>
-            <div style="margin-bottom:14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:var(--mono);margin-bottom:8px;">Call killers identified</div><div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;" id="rp-findings">—</div></div>
-            <div style="margin-bottom:14px;"><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:var(--mono);margin-bottom:8px;">Data snapshot</div><div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;" id="rp-data">—</div></div>
-            <div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-family:var(--mono);margin-bottom:8px;">90-day action plan</div><div style="font-size:13px;color:var(--text);line-height:1.7;white-space:pre-wrap;" id="rp-roadmap">—</div></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
+  <div class="sidebar-footer">
+    <div class="build-info">10 diagnostic modules<br>Technical · Speed · On-Page<br>GMB · Schema · Entity · Social</div>
   </div>
 </div>
 
+<!-- ══ MAIN ══════════════════════════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">
+      <span id="topbar-title-text">Local SEO Diagnostics</span>
+    </div>
+    <div class="topbar-actions">
+      <span id="status-badge" class="pill pill-idle"><span class="pill-dot"></span>Idle</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ SETUP ══ -->
+    <div id="screen-setup" class="screen active fade-in">
+      <div class="grid-2">
+        <div>
+          <div class="card">
+            <div class="card-label">Business info</div>
+            <div class="field">
+              <label>Business name</label>
+              <input type="text" id="biz-name" placeholder="e.g. Axis Garage Door Service" oninput="checkReady()">
+            </div>
+            <div class="field">
+              <label>Primary service keyword</label>
+              <input type="text" id="biz-service" placeholder="e.g. Garage Door Repair" oninput="checkReady()">
+            </div>
+            <div class="field">
+              <label>City, State</label>
+              <input type="text" id="biz-location" placeholder="e.g. Belleville, IL" oninput="checkReady()">
+            </div>
+            <div class="field">
+              <label>Website URL</label>
+              <input type="text" id="biz-website" placeholder="e.g. axisgaragedoorservice.com" oninput="checkReady()">
+            </div>
+            <div class="field">
+              <label>Upload rank grid CSV <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+              <input type="file" id="csv-file" accept=".csv" onchange="handleCSV(this)" style="font-size:11px;padding:6px;">
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-label">Signal architecture</div>
+            <div style="margin-bottom:10px;">
+              <div class="signal-flow">
+                <div class="signal-node" style="background:var(--red-dim);color:var(--red);border:1px solid rgba(239,68,68,0.3);">Technical</div>
+                <div class="signal-arrow">+</div>
+                <div class="signal-node sn-gmb">GMB</div>
+                <div class="signal-arrow">+</div>
+                <div class="signal-node sn-site">Website</div>
+                <div class="signal-arrow">+</div>
+                <div class="signal-node sn-schema">Schema</div>
+              </div>
+              <div class="signal-flow" style="margin-top:6px;">
+                <div class="signal-node sn-social">Social</div>
+                <div class="signal-arrow">→</div>
+                <div class="signal-node sn-entity">Entity Authority</div>
+                <div class="signal-arrow">→</div>
+                <div class="signal-node" style="background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.3);">Rankings</div>
+              </div>
+            </div>
+            <div class="card-label" style="margin-top:14px;">10 diagnostic modules</div>
+            <div id="module-list">
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Technical Crawl &amp; Indexation</div><div class="step-tag">robots.txt · sitemap · redirects · noindex · canonicals</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Core Web Vitals &amp; Page Speed</div><div class="step-tag">LCP · CLS · INP · TTFB · mobile score</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">On-Page Technical SEO</div><div class="step-tag">titles · meta · H1 · alt tags · dupes · canonicals</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Site Crawl + Entity Signals</div><div class="step-tag">sitemap · page content · entity language</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Competitor Gap Analysis</div><div class="step-tag">service gaps · keyword voids · grid data</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">GMB Profile Audit</div><div class="step-tag">categories · NAP · posts · photos · Q&amp;A</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Schema / Structured Data</div><div class="step-tag">LocalBusiness · Service · FAQ · Review · Geo</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Entity Health Check</div><div class="step-tag">NAP consistency · citations · brand signals</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Content + Topical Authority</div><div class="step-tag">service pages · internal linking · gaps</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Social Syndication Strategy</div><div class="step-tag">platform audit · cadence · link targets</div></div></div>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <button class="btn btn-primary" id="run-btn" onclick="startDiagnostics()" disabled style="width:100%;justify-content:center;padding:12px 0;">
+              Run Full Diagnostics →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANALYSIS ══ -->
+    <div id="screen-analysis" class="screen fade-in">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-label">Module progress</div>
+          <div id="steps-container"></div>
+        </div>
+        <div class="card">
+          <div class="card-label">Top competitors from CSV</div>
+          <div id="competitors-container">
+            <div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No CSV uploaded — using AI discovery</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="section-header">
+          <div class="card-label" style="margin-bottom:0;">Live output</div>
+          <button class="copy-btn" onclick="copyEl('output-box', this)">Copy all</button>
+        </div>
+        <div class="output-box" id="output-box">Waiting to start...</div>
+      </div>
+    </div>
+
+    <!-- ══ FIX PLAN ══ -->
+    <div id="screen-fixplan" class="screen fade-in">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div>
+          <div style="font-size:15px;font-weight:600;">Step-by-Step Fix Plan</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px;">Every issue found, with exact instructions to fix it</div>
+        </div>
+        <button class="copy-btn" onclick="copyEl('fix-plan-container', this)" style="padding:6px 12px;">Copy all fixes</button>
+      </div>
+      <div id="fix-plan-container">
+        <div class="empty-state">
+          <div class="icon">🔧</div>
+          <p>Run diagnostics first.<br>All issues with step-by-step fix instructions will appear here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROADMAP ══ -->
+    <div id="screen-roadmap" class="screen fade-in">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('roadmap','phases')">90-Day Phases</button>
+        <button class="tab-btn" onclick="switchTab('roadmap','scores')">Scores</button>
+        <button class="tab-btn" onclick="switchTab('roadmap','summary')">Summary</button>
+      </div>
+      <div id="roadmap-phases" class="tab-panel active">
+        <div id="phases-container">
+          <div class="empty-state"><div class="icon">🗺️</div><p>Roadmap generates after diagnostics complete.</p></div>
+        </div>
+      </div>
+      <div id="roadmap-scores" class="tab-panel">
+        <div class="card" id="scores-container">
+          <div class="empty-state"><div class="icon">📊</div><p>Scores appear after diagnostics complete.</p></div>
+        </div>
+      </div>
+      <div id="roadmap-summary" class="tab-panel">
+        <div class="card"><div class="output-box" id="summary-output">Waiting for diagnostics...</div></div>
+      </div>
+    </div>
+
+    <!-- ══ SOCIAL ══ -->
+    <div id="screen-social" class="screen fade-in">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-label">Signal flow — social to GMB</div>
+          <div class="signal-flow" style="margin-bottom:12px;">
+            <div class="signal-node sn-gmb">GMB Post</div>
+            <div class="signal-arrow">→</div>
+            <div class="signal-node sn-social">Social</div>
+            <div class="signal-arrow">→</div>
+            <div class="signal-node sn-site">Service Page</div>
+            <div class="signal-arrow">→</div>
+            <div class="signal-node sn-entity">Entity Cluster</div>
+          </div>
+          <div class="card-label">Platform priorities</div>
+          <div id="platform-audit"></div>
+        </div>
+        <div class="card">
+          <div class="card-label">Posting cadence</div>
+          <div id="cadence-container"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <div class="section-header">
+          <div class="card-label" style="margin-bottom:0;">AI-generated social strategy</div>
+          <button class="copy-btn" onclick="copyEl('social-output', this)">Copy</button>
+        </div>
+        <div class="output-box" id="social-output">Run diagnostics to generate social strategy...</div>
+      </div>
+    </div>
+
+    <!-- ══ REPORT ══ -->
+    <div id="screen-report" class="screen fade-in">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:15px;font-weight:600;">Client Report</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="copyEl('full-report', this)" style="font-size:12px;padding:6px 12px;">Copy report</button>
+          <button class="btn btn-primary" onclick="window.print()" style="font-size:12px;padding:6px 12px;">Print / PDF</button>
+        </div>
+      </div>
+      <div id="full-report">
+        <div class="report-section"><h3>Business Overview</h3><div class="report-text" id="rep-overview">—</div></div>
+        <div class="report-section"><h3>Technical Crawl & Indexation</h3><div class="report-text" id="rep-technical">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Core Web Vitals & Page Speed</h3><div class="report-text" id="rep-speed">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>On-Page Technical SEO</h3><div class="report-text" id="rep-onpage">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>GMB + Website Signal Alignment</h3><div class="report-text" id="rep-gmb">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Schema Audit Findings</h3><div class="report-text" id="rep-schema">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Entity Health &amp; Citations</h3><div class="report-text" id="rep-entity">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Content &amp; Topical Authority Gaps</h3><div class="report-text" id="rep-content">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Social Syndication Plan</h3><div class="report-text" id="rep-social">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>90-Day Roadmap</h3><div class="report-text" id="rep-roadmap">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Prioritized Fix Plan</h3><div class="report-text" id="rep-fixes">Run diagnostics to generate report...</div></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
 <script>
-// ─────────────────────────────────────────
-// SUPABASE CONFIG — paste your credentials
-// ─────────────────────────────────────────
-const SUPABASE_URL = 'https://lnmmsujwqegfzmabdcxi.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxubW1zdWp3cWVnZnptYWJkY3hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMzU5MDIsImV4cCI6MjA4OTYxMTkwMn0.K72guUCj9l6pP1dPcMYmur-ouBwBKL_7JlqRFYg30Io';
-
-// ─────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────
-const S = {
-  // inputs
-  websiteUrl: '', gbpShareUrl: '', gbpResolvedUrl: '', businessName: '', primaryService: '', location: '',
-  category: '', mapsUrl: '', cid: '', gbpPhone: '', gbpAddress: '', gbpCategory: '', gbpRating: '', gbpReviewCount: '',
-  // crawl data
-  sitemapPages: [], crawlData: {}, schemaTypes: [], hasClickToCall: false,
-  loadTime: 0, titleTags: {}, metaDescs: {},
-  // gsc data
-  gscRows: [], topQueries: [], lowCTRQueries: [], zeroClickPages: [],
-  // grid data
-  gridStats: {}, competitors: [], csvText: '',
-  // diagnostic
-  diagnosticOutputs: {}, roadmapOutput: '', scores: {},
-  analysisComplete: false
+const state = {
+  biz: {}, csvData: null, competitors: [],
+  outputs: {}, fixItems: [], roadmapData: {},
+  running: false, complete: false
 };
 
-const SCORE_LABELS = {
-  services_gap:  'Services gap (GMB vs site)',
-  entity_bleed:  'Entity health',
-  map_pack:      'Map pack top-3 position',
-  call_path:     'Call conversion path',
-  reviews:       'Review velocity',
-  lsa_ai:        'LSA & AI Overview',
-  social:        'Social syndication'
-};
+// ── NAVIGATION ────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.getElementById('nav-' + id)?.classList.add('active');
+  document.getElementById('topbar-title-text').textContent = {
+    setup: 'Local SEO Diagnostics',
+    analysis: 'Running Diagnostics',
+    fixplan: 'Step-by-Step Fix Plan',
+    roadmap: '90-Day Roadmap',
+    social: 'Social Syndication',
+    report: 'Client Report'
+  }[id] || id;
+}
 
-const STEPS = [
-  {id:'services_gap', label:'Services gap audit',      desc:'Real pages vs expected GBP services'},
-  {id:'entity_bleed', label:'Entity bleed detection',  desc:'Schema, NAP, duplicate risk'},
-  {id:'map_pack',     label:'Map pack blockers',        desc:'Grid data + GSC position analysis'},
-  {id:'call_path',    label:'Call conversion path',     desc:'Site crawl + click-to-call audit'},
-  {id:'reviews',      label:'Review velocity',          desc:'Competitor gap + recency signals'},
-  {id:'lsa_ai',       label:'LSA & AI Overview',        desc:'Paid presence + AI eligibility'},
-  {id:'social',       label:'Social syndication',       desc:'Signal reinforcement strategy'}
+function switchTab(group, tab) {
+  const panels = document.querySelectorAll(`[id^="${group}-"]`);
+  panels.forEach(p => p.classList.remove('active'));
+  document.getElementById(`${group}-${tab}`).classList.add('active');
+  event.target.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ── SETUP ────────────────────────────────────────
+function checkReady() {
+  const ready = ['biz-name','biz-service','biz-location'].every(id => document.getElementById(id).value.trim());
+  document.getElementById('run-btn').disabled = !ready;
+}
+
+function handleCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state.csvData = e.target.result;
+    parseCompetitors(state.csvData);
+  };
+  reader.readAsText(file);
+}
+
+function parseCompetitors(csv) {
+  const rows = csv.split('\n').filter(r => r.trim());
+  const compMap = {};
+  rows.slice(1).forEach(row => {
+    const cols = row.split(',');
+    const name = cols[2]?.replace(/"/g,'').trim();
+    if (name && name.length > 2) {
+      compMap[name] = (compMap[name] || 0) + 1;
+    }
+  });
+  state.competitors = Object.entries(compMap)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0,8)
+    .map(([n,c]) => ({name: n, appearances: c}));
+}
+
+// ── CLAUDE API ────────────────────────────────────────
+async function callClaude(prompt, useSearch = false) {
+  const messages = [{ role: 'user', content: prompt }];
+  const tools = useSearch ? [{ type: 'web_search_20250305', name: 'web_search' }] : undefined;
+
+  // Multi-turn loop to handle web search tool use
+  for (let i = 0; i < 8; i++) {
+    const body = { model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages };
+    if (tools) body.tools = tools;
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
+
+    if (data.stop_reason === 'tool_use') {
+      messages.push({ role: 'assistant', content: data.content });
+      const results = data.content
+        .filter(b => b.type === 'tool_use')
+        .map(b => ({ type: 'tool_result', tool_use_id: b.id, content: 'Search completed — use results above.' }));
+      messages.push({ role: 'user', content: results });
+    } else {
+      return data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || '';
+    }
+  }
+  return 'Max search iterations reached.';
+}
+
+// ── STEP UI ────────────────────────────────────────
+const MODULE_DEFS = [
+  { id: 'technical', label: 'Technical Crawl & Indexation',  tag: 'robots.txt · sitemap · redirects · noindex · canonicals', search: true },
+  { id: 'speed',     label: 'Core Web Vitals & Page Speed',  tag: 'LCP · CLS · INP · TTFB · mobile score', search: true },
+  { id: 'onpage',    label: 'On-Page Technical SEO',         tag: 'titles · meta · H1 · alt tags · dupes · canonicals', search: true },
+  { id: 'crawl',     label: 'Site Crawl + Entity Signals',   tag: 'sitemap · content · entity language', search: false },
+  { id: 'compete',   label: 'Competitor Gap Analysis',       tag: 'service voids · keyword gaps · grid', search: false },
+  { id: 'gmb',       label: 'GMB Profile Audit',             tag: 'categories · NAP · posts · photos', search: true },
+  { id: 'schema',    label: 'Schema / Structured Data',      tag: 'LocalBusiness · Service · FAQ · Geo', search: true },
+  { id: 'entity',    label: 'Entity Health Check',           tag: 'NAP consistency · citations · brand', search: true },
+  { id: 'content',   label: 'Content + Topical Authority',  tag: 'service pages · internal links · gaps', search: false },
+  { id: 'social',    label: 'Social Syndication Strategy',  tag: 'platforms · cadence · link targets', search: false }
 ];
 
-const TOPBAR = {
-  intake:  {title:'New Client Run',       sub:'Three real data sources · complete audit'},
-  data:    {title:'Real Data Preview',    sub:'What we found before running AI'},
-  analysis:{title:'Running Diagnostics',  sub:''},
-  roadmap: {title:'90-Day Roadmap',       sub:'Call-focused · data-grounded'},
-  history: {title:'Run History',          sub:'All saved client runs'},
-  compare: {title:'Compare Runs',         sub:'Score delta between two runs'},
-  report:  {title:'Client Report',        sub:'Ready to export'}
-};
-
-// ─────────────────────────────────────────
-// NAV
-// ─────────────────────────────────────────
-function goTo(s) {
-  document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  document.getElementById('screen-'+s).classList.add('active');
-  document.getElementById('nav-'+s).classList.add('active');
-  const t = TOPBAR[s];
-  document.getElementById('topbar-title').textContent = t.title;
-  document.getElementById('topbar-sub').textContent = (s==='analysis'&&S.businessName) ? S.businessName+' · '+S.location : t.sub;
-  if (s==='history') loadHistory();
-  if (s==='compare') loadCompareSelects();
+function buildSteps() {
+  const el = document.getElementById('steps-container');
+  el.innerHTML = MODULE_DEFS.map(m => `
+    <div class="step-item" id="step-${m.id}">
+      <div class="step-icon idle" id="si-${m.id}"><div class="step-dot"></div></div>
+      <div>
+        <div class="step-label">${m.label}</div>
+        <div class="step-tag">${m.tag}</div>
+      </div>
+    </div>`).join('');
 }
 
-// ─────────────────────────────────────────
-// WEBSITE CRAWL VIA SITEMAP
-// ─────────────────────────────────────────
-async function crawlWebsite() {
-  const url = document.getElementById('website-url').value.trim();
-  if (!url) return;
-  S.websiteUrl = url;
-  S.gbpShareUrl = (document.getElementById('gbp-share-url') ? document.getElementById('gbp-share-url').value : '').trim();
-  const btn = document.getElementById('crawl-btn');
-  btn.disabled = true; btn.textContent = 'Crawling...';
-  document.getElementById('crawl-status').style.display = 'block';
-  const log = document.getElementById('crawl-log');
-  log.textContent = '';
-
-  const addLog = (msg) => { log.textContent += msg + '\n'; log.scrollTop = log.scrollHeight; };
-
-  try {
-    const base = new URL(url).origin;
-    S.businessName = fromUrl(url);
-    addLog('→ Fetching homepage...');
-
-    // Fetch homepage via Claude (CORS proxy)
-    const homepageData = await fetchViaProxy(url);
-    if (homepageData) {
-      analyzeHomepage(homepageData, base);
-      addLog(`✓ Homepage: ${S.hasClickToCall ? 'click-to-call found' : 'no click-to-call detected'}`);
-      addLog(`✓ Schema types: ${S.schemaTypes.length ? S.schemaTypes.join(', ') : 'none detected'}`);
-      addLog(`✓ Load time estimate: ${S.loadTime}ms`);
-    }
-
-    // Fetch and parse GBP share URL
-    if (S.gbpShareUrl) {
-      addLog('→ Fetching GBP listing...');
-      try {
-        const gbpData = await fetchViaProxy(S.gbpShareUrl);
-        if (gbpData) {
-          // Extract CID from resolved URL or page content
-          const cidMatch = gbpData.match(/[?&]cid=(\d+)/) || gbpData.match(/maps\/place\/[^/]+\/([^/]+)/) || gbpData.match(/"cid":"(\d+)"/);
-          if (cidMatch) S.cid = cidMatch[1];
-
-          // Extract phone
-          const phoneMatch = gbpData.match(/\+?1?\s*\(?(\d{3})\)?[\s.-](\d{3})[\s.-](\d{4})/);
-          if (phoneMatch) S.gbpPhone = phoneMatch[0].trim();
-
-          // Extract rating
-          const ratingMatch = gbpData.match(/"(\d+\.\d+)"\s*stars/) || gbpData.match(/(\d+\.\d+)\s*out of 5/) || gbpData.match(/"ratingValue":"?(\d+\.?\d*)/) || gbpData.match(/(\d\.\d)\s*★/);
-          if (ratingMatch) S.gbpRating = ratingMatch[1];
-
-          // Extract review count
-          const reviewMatch = gbpData.match(/(\d+)\s*reviews?/i) || gbpData.match(/(\d+)\s*Google reviews/i);
-          if (reviewMatch) S.gbpReviewCount = reviewMatch[1];
-
-          // Extract category
-          const catMatch = gbpData.match(/"primaryTypeDisplayName":\s*"([^"]+)"/) || gbpData.match(/category['":\s]+([A-Za-z\s]+)(?:,|\.|<)/);
-          if (catMatch && !S.category) S.category = catMatch[1].trim();
-
-          // Extract address
-          const addrMatch = gbpData.match(/(\d+\s+[A-Za-z\s]+(?:St|Ave|Rd|Blvd|Dr|Ln|Ct|Circle|Way|Pl)[.,]?\s+[A-Za-z\s]+,\s+[A-Z]{2}\s+\d{5})/i);
-          if (addrMatch) S.gbpAddress = addrMatch[1].trim();
-
-          S.gbpResolvedUrl = S.gbpShareUrl;
-          addLog('✓ GBP data extracted: ' + (S.gbpPhone || 'phone not found') + ' · ' + (S.gbpRating ? S.gbpRating + '★' : 'rating not found') + ' · ' + (S.gbpReviewCount ? S.gbpReviewCount + ' reviews' : 'review count not found'));
-        }
-      } catch(e) {
-        addLog('⚠ GBP fetch failed: ' + e.message);
-      }
-    }
-
-    // Try sitemap
-    const sitemapUrls = [
-      base + '/sitemap.xml',
-      base + '/sitemap_index.xml',
-      base + '/sitemap/',
-      base + '/wp-sitemap.xml'
-    ];
-
-    let sitemapFound = false;
-    for (const sUrl of sitemapUrls) {
-      addLog(`→ Trying ${sUrl.replace(base,'')}...`);
-      const sData = await fetchViaProxy(sUrl);
-      if (sData && sData.includes('<url>') || sData && sData.includes('<sitemap>')) {
-        addLog(`✓ Sitemap found!`);
-        await parseSitemap(sData, base);
-        sitemapFound = true;
-        break;
-      }
-    }
-
-    if (!sitemapFound) {
-      addLog('⚠ No sitemap found — using homepage links only');
-      // Extract links from homepage as fallback
-      if (homepageData) extractLinksFromHTML(homepageData, base);
-    }
-
-    // Always merge homepage nav links to catch anything the sitemap missed
-    if (homepageData) {
-      const before = S.sitemapPages.length;
-      extractLinksFromHTML(homepageData, base);
-      const added = S.sitemapPages.length - before;
-      if (added > 0) addLog(`✓ Added ${added} more pages from homepage nav`);
-    }
-
-    addLog(`✓ Total pages found: ${S.sitemapPages.length}`);
-    categorizePages();
-    addLog(`✓ Service pages detected: ${S.crawlData.servicePages ? S.crawlData.servicePages.length : 0}`);
-    updateDataSummary();
-    renderDataPreview();
-    checkReady();
-  } catch(err) {
-    addLog(`✗ Error: ${err.message}`);
-  }
-
-  btn.disabled = false; btn.textContent = 'Re-crawl';
+function setStep(id, status) {
+  const item = document.getElementById('step-' + id);
+  const icon = document.getElementById('si-' + id);
+  if (!item || !icon) return;
+  item.className = 'step-item ' + status;
+  icon.className = 'step-icon ' + status;
 }
 
-async function fetchViaProxy(url) {
-  // Real server-side fetch via Vercel edge function
-  try {
-    const startTime = Date.now();
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ fetchUrl: url })
-    });
-    S.loadTime = Date.now() - startTime;
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (!data.ok || !data.body) return null;
-    return data.body;
-  } catch { return null; }
+function appendOut(text) {
+  const el = document.getElementById('output-box');
+  el.textContent += text;
+  el.scrollTop = el.scrollHeight;
 }
 
-function analyzeHomepage(html, base) {
-  // Schema detection
-  const schemaMatches = html.match(/"@type"\s*:\s*"([^"]+)"/g) || [];
-  S.schemaTypes = [...new Set(schemaMatches.map(m => m.match(/"([^"]+)"\s*$/)[1]))];
-
-  // Click to call detection
-  S.hasClickToCall = /href="tel:/i.test(html) || /click.to.call/i.test(html);
-
-  // NAP extraction
-  const phoneMatch = html.match(/(?:tel:|href="tel:)([0-9()\-\s+]+)/);
-  S.detectedPhone = phoneMatch ? phoneMatch[1].replace(/[^\d]/g,'').slice(0,10) : null;
-
-  // Title tag
-  const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-  S.titleTags[base] = titleMatch ? titleMatch[1].trim() : '';
-
-  // Business name from title
-  if (S.titleTags[base]) {
-    const titleParts = S.titleTags[base].split(/[-|–]/);
-    if (titleParts.length > 1) S.businessName = titleParts[titleParts.length-1].trim() || S.businessName;
-  }
-
-  // Load time bucket
-  S.loadTime = S.loadTime > 3000 ? S.loadTime : S.loadTime;
-}
-
-async function parseSitemap(xml, base) {
-  const urlMatches = xml.match(/<loc>([^<]+)<\/loc>/g) || [];
-  const urls = urlMatches.map(m => m.replace(/<\/?loc>/g,'').trim()).filter(u => u.startsWith('http'));
-
-  const subSitemaps = urls.filter(u => u.match(/sitemap.*\.xml$/i) || u.match(/-sitemap\.xml$/i));
-  const pageUrls = urls.filter(u => !u.match(/sitemap.*\.xml$/i) && !u.match(/-sitemap\.xml$/i));
-
-  S.sitemapPages = [...new Set([...S.sitemapPages, ...pageUrls])];
-
-  // Fetch all sub-sitemaps in PARALLEL instead of sequentially
-  if (subSitemaps.length > 0) {
-    const results = await Promise.allSettled(
-      subSitemaps.slice(0, 10).map(subUrl => fetchViaProxy(subUrl))
-    );
-    for (const result of results) {
-      if (result.status === 'fulfilled' && result.value && result.value.includes('<loc>')) {
-        const subMatches = result.value.match(/<loc>([^<]+)<\/loc>/g) || [];
-        const subUrls = subMatches
-          .map(m => m.replace(/<\/?loc>/g,'').trim())
-          .filter(u => u.startsWith('http') && !u.match(/sitemap.*\.xml$/i));
-        S.sitemapPages = [...new Set([...S.sitemapPages, ...subUrls])];
-      }
+// ── FIX PLAN PARSING ────────────────────────────────────────
+function parseFixItems(moduleId, text) {
+  // Look for ISSUE: blocks
+  const issueRegex = /ISSUE:\s*(.+?)[\r\n]+PRIORITY:\s*(High|Medium|Low)[\r\n]+([\s\S]*?)(?=ISSUE:|$)/gi;
+  let match;
+  while ((match = issueRegex.exec(text)) !== null) {
+    const title = match[1].trim();
+    const priority = match[2].trim();
+    const stepsRaw = match[3].trim();
+    const steps = stepsRaw.split('\n')
+      .map(l => l.replace(/^\d+[\.\)]\s*/, '').trim())
+      .filter(l => l.length > 5 && !l.startsWith('STEP'));
+    if (title && steps.length > 0) {
+      state.fixItems.push({ moduleId, title, priority, steps });
     }
   }
-
-  S.sitemapPages = S.sitemapPages.slice(0, 300);
 }
 
-function extractLinksFromHTML(html, base) {
-  const linkMatches = html.match(/href="([^"]+)"/g) || [];
-  const links = linkMatches
-    .map(m => m.match(/href="([^"]+)"/)[1])
-    .filter(l => l.startsWith('/') || l.startsWith(base))
-    .map(l => l.startsWith('/') ? base + l : l)
-    .filter(l => {
-      if (l.includes('#')) return false;
-      if (l.match(/\.(jpg|jpeg|png|gif|pdf|zip|svg|webp|ico|css|js)/i)) return false;
-      if (l.includes('wp-content') || l.includes('wp-admin') || l.includes('wp-login')) return false;
-      if (l.includes('feed') || l.includes('xmlrpc') || l.includes('wp-json')) return false;
-      return true;
-    });
-  // Merge with existing pages, don't overwrite
-  S.sitemapPages = [...new Set([...S.sitemapPages, ...links])].slice(0, 300);
-}
-
-function categorizePages() {
-  const serviceKeywords = ['service','repair','install','replace','hvac','plumbing','roof','door','lock','attorney','lawyer','injury','dental','medical','clean','paint','landscape','electric','pest','garage','emergency','commercial','residential','washing','pressure','power','soft','wash','concrete','driveway','deck','patio','gutter','fence','siding','window','pool','stucco','vinyl','brightening','sealing','paver','surface'];
-  const locationKeywords = ['area','city','county','near','local','beach','harbor','village','town','heights','park','grove','lake','hills','island','creek','falls','ford','burg','ville','boro','wick','field','wood','dale','bridge','port','mill','view','side'];
-
-  S.crawlData.servicePages = S.sitemapPages.filter(url => {
-    const slug = url.toLowerCase().split('/').filter(Boolean).pop() || '';
-    const path = url.toLowerCase();
-    // Exclude blog posts, category pages, tag pages, and other non-service pages
-    if (path.includes('/blog') || path.includes('/post') || path.includes('/article') ||
-        path.includes('/category') || path.includes('/tag') || path.includes('/author') ||
-        path.includes('/page/') || path.includes('/feed') || path.includes('/comment') ||
-        // Exclude long slugs that are likely blog posts (more than 5 words = blog title)
-        slug.split('-').length > 6) return false;
-    return serviceKeywords.some(k => slug.includes(k));
+function renderFixPlan() {
+  const container = document.getElementById('fix-plan-container');
+  if (state.fixItems.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>No structured fix items found.<br>Check the Analysis tab for raw output.</p></div>';
+    return;
+  }
+  const sorted = [...state.fixItems].sort((a,b) => {
+    const order = {High:0, Medium:1, Low:2};
+    return (order[a.priority]||1) - (order[b.priority]||1);
   });
-
-  S.crawlData.locationPages = S.sitemapPages.filter(url => {
-    const slug = url.toLowerCase().split('/').filter(Boolean).pop() || '';
-    return locationKeywords.some(k => slug.includes(k));
-  });
-
-  S.crawlData.blogPages = S.sitemapPages.filter(url =>
-    url.toLowerCase().includes('/blog') || url.toLowerCase().includes('/post') || url.toLowerCase().includes('/article')
-  );
-
-  // Infer services from page slugs
-  S.services = S.crawlData.servicePages.map(url => {
-    const slug = url.split('/').filter(Boolean).pop() || '';
-    return slug.replace(/-/g,' ').replace(/\//g,'').trim();
-  }).filter(Boolean).slice(0, 20);
-}
-
-// ─────────────────────────────────────────
-// LOCAL DOMINATOR CSV
-// ─────────────────────────────────────────
-function ev(e){e.preventDefault();e.currentTarget.classList.add('dragover');}
-function el(){document.querySelectorAll('.upload-zone').forEach(z=>z.classList.remove('dragover'));}
-function ed(e){e.preventDefault();el();handleLD({target:{files:e.dataTransfer.files}});}
-function eg(e){e.preventDefault();el();handleGSC({target:{files:e.dataTransfer.files}});}
-function handleLD(e){processLD(e.target.files[0]);}
-function handleGSC(e){processGSC(e.target.files[0]);}
-
-function processLD(file) {
-  if (!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    S.csvText = e.target.result;
-    parseLD(e.target.result);
-    document.getElementById('ld-zone').classList.add('has-file');
-    document.getElementById('ld-content').innerHTML = `<div style="font-size:20px;margin-bottom:6px;">✓</div><div class="upload-text"><strong>${file.name}</strong><br>Grid data + competitors loaded</div>`;
-    updateDataSummary();
-    renderDataPreview();
-    checkReady();
+  document.getElementById('fix-count-badge').textContent = sorted.length;
+  const moduleName = {
+    technical: 'Technical Crawl', speed: 'Core Web Vitals', onpage: 'On-Page Technical',
+    crawl: 'Site Crawl', compete: 'Competitor Gap', gmb: 'GMB Audit',
+    schema: 'Schema', entity: 'Entity Health', content: 'Content', social: 'Social'
   };
-  r.readAsText(file);
+  container.innerHTML = sorted.map(fix => `
+    <div class="fix-card">
+      <div class="fix-header">
+        <div class="fix-title">${fix.title}</div>
+        <div class="priority-badge p-${fix.priority.toLowerCase()}">${fix.priority.toUpperCase()}</div>
+      </div>
+      <div class="fix-module">MODULE: ${moduleName[fix.moduleId] || fix.moduleId}</div>
+      <div class="fix-steps">
+        ${fix.steps.map((s,i) => `<div class="fix-step"><div class="fix-step-num">${i+1}.</div><div>${s}</div></div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  // Also build report fixes section
+  document.getElementById('rep-fixes').textContent = sorted.map(f =>
+    `[${f.priority.toUpperCase()}] ${f.title}\n${f.steps.map((s,i)=>`  ${i+1}. ${s}`).join('\n')}`
+  ).join('\n\n');
 }
 
-function parseLD(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return;
-  const headers = lines[0].split(',').map(h=>h.replace(/"/g,'').trim().toLowerCase());
-
-  // Find key columns
-  const rankCol = headers.findIndex(h=>h.includes('rank')||h==='position'||h==='pos');
-  const nameCol = headers.findIndex(h=>h.includes('competitor')||h.includes('business')||h.includes('name'));
-  const mapsCol = headers.findIndex(h=>h.includes('maps')||h.includes('url')||h.includes('link')||h.includes('place'));
-  const latCol  = headers.findIndex(h=>h==='lat'||h.includes('latitude'));
-  const lngCol  = headers.findIndex(h=>h==='lng'||h==='lon'||h.includes('longitude'));
-  const kwCol   = headers.findIndex(h=>h.includes('keyword')||h.includes('query')||h.includes('search'));
-
-  // Extract keyword/category
-  if (kwCol >= 0) {
-    const kws = lines.slice(1,5).map(l=>parseCSVLine(l)[kwCol]).filter(Boolean).map(k=>k.replace(/"/g,'').trim());
-    if (kws.length) { S.primaryService = kws[0]; S.category = kws[0]; }
+// ── COMPETITOR DISPLAY ────────────────────────────────────────
+function renderCompetitors() {
+  const el = document.getElementById('competitors-container');
+  if (state.competitors.length === 0) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No CSV — using AI competitor discovery</div>';
+    return;
   }
-
-  // Extract Maps URL and CID
-  if (mapsCol >= 0) {
-    for (const l of lines.slice(1,10)) {
-      const val = (parseCSVLine(l)[mapsCol]||'').replace(/"/g,'').trim();
-      if (val.includes('maps.google') || val.includes('google.com/maps')) {
-        S.mapsUrl = val;
-        const cidMatch = val.match(/[?&]cid=(\d+)/);
-        if (cidMatch) S.cid = cidMatch[1];
-        // Try to extract category from URL
-        const catMatch = val.match(/place\/([^\/]+)/);
-        if (catMatch && !S.category) S.category = decodeURIComponent(catMatch[1]).replace(/\+/g,' ');
-        break;
-      }
-    }
-  }
-
-  // Parse rank data
-  const rows = lines.slice(1).map(l => {
-    const cols = parseCSVLine(l);
-    return {
-      rank: parseFloat(cols[rankCol]) || 0,
-      name: nameCol >= 0 ? (cols[nameCol]||'').replace(/"/g,'').trim() : '',
-      lat:  latCol  >= 0 ? cols[latCol]  : '',
-      lng:  lngCol  >= 0 ? cols[lngCol]  : ''
-    };
-  }).filter(r => r.rank > 0);
-
-  let nums = rows.map(r=>r.rank);
-  if (!nums.length) nums = lines.slice(1).flatMap(l=>l.split(',').map(v=>parseFloat(v.replace(/"/g,'').trim())).filter(v=>!isNaN(v)&&v>=1&&v<=20));
-
-  if (nums.length) {
-    const avg = nums.reduce((a,b)=>a+b,0)/nums.length;
-    const top3 = nums.filter(n=>n<=3).length;
-    S.gridStats = {
-      avg: avg.toFixed(1), best: Math.min(...nums), worst: Math.max(...nums),
-      points: nums.length, top3pct: Math.round((top3/nums.length)*100)
-    };
-  }
-
-  // Extract competitors
-  let found = rows.filter(r=>r.name).map(r=>r.name);
-  if (!found.length) {
-    const freq = {};
-    lines.slice(1).flatMap(l=>parseCSVLine(l).map(v=>v.replace(/"/g,'').trim()))
-      .filter(v=>v&&v.length>5&&isNaN(v)&&!v.includes('http')).forEach(v=>freq[v]=(freq[v]||0)+1);
-    found = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k])=>k);
-  }
-  S.competitors = [...new Set(found)].slice(0,5).map((name,i)=>({name, avgRank:(i*1.5+2).toFixed(1)}));
-
-  // Try to get location from data
-  if (!S.location && S.mapsUrl) {
-    const locMatch = S.mapsUrl.match(/place\/[^\/]+\/@([0-9.-]+),([0-9.-]+)/);
-    if (locMatch) S.location = `${locMatch[1]}, ${locMatch[2]}`;
-  }
+  el.innerHTML = state.competitors.map((c,i) => `
+    <div class="competitor-item">
+      <span style="color:var(--muted2);font-size:12px;">${c.name}</span>
+      <span class="competitor-rank">${c.appearances} pts</span>
+    </div>`).join('');
 }
 
-function parseCSVLine(line) {
-  const r=[];let q=false,c='';
-  for(let i=0;i<line.length;i++){
-    if(line[i]==='"')q=!q;
-    else if(line[i]===','&&!q){r.push(c);c='';}
-    else c+=line[i];
-  }
-  r.push(c);return r;
+// ── ROADMAP PARSING ────────────────────────────────────────
+function parseRoadmap(text) {
+  const p1 = text.match(/PHASE1:([\s\S]*?)(?=PHASE2:|SCORES:|$)/i)?.[1] || '';
+  const p2 = text.match(/PHASE2:([\s\S]*?)(?=PHASE3:|SCORES:|$)/i)?.[1] || '';
+  const p3 = text.match(/PHASE3:([\s\S]*?)(?=SCORES:|SUMMARY:|$)/i)?.[1] || '';
+  const scoresBlock = text.match(/SCORES:([\s\S]*?)(?=SUMMARY:|FINDINGS:|$)/i)?.[1] || '';
+  const summary = text.match(/SUMMARY:([\s\S]*?)(?=FINDINGS:|SOCIAL|$)/i)?.[1]?.trim() || '';
+
+  const toItems = t => t.split('\n').map(l=>l.replace(/^[-•*]\s*/,'')).filter(l=>l.trim().length>4);
+
+  // Phases
+  const phasesEl = document.getElementById('phases-container');
+  phasesEl.innerHTML = [
+    {num:'PHASE 1',title:'Days 1–30 — Critical Fixes',items:toItems(p1),cls:'phase-1'},
+    {num:'PHASE 2',title:'Days 31–60 — Authority Building',items:toItems(p2),cls:'phase-2'},
+    {num:'PHASE 3',title:'Days 61–90 — Domination Layer',items:toItems(p3),cls:'phase-3'}
+  ].map(p => `
+    <div class="phase-card ${p.cls}">
+      <div class="phase-header">
+        <span class="phase-num">${p.num}</span>
+        <span class="phase-title">${p.title}</span>
+      </div>
+      ${p.items.map(i=>`<div class="phase-item"><span class="phase-bullet">›</span><span>${i}</span></div>`).join('')}
+    </div>`).join('');
+
+  // Scores
+  const scoreLines = scoresBlock.split('\n').filter(l=>l.includes(':'));
+  const scoresEl = document.getElementById('scores-container');
+  scoresEl.innerHTML = '<div class="card-label">Signal scores</div>' + scoreLines.map(line => {
+    const parts = line.split(':');
+    const label = parts[0].replace(/[-*]/g,'').trim();
+    const num = parseInt(parts[1]) || 0;
+    const pct = (num / 10) * 100;
+    const color = num >= 7 ? 'var(--green)' : num >= 4 ? 'var(--amber)' : 'var(--red)';
+    return `<div class="score-row">
+      <div class="score-label">${label}</div>
+      <div class="score-track"><div class="score-fill" style="width:${pct}%;background:${color};"></div></div>
+      <div class="score-num">${num}/10</div>
+    </div>`;
+  }).join('');
+
+  // Summary
+  document.getElementById('summary-output').textContent = summary || text;
+  document.getElementById('rep-roadmap').textContent = text;
 }
 
-// ─────────────────────────────────────────
-// GSC CSV PARSING
-// ─────────────────────────────────────────
-function processGSC(file) {
-  if (!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    parseGSC(e.target.result);
-    document.getElementById('gsc-zone').classList.add('has-file');
-    document.getElementById('gsc-content').innerHTML = `<div style="font-size:20px;margin-bottom:6px;">✓</div><div class="upload-text"><strong>${file.name}</strong><br>${S.gscRows.length} queries loaded</div>`;
-    updateDataSummary();
-    renderDataPreview();
-    checkReady();
-  };
-  r.readAsText(file);
+// ── SOCIAL TAB ────────────────────────────────────────
+function renderSocialTab() {
+  const platforms = [
+    {name:'Instagram', cls:'pt-instagram', reason:'Location tags + visual content reinforce geo-relevance. Every post should tag the service area.'},
+    {name:'Facebook',  cls:'pt-facebook',  reason:'GMB post repurpose + local group sharing. Best channel for local service area reach.'},
+    {name:'LinkedIn',  cls:'pt-linkedin',  reason:'Brand and entity authority for B2B signals. Links from LinkedIn carry domain trust.'},
+    {name:'YouTube',   cls:'pt-youtube',   reason:'Google-owned property. Video embeds on site create closed-loop internal signal triangle.'},
+    {name:'TikTok',    cls:'pt-tiktok',    reason:'Local hashtag strategy for brand discovery and younger homeowner demographic reach.'}
+  ];
+  document.getElementById('platform-audit').innerHTML = platforms.map(p => `
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
+      <span class="platform-tag ${p.cls}">${p.name}</span>
+      <div style="font-size:12px;color:var(--muted2);line-height:1.5;">${p.reason}</div>
+    </div>`).join('');
+
+  const cadence = [
+    {platform:'GMB Posts', cls:'pt-facebook', freq:'2–3x / wk', note:'Keyword + CTA + service page link'},
+    {platform:'Instagram', cls:'pt-instagram', freq:'4–5x / wk', note:'Location tag every post'},
+    {platform:'Facebook',  cls:'pt-facebook',  freq:'3–4x / wk', note:'Mirror GMB posts + local groups'},
+    {platform:'YouTube',   cls:'pt-youtube',   freq:'1x / wk',   note:'Service explainer with CID link'},
+    {platform:'LinkedIn',  cls:'pt-linkedin',  freq:'2x / wk',   note:'Entity + authority brand posts'},
+    {platform:'TikTok',    cls:'pt-tiktok',    freq:'3x / wk',   note:'Location hashtags + service demos'}
+  ];
+  document.getElementById('cadence-container').innerHTML = cadence.map(c => `
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
+      <span class="platform-tag ${c.cls}">${c.platform}</span>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--amber);min-width:70px;">${c.freq}</span>
+      <span style="font-size:12px;color:var(--muted2);">${c.note}</span>
+    </div>`).join('');
 }
 
-function parseGSC(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return;
-  const headers = lines[0].split(',').map(h=>h.replace(/"/g,'').trim().toLowerCase());
-
-  // Handle both GSC export formats
-  const qCol    = headers.findIndex(h=>h==='top queries'||h==='query'||h==='queries'||h.includes('query'));
-  const clickCol = headers.findIndex(h=>h.includes('click'));
-  const impCol   = headers.findIndex(h=>h.includes('impression'));
-  const ctrCol   = headers.findIndex(h=>h.includes('ctr'));
-  const posCol   = headers.findIndex(h=>h.includes('position')||h.includes('pos'));
-  const pageCol  = headers.findIndex(h=>h==='top pages'||h==='page'||h.includes('page')||h.includes('url'));
-
-  S.gscRows = lines.slice(1).map(l => {
-    const cols = parseCSVLine(l);
-    return {
-      query:       qCol    >= 0 ? (cols[qCol]||'').replace(/"/g,'').trim()              : '',
-      page:        pageCol >= 0 ? (cols[pageCol]||'').replace(/"/g,'').trim()           : '',
-      clicks:      clickCol>= 0 ? parseInt(cols[clickCol])   || 0                       : 0,
-      impressions: impCol  >= 0 ? parseInt(cols[impCol])     || 0                       : 0,
-      ctr:         ctrCol  >= 0 ? parseFloat(cols[ctrCol])   || 0                       : 0,
-      position:    posCol  >= 0 ? parseFloat(cols[posCol])   || 0                       : 0
-    };
-  }).filter(r => r.query || r.page);
-
-  // Sort by impressions
-  S.gscRows.sort((a,b)=>b.impressions-a.impressions);
-
-  // Top queries
-  S.topQueries = S.gscRows.filter(r=>r.query).slice(0, 50);
-
-  // Low CTR opportunities — high impressions, position 4-15, CTR below 3%
-  S.lowCTRQueries = S.gscRows.filter(r =>
-    r.query && r.impressions > 20 && r.position >= 4 && r.position <= 15 && r.ctr < 3
-  ).slice(0, 20);
-
-  // Near-miss queries — position 4-10 with decent impressions
-  S.nearMissQueries = S.gscRows.filter(r =>
-    r.query && r.impressions > 10 && r.position >= 4 && r.position <= 10
-  ).slice(0, 15);
-
-  // Extract business location from queries if possible
-  if (!S.location && S.topQueries.length) {
-    const locWords = ['near','in ','around '];
-    for (const q of S.topQueries) {
-      for (const lw of locWords) {
-        const idx = q.query.toLowerCase().indexOf(lw);
-        if (idx > -1) { S.location = q.query.slice(idx + lw.length).trim(); break; }
-      }
-      if (S.location) break;
-    }
-  }
-}
-
-// ─────────────────────────────────────────
-// DATA PREVIEW RENDERING
-// ─────────────────────────────────────────
-function updateDataSummary() {
-  const hasAny = S.sitemapPages.length || S.gscRows.length || S.gridStats.points;
-  if (!hasAny) return;
-  document.getElementById('data-summary').style.display = 'block';
-  document.getElementById('ds-pages').textContent    = S.sitemapPages.length || '—';
-  document.getElementById('ds-queries').textContent  = S.gscRows.length || '—';
-  document.getElementById('ds-grid').textContent     = S.gridStats.points || '—';
-  document.getElementById('ds-avg').textContent      = S.gridStats.avg ? 'avg rank #'+S.gridStats.avg : '—';
-  document.getElementById('ds-category').textContent = S.category || S.primaryService || '—';
-  document.getElementById('ds-location').textContent = S.location || '—';
-  // GBP data
-  if (document.getElementById('ds-rating')) {
-    const ratingEl = document.getElementById('ds-rating');
-    ratingEl.textContent = S.gbpRating ? S.gbpRating+'★' : '—';
-    ratingEl.className = 'metric-val ' + (parseFloat(S.gbpRating)>=4.5?'good':parseFloat(S.gbpRating)>=4.0?'ok':'bad');
-    document.getElementById('ds-reviews').textContent = S.gbpReviewCount ? S.gbpReviewCount+' reviews' : '— reviews';
-  }
-  if (document.getElementById('ds-nap')) {
-    const napEl = document.getElementById('ds-nap');
-    if (S.gbpPhone && S.detectedPhone) {
-      const match = S.gbpPhone.replace(/\D/g,'').slice(-10) === S.detectedPhone.replace(/\D/g,'').slice(-10);
-      napEl.textContent = match ? '✓ Match' : '✗ Mismatch';
-      napEl.className = 'metric-val ' + (match ? 'good' : 'bad');
-    } else {
-      napEl.textContent = S.gbpShareUrl ? 'Check' : 'No GBP';
-      napEl.className = 'metric-val ok';
-    }
-  }
-  document.getElementById('client-indicator').textContent = S.businessName || 'Client loaded';
-}
-
-function renderDataPreview() {
-  // Pages table
-  if (S.sitemapPages.length) {
-    document.getElementById('dp-pages').textContent = S.sitemapPages.length;
-    document.getElementById('dp-service-pages').textContent = S.crawlData.servicePages ? S.crawlData.servicePages.length : '—';
-    document.getElementById('dp-ctc').textContent = S.hasClickToCall ? '✓ Yes' : '✗ No';
-    document.getElementById('dp-ctc').className = 'metric-val ' + (S.hasClickToCall ? 'good' : 'bad');
-    document.getElementById('dp-speed').textContent = S.loadTime ? Math.round(S.loadTime/100)/10+'s' : '—';
-    document.getElementById('dp-speed').className = 'metric-val ' + (S.loadTime < 2000 ? 'good' : S.loadTime < 4000 ? 'ok' : 'bad');
-
-    // Schema badge
-    const schemaBadge = document.getElementById('schema-badge');
-    if (S.schemaTypes.length) {
-      const hasLocal = S.schemaTypes.some(t=>t.toLowerCase().includes('local')||t.toLowerCase().includes('business'));
-      schemaBadge.textContent = 'Schema: ' + S.schemaTypes.slice(0,3).join(', ');
-      schemaBadge.className = 'tag ' + (hasLocal ? 'tag-green' : 'tag-amber');
-    } else {
-      schemaBadge.textContent = 'Schema: none detected';
-      schemaBadge.className = 'tag tag-red';
-    }
-
-    const allPages = [...new Set([...S.sitemapPages])].slice(0, 40);
-    const serviceSet = new Set((S.crawlData.servicePages||[]).map(u=>u));
-    document.getElementById('pages-table').innerHTML = `
-      <table class="data-table">
-        <thead><tr><th>Page URL</th><th>Type</th></tr></thead>
-        <tbody>${allPages.map(url => {
-          const slug = url.split('/').filter(Boolean).pop() || 'home';
-          const type = serviceSet.has(url) ? '<span class="tag tag-blue">service</span>' :
-                       (S.crawlData.locationPages||[]).includes(url) ? '<span class="tag tag-green">location</span>' :
-                       (S.crawlData.blogPages||[]).includes(url) ? '<span class="tag tag-muted">blog</span>' :
-                       '<span class="tag tag-muted">other</span>';
-          return `<tr><td style="font-family:var(--mono);color:var(--muted);font-size:11px;">${slug}</td><td>${type}</td></tr>`;
-        }).join('')}</tbody>
-      </table>`;
-  }
-
-  // GSC table
-  if (S.topQueries.length) {
-    const opps = S.lowCTRQueries.length;
-    document.getElementById('gsc-opportunity-count').textContent = opps + ' low-CTR opportunities';
-    document.getElementById('gsc-opportunity-count').className = 'tag ' + (opps > 5 ? 'tag-amber' : 'tag-green');
-
-    document.getElementById('gsc-table').innerHTML = `
-      <table class="data-table">
-        <thead><tr><th>Query</th><th>Clicks</th><th>Impr</th><th>CTR</th><th>Pos</th><th>Signal</th></tr></thead>
-        <tbody>${S.topQueries.slice(0,20).map(r => {
-          const signal = r.position <= 3 ? '<span class="tag tag-green">top 3</span>' :
-                         r.position <= 10 ? '<span class="tag tag-amber">near miss</span>' :
-                         r.ctr < 1 ? '<span class="tag tag-red">low CTR</span>' :
-                         '<span class="tag tag-muted">tracking</span>';
-          return `<tr>
-            <td style="font-family:var(--mono);font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.query||r.page}</td>
-            <td style="font-family:var(--mono);font-size:11px;">${r.clicks}</td>
-            <td style="font-family:var(--mono);font-size:11px;">${r.impressions}</td>
-            <td style="font-family:var(--mono);font-size:11px;">${(r.ctr||0).toFixed(1)}%</td>
-            <td style="font-family:var(--mono);font-size:11px;">${(r.position||0).toFixed(1)}</td>
-            <td>${signal}</td>
-          </tr>`;
-        }).join('')}</tbody>
-      </table>`;
-  }
-
-  // Grid metrics
-  if (S.gridStats.points) {
-    const avg = parseFloat(S.gridStats.avg);
-    document.getElementById('gp-avg').textContent = '#'+S.gridStats.avg;
-    document.getElementById('gp-avg').className = 'metric-val '+(avg<=4?'good':avg<=7?'ok':'bad');
-    document.getElementById('gp-top3').textContent = S.gridStats.top3pct+'%';
-    document.getElementById('gp-top3').className = 'metric-val '+(S.gridStats.top3pct>=60?'good':S.gridStats.top3pct>=30?'ok':'bad');
-    document.getElementById('gp-best').textContent = '#'+S.gridStats.best;
-    document.getElementById('gp-worst').textContent = '#'+S.gridStats.worst;
-
-    const gaps=['High','Med','Low','Low','Med'], colors=['var(--red)','var(--amber)','var(--accent)','var(--accent)','var(--muted)'];
-    document.getElementById('dp-competitors').innerHTML = S.competitors.slice(0,5).map((c,i) => `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
-        <div>
-          <div style="font-size:13px;font-weight:500;color:var(--text);">${c.name}</div>
-          <div style="font-size:11px;color:var(--muted);font-family:var(--mono);">Avg rank #${c.avgRank}</div>
-        </div>
-        <span class="pill" style="background:${colors[i]||'var(--muted)'}20;color:${colors[i]||'var(--muted)'};font-size:11px;">${gaps[i]||'—'} gap</span>
-      </div>`).join('');
-  }
-}
-
-function checkReady() {
-  const hasData = S.sitemapPages.length > 0 || S.csvText.length > 0 || S.gscRows.length > 0;
-  document.getElementById('run-btn').disabled = !hasData;
-  if (hasData && S.sitemapPages.length > 0 || S.gscRows.length > 0 || S.gridStats.points > 0) {
-    updateDataSummary();
-  }
-}
-
-// ─────────────────────────────────────────
-// BUILD DIAGNOSTIC CONTEXT
-// ─────────────────────────────────────────
-function buildContext() {
-  const biz      = S.businessName || 'the client business';
-  const svc      = S.category || S.primaryService || 'local service business';
-  const loc      = S.location || 'local area';
-  const site     = S.websiteUrl || 'website not provided';
-  const comps    = S.competitors.map(c=>c.name).join(', ') || 'unknown';
-  const grid     = S.gridStats.points ?
-    `avg rank #${S.gridStats.avg}, best #${S.gridStats.best}, worst #${S.gridStats.worst}, top-3 coverage ${S.gridStats.top3pct}% of ${S.gridStats.points} grid points` :
-    'grid data not available';
-
-  // Website data
-  const pageCount        = S.sitemapPages.length;
-  const servicePageCount = (S.crawlData.servicePages||[]).length;
-  const servicePageList  = (S.crawlData.servicePages||[]).slice(0,20).map(u=>u.split('/').filter(Boolean).pop()).join(', ') || 'none detected';
-  const locationPages    = (S.crawlData.locationPages||[]).length;
-  const schema           = S.schemaTypes.length ? S.schemaTypes.join(', ') : 'NONE DETECTED';
-  const ctc              = S.hasClickToCall ? 'YES — click-to-call present' : 'NO — missing click-to-call';
-  const speed            = S.loadTime ? Math.round(S.loadTime/100)/10+'s estimated load time' : 'unknown';
-
-  // GSC data
-  const topQueriesText = S.topQueries.slice(0,20).map(r =>
-    `"${r.query||r.page}" — ${r.clicks} clicks, ${r.impressions} impr, pos ${(r.position||0).toFixed(1)}, CTR ${(r.ctr||0).toFixed(1)}%`
-  ).join('\n') || 'GSC data not available';
-
-  const lowCTRText = S.lowCTRQueries.slice(0,10).map(r =>
-    `"${r.query}" — pos ${(r.position||0).toFixed(1)}, ${r.impressions} impr, ${(r.ctr||0).toFixed(1)}% CTR`
-  ).join('\n') || 'none identified';
-
-  const nearMissText = S.nearMissQueries ? S.nearMissQueries.slice(0,10).map(r =>
-    `"${r.query}" — pos ${(r.position||0).toFixed(1)}, ${r.impressions} impressions`
-  ).join('\n') || 'none' : 'none';
-
-  const gbpInfo = [
-    S.gbpShareUrl ? `GBP Share URL: ${S.gbpShareUrl}` : 'GBP URL not provided',
-    S.gbpPhone    ? `GBP Phone: ${S.gbpPhone}`         : 'GBP phone not extracted',
-    S.gbpAddress  ? `GBP Address: ${S.gbpAddress}`     : 'GBP address not extracted',
-    S.gbpCategory ? `GBP Category: ${S.gbpCategory}`   : '',
-    S.gbpRating   ? `GBP Rating: ${S.gbpRating} stars` : 'GBP rating not found',
-    S.gbpReviewCount ? `GBP Reviews: ${S.gbpReviewCount}` : 'GBP review count not found',
-    S.cid         ? `CID: ${S.cid}`                    : 'CID not detected',
-    S.detectedPhone ? `Website Phone: ${S.detectedPhone}` : 'Website phone not detected'
-  ].filter(Boolean).join(' | ');
-  const mapsInfo = gbpInfo;
-
-  // NAP match check
-  const napMatch = S.gbpPhone && S.detectedPhone ?
-    (S.gbpPhone.replace(/\D/g,'').slice(-10) === S.detectedPhone.replace(/\D/g,'').slice(-10) ? 'NAP PHONE MATCH ✓' : 'NAP PHONE MISMATCH ✗ — GBP: '+S.gbpPhone+' vs Site: '+S.detectedPhone) :
-    'NAP phone comparison not available';
-
-  return {biz, svc, loc, site, comps, grid,
-          pageCount, servicePageCount, servicePageList, locationPages,
-          schema, ctc, speed, topQueriesText, lowCTRText, nearMissText, mapsInfo, napMatch, gbpInfo};
-}
-
-// ─────────────────────────────────────────
-// RUN DIAGNOSTICS
-// ─────────────────────────────────────────
+// ── MAIN DIAGNOSTICS RUNNER ────────────────────────────────────────
 async function startDiagnostics() {
-  // Auto-crawl if URL entered but crawl not done yet
-  const url = document.getElementById('website-url').value.trim();
-  if (url && S.sitemapPages.length === 0) {
-    await crawlWebsite();
-  }
+  const name    = document.getElementById('biz-name').value.trim();
+  const service = document.getElementById('biz-service').value.trim();
+  const loc     = document.getElementById('biz-location').value.trim();
+  const website = document.getElementById('biz-website').value.trim() || 'not provided';
+  const compList = state.competitors.length
+    ? state.competitors.slice(0,5).map(c=>c.name).join(', ')
+    : 'discover the top 5 competitors yourself';
+  const csvNote = state.csvData
+    ? `Grid CSV provided — top competitors by rank appearances: ${compList}`
+    : 'No grid CSV. Identify likely top local competitors for this service and location.';
 
-  // If still no business name, extract from URL
-  if (!S.businessName && url) S.businessName = fromUrl(url);
+  state.biz = { name, service, loc, website };
+  state.outputs = {};
+  state.fixItems = [];
+  state.running = true;
 
-  goTo('analysis');
-  renderSteps();
-  renderDataSourcesActive();
+  showScreen('analysis');
+  buildSteps();
+  renderCompetitors();
   document.getElementById('output-box').textContent = '';
-  document.getElementById('topbar-badge').innerHTML = '<span class="pill pill-amber"><span class="pill-dot"></span>Running</span>';
+  document.getElementById('status-badge').innerHTML = '<span class="pill pill-running"><span class="pill-dot"></span>Running</span>';
 
-  const ctx = buildContext();
+  const FIX_INSTRUCTION = `
+
+After your analysis, output a FIX PLAN section using EXACTLY this format for every issue found:
+
+ISSUE: [short descriptive name of the issue]
+PRIORITY: High
+[or PRIORITY: Medium or PRIORITY: Low]
+STEPS:
+1. [specific action — tool, URL, or setting to use]
+2. [next specific action]
+3. [continue until the issue is fully resolved]
+
+Output at least 2 issues with full fix steps. Be specific — include exact fields to edit, exact schema properties to add, exact tools to use. Do not use generic instructions.`;
 
   const diagnostics = [
     {
-      id: 'services_gap',
-      label: 'Services gap audit — REAL DATA',
-      prompt: `You are a local SEO expert. This is a DATA-DRIVEN audit using real website crawl data.
+      id: 'technical',
+      label: 'Technical Crawl & Indexation',
+      search: true,
+      prompt: `You are a technical SEO expert. Search the web to find real data about ${name}'s website at ${website}. Use web search to look up: "${website} site:${website}" and "${name} ${loc} site issues" to find any crawl or indexation problems.
 
-BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
-WEBSITE: ${ctx.site}
+Then audit these technical ranking blockers for ${website}:
 
-REAL WEBSITE DATA:
-- Total pages found: ${ctx.pageCount}
-- Service pages detected: ${ctx.servicePageCount}
-- Service page slugs found: ${ctx.servicePageList}
-- Location pages: ${ctx.locationPages}
-- Schema markup present: ${ctx.schema}
+1. ROBOTS.TXT — Search for ${website}/robots.txt. Is it accessible? Are any critical paths blocked (service pages, location pages, sitemap)? Is Googlebot specifically disallowed anywhere?
+2. SITEMAP — Search for ${website}/sitemap.xml and ${website}/sitemap_index.xml. Does it exist? Is it submitted in Google Search Console? Are all key service and location pages included? Any 404s or redirect URLs listed in the sitemap?
+3. REDIRECT CHAINS — Are there redirect chains (A→B→C) on key pages? Does the www vs non-www version redirect cleanly? Does HTTP redirect to HTTPS without a chain?
+4. NOINDEX TAGS — Are any important pages accidentally noindexed? Is there a pattern of noindex on category or location pages?
+5. CANONICAL TAGS — Are canonical tags present and pointing to the correct URL? Any self-referencing canonicals on paginated or duplicate content pages?
+6. CRAWL BUDGET ISSUES — Does the site have large numbers of thin or duplicate parameter-based URLs consuming crawl budget?
+7. HTTPS / SSL — Is the SSL certificate valid and not expiring soon? Are all internal links HTTPS not HTTP?
+8. DUPLICATE CONTENT — Are there duplicate versions of pages accessible (www/non-www, http/https, trailing slash/no slash)?
+9. BROKEN LINKS — Any known 404 pages for key service or location URLs?
+10. GOOGLE SEARCH CONSOLE SIGNALS — Based on what you can find, are there any known manual actions, coverage errors, or indexation drops for this domain?
 
-GSC TOP QUERIES (real search data):
-${ctx.topQueriesText}
-
-This is call killer #1: services on the GBP that have NO corresponding page on the website.
-
-Based on the REAL service pages found vs what a complete ${ctx.svc} website needs:
-1. List ALL expected service pages for a ${ctx.svc} business
-2. For each: is it PRESENT in the crawl data, MISSING, or PARTIAL?
-3. Services gap score: 1-10 (10 = no gap)
-4. Top 5 missing pages ranked by call volume potential — include target keyword and call intent (high/med/low)
-5. Which GSC queries have NO matching service page? (these are leaking impressions to competitors)
-6. Schema gap: ${ctx.schema === 'NONE DETECTED' ? 'CRITICAL — no schema found, list exactly what needs to be added' : 'Schema types found: ' + ctx.schema + ' — what is missing?'}`
+Overall technical crawl health score: 1-10.${FIX_INSTRUCTION}`
     },
     {
-      id: 'entity_bleed',
-      label: 'Entity bleed detection — REAL DATA',
-      prompt: `You are a local SEO expert specializing in entity optimization.
+      id: 'speed',
+      label: 'Core Web Vitals & Page Speed',
+      search: true,
+      prompt: `You are a Core Web Vitals and page speed expert. Search the web for real performance data on ${website}. Search for: "PageSpeed Insights ${website}" and "${name} page speed score" and "web.dev measure ${website}".
 
-BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
-WEBSITE: ${ctx.site}
-${ctx.mapsInfo}
-SCHEMA DETECTED: ${ctx.schema}
-CLICK-TO-CALL: ${ctx.ctc}
+Audit these speed and performance ranking factors:
 
-REAL DATA INDICATORS:
-- Schema present: ${ctx.schema}
-- CID detected: ${S.cid || 'not detected'}
-- GBP Phone: ${S.gbpPhone || 'not extracted'}
-- Website Phone: ${S.detectedPhone || 'not found in crawl'}
-- NAP Check: ${ctx.napMatch}
-- GBP Rating: ${S.gbpRating || 'unknown'} stars | Reviews: ${S.gbpReviewCount || 'unknown'}
-- GBP Address: ${S.gbpAddress || 'not extracted'}
+1. LARGEST CONTENTFUL PAINT (LCP) — Target is under 2.5s. What is the likely LCP element (hero image, H1, banner)? Is the LCP image lazy-loaded (which kills LCP)? Is it properly preloaded?
+2. CUMULATIVE LAYOUT SHIFT (CLS) — Target is under 0.1. Are there images without defined dimensions? Injected content above the fold? Web fonts causing layout shifts?
+3. INTERACTION TO NEXT PAINT (INP) — Target is under 200ms. Are there heavy JavaScript bundles blocking interactivity? Third-party scripts (chat widgets, tracking pixels) delaying main thread?
+4. TIME TO FIRST BYTE (TTFB) — Target is under 800ms. Is the site on shared hosting, VPS, or managed WordPress? Is there server-side caching? Is a CDN in use?
+5. MOBILE PERFORMANCE — Mobile score vs desktop score. Is the mobile experience degraded by unoptimized images or render-blocking resources?
+6. IMAGE OPTIMIZATION — Are images served in WebP or AVIF format? Are images appropriately sized for viewport? Is lazy loading applied correctly (not on above-fold images)?
+7. RENDER-BLOCKING RESOURCES — Are CSS and JS files blocking first paint? Are critical CSS styles inlined?
+8. CACHING — Are static assets cached with appropriate cache headers? Is browser caching configured?
+9. THIRD-PARTY SCRIPTS — Which third-party scripts are loaded (Google Analytics, GTM, chat, reviews)? Are any loaded synchronously in the head?
+10. HOSTING INFRASTRUCTURE — Based on what you can find, what hosting provider is being used? Is it appropriate for the site's traffic needs?
 
-Entity bleed kills rankings and calls. Analyze:
-1. Entity bleed risk score: 1-10 (10 = clean entity)
-2. Is the CID embedded on the website? (CID: ${S.cid || 'unknown'}) — critical for entity reinforcement
-3. Schema mesh assessment: ${ctx.schema === 'NONE DETECTED' ? 'CRITICAL — zero schema. Build complete LocalBusiness + Service + FAQ schema mesh' : 'Current: ' + ctx.schema + ' — gaps and fixes?'}
-4. NAP consistency risks specific to "${ctx.biz}" — what variations could be indexed?
-5. Business name similarity to competitors — could Google confuse this entity?
-6. Category drift risk for ${ctx.svc} businesses
-7. Top 3 entity fixes with exact implementation steps
-8. Does the website URL in the Maps listing match ${ctx.site}?`
+Overall page speed / Core Web Vitals score: 1-10.${FIX_INSTRUCTION}`
     },
     {
-      id: 'map_pack',
-      label: 'Map pack position audit — REAL GRID DATA',
-      prompt: `You are a local SEO expert focused on map pack rankings.
+      id: 'onpage',
+      label: 'On-Page Technical SEO',
+      search: true,
+      prompt: `You are an on-page SEO expert. Search the web to find the actual homepage and key service pages for ${name} at ${website}. Search for: "site:${website}" to see indexed pages and "${name} ${service} ${loc}" to see how the site appears in search results.
 
-BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
-COMPETITORS: ${ctx.comps}
+Audit every on-page technical ranking factor:
 
-REAL GRID DATA: ${ctx.grid}
+1. TITLE TAGS — Is the homepage title tag in the format: Primary Keyword | Business Name | City, State? Are title tags under 60 characters? Are any title tags duplicated across pages? Are service pages missing the city modifier in the title?
+2. META DESCRIPTIONS — Are meta descriptions present on all key pages? Are they under 160 characters? Do they contain a CTA and primary keyword? Are any duplicated?
+3. H1 TAGS — Does each page have exactly one H1? Does the H1 contain the primary keyword and city? Are H1s unique across pages? Any pages with multiple H1s or no H1?
+4. HEADER HIERARCHY — Is H2/H3 structure logical and keyword-rich? Do headers use LSI keywords and related terms that reinforce topical authority?
+5. IMAGE ALT TAGS — Are all images given descriptive alt text that includes service + location keywords where appropriate? Are any alt tags empty or stuffed with keywords?
+6. KEYWORD CANNIBALIZATION — Are multiple pages targeting the same primary keyword (e.g. two pages both optimized for "garage door repair Belleville IL")? This splits authority and suppresses both pages.
+7. THIN CONTENT — Are there pages under 400 words? WordPress default pages (Sample Page, Privacy Policy stubs) accidentally indexed?
+8. URL STRUCTURE — Are URLs clean, hyphenated, and keyword-rich (e.g. /garage-door-spring-repair-belleville-il/)? Are there parameter-based or session ID URLs?
+9. INTERNAL LINK ANCHOR TEXT — Are internal links using keyword-rich anchor text or generic text like "click here" and "read more"? Generic anchors waste link equity.
+10. OUTBOUND LINKS — Does the site link out to authoritative sources (manufacturer sites, licensing boards, Google Maps listing)? Outbound links to trusted sources reinforce topical relevance.
+11. PAGE COUNT AND DEPTH — How many pages are indexed? Are key pages within 3 clicks of the homepage? Are any important pages buried too deep in the architecture?
 
-GSC POSITION DATA (real rankings):
-${ctx.topQueriesText}
-
-NEAR-MISS QUERIES (positions 4-10 — closest to top 3):
-${ctx.nearMissText}
-
-Positions 1-3 drive calls. Position 4+ is near-invisible.
-
-Based on REAL data:
-1. Map pack score: 1-10
-2. What is the top-3 coverage percentage telling us? (${S.gridStats.top3pct || 0}% — good benchmark is 70%+)
-3. Which specific query types are ranking 4-10 and could be pushed to top 3 fastest?
-4. Grid weakness analysis: based on ${S.gridStats.worst ? 'worst rank #'+S.gridStats.worst : 'available data'}, which service areas need the most work?
-5. What are competitors (${ctx.comps}) likely doing better?
-6. Top 5 specific actions to move the needle in 30 days
-7. Which near-miss queries should be prioritized for content and GBP optimization?`
+Overall on-page technical score: 1-10.${FIX_INSTRUCTION}`
     },
     {
-      id: 'call_path',
-      label: 'Call conversion path audit — REAL CRAWL',
-      prompt: `You are a local SEO and conversion expert.
+      id: 'crawl',
+      label: 'Site Crawl + Entity Signals',
+      prompt: `You are an expert local SEO auditor. Analyze the website for ${name}, a ${service} business in ${loc}. Website: ${website}.
 
-BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
-WEBSITE: ${ctx.site}
-
-REAL CRAWL DATA:
-- Click-to-call present: ${ctx.ctc}
-- Page load time: ${ctx.speed}
-- Total pages: ${ctx.pageCount}
-- Service pages: ${ctx.servicePageCount}
-- Schema: ${ctx.schema}
-- CID embedded: ${S.cid ? 'CID found: '+S.cid : 'CID NOT found on site'}
-
-GSC CTR DATA — LOW CTR OPPORTUNITIES:
-${ctx.lowCTRText}
-
-A broken call path kills calls even with good rankings.
-
-Based on REAL data:
-1. Call path score: 1-10
-2. Click-to-call assessment: ${S.hasClickToCall ? 'Present — but is it above the fold on mobile? In the header?' : 'CRITICAL MISS — no tel: link found in crawl. This alone is killing calls.'}
-3. Page speed impact: ${ctx.speed} — what does this mean for mobile callers?
-4. CID embedding status: ${S.cid ? 'CID is available — is it embedded on the site for entity reinforcement?' : 'No CID detected — this weakens the entity signal loop'}
-5. Low CTR analysis: these queries have impressions but no clicks — what title/meta changes would fix them?
-6. Which service pages are missing and directly costing calls?
-7. GBP → website landing page alignment — is the right page getting the traffic?
-8. Top 3 call path fixes with estimated call lift`
+Audit the site's entity architecture for local SEO:
+1. Is the site's primary entity clear and consistent (business name, service type, location)?
+2. Does the homepage establish the core service + location entity in the H1, title tag, and first 100 words?
+3. Are service pages structured with single-purpose entity focus or are they too broad?
+4. Does the site use location-specific language naturally throughout?
+5. Are there neighborhood or city-specific pages, or is location coverage thin?
+6. Internal linking: do pages link to each other using entity-rich anchor text?
+7. What service pages appear to be missing based on typical ${service} businesses?
+8. Overall entity coherence score: 1-10 and why.${FIX_INSTRUCTION}`
     },
     {
-      id: 'reviews',
-      label: 'Review velocity audit',
-      prompt: `You are a local SEO expert focused on reviews as a call driver.
+      id: 'compete',
+      label: 'Competitor Gap Analysis',
+      prompt: `You are an expert local SEO strategist. Context: ${csvNote}
 
-BUSINESS: ${ctx.biz} | CATEGORY: ${ctx.svc} | LOCATION: ${ctx.loc}
-COMPETITORS: ${ctx.comps}
-REAL GBP DATA:
-- Rating: ${S.gbpRating ? S.gbpRating+' stars' : 'not extracted — estimate from business age/type'}
-- Review count: ${S.gbpReviewCount ? S.gbpReviewCount+' reviews' : 'not extracted'}
-- ${S.gbpShareUrl ? 'GBP listing provided' : 'GBP URL not provided'}
-
-GSC brand queries (indicator of review-driven trust):
-${S.topQueries.filter(r=>r.query&&r.query.toLowerCase().includes(ctx.biz.toLowerCase().split(' ')[0])).slice(0,5).map(r=>`"${r.query}" — ${r.clicks} clicks`).join('\n') || 'No brand queries detected'}
-
-Reviews drive calls in two ways: rankings AND conversion once someone finds the listing.
-
-Analyze:
-1. Review velocity score: 1-10
-2. For ${ctx.svc} businesses in ${ctx.loc}, what is the competitive review threshold for top 3?
-3. What monthly review velocity do competitors likely maintain?
-4. Does the absence of brand queries in GSC suggest weak brand recognition / low review count?
-5. Review recency impact for this category — how quickly do old reviews lose weight?
-6. Top 3 review acquisition strategies specific to ${ctx.svc}
-7. Response rate importance and recommended approach
-8. Star rating threshold where calls drop significantly for ${ctx.svc}`
+For ${name} (${service} in ${loc}), analyze the competitive landscape:
+1. What are the likely top 5 competitors dominating the local pack?
+2. What service keywords do competitors likely rank for that ${name} may be missing?
+3. What location modifiers (neighborhoods, zip codes, nearby cities) should be targeted?
+4. If only one competitor covers a specific service like "patio cleaning" for a pressure washer or "cable replacement" for a garage door company, what's the opportunity?
+5. What content angles could create immediate competitive separation?
+6. What is the realistic timeline to compete given the competitive density?
+7. Identify 5-8 specific service + location keyword combinations that represent low-competition opportunities.${FIX_INSTRUCTION}`
     },
     {
-      id: 'lsa_ai',
-      label: 'LSA & AI Overview eligibility',
-      prompt: `LSA and AI Overview analysis for ${ctx.biz} (${ctx.svc}, ${ctx.loc}).
+      id: 'gmb',
+      label: 'GMB Profile Audit',
+      prompt: `You are an expert Google Business Profile auditor. Audit the GMB setup for ${name}, a ${service} business in ${loc}. Website: ${website}.
 
-DATA: ${ctx.grid} · schema: ${ctx.schema} · GSC impressions: ${S.topQueries.slice(0,5).reduce((a,r)=>a+r.impressions,0)}
+Evaluate every GMB ranking factor:
+1. Primary category — is it optimally set for the highest-value service? What should it be?
+2. Secondary categories — what 3-5 additional categories should be added?
+3. Business description — does it contain the primary keyword + location naturally? What should it say?
+4. Services section — are all service offerings listed with individual descriptions?
+5. GMB website URL — should point to the primary service page, not just the homepage
+6. Photos: quantity, quality, geo-tagged originals vs social exports?
+7. GMB posts — frequency, CTA usage, keyword inclusion?
+8. Q&A section — are common service questions populated with keyword-rich answers?
+9. Review velocity — is the business actively generating reviews? What's the ask strategy?
+10. NAP consistency — name, address, phone format identical to website and citations?${FIX_INSTRUCTION}`
+    },
+    {
+      id: 'schema',
+      label: 'Schema / Structured Data Audit',
+      prompt: `You are an expert in structured data and local SEO schema implementation. Audit the schema setup for ${name}, a ${service} business in ${loc}. Website: ${website}.
 
-Answer concisely:
-1. LSA eligibility score 1-10 — is ${ctx.svc} Google Guaranteed eligible?
-2. AI Overview threat — are ${ctx.svc} queries being answered by AI without clicks?
-3. Top 2 schema additions to get cited in AI answers
-4. Estimated LSA CPL for ${ctx.svc} in this market
-5. Recommendation: LSA now or organic first? ROI case in 3 sentences
-6. Overall LSA & AI score: 1-10`
+This is a critical ranking factor — structured data is the technical bridge between the website and the GMB entity. Audit:
+
+1. LocalBusiness schema — is it present? Is @type correct for this business (e.g. HomeAndConstructionBusiness, ProfessionalService)? Are all required properties populated: name, address, telephone, url, openingHours, geo (latitude/longitude)?
+2. Service schema — is there individual Service schema on each service page with: name, description, serviceType, areaServed, provider linking back to the LocalBusiness?
+3. FAQPage schema — are FAQs present on key pages with properly structured Question/Answer pairs that match search intent?
+4. Review/AggregateRating schema — is review data structured so Google can display star ratings in search results?
+5. BreadcrumbList schema — is site hierarchy marked up for cleaner SERP display?
+6. geo coordinates — are lat/long in the schema pinned to the exact business address, not just the city center?
+7. areaServed — are service area cities and zip codes listed in the schema?
+8. sameAs links — does the schema link out to GMB, Facebook, LinkedIn, Yelp, and other brand profiles?
+9. Is there any conflicting or duplicate schema that could confuse Google's entity graph?
+10. Overall schema completeness score: 1-10 and why.
+
+Be extremely specific about what properties are likely missing and what values they should contain.${FIX_INSTRUCTION}`
+    },
+    {
+      id: 'entity',
+      label: 'Entity Health Check',
+      prompt: `You are an expert local SEO entity auditor. Evaluate the entity health for ${name}, a ${service} business in ${loc}.
+
+Entity health determines how consistently Google understands who this business is across the web:
+1. NAP consistency — is the business name, address, and phone number spelled and formatted identically everywhere? What variations cause entity confusion?
+2. Top citation sources — which directories (Yelp, BBB, Angi, HomeAdvisor, Houzz, etc.) should have this business listed for the ${service} industry?
+3. Citation gaps — what are the 10 most important missing citations for this business type and location?
+4. Brand mentions — are there online mentions of the business name without a link (unlinked mentions) that should be converted?
+5. Duplicate listings — are there likely duplicate GMB or directory listings that suppress the primary listing?
+6. Social profile consistency — do all social profiles use the exact same NAP, category, and description as the GMB?
+7. Google Knowledge Panel — does one exist? Is it claimed and populated?
+8. Entity disambiguation — could Google confuse this business with another entity of the same or similar name?
+9. Overall entity health score: 1-10.${FIX_INSTRUCTION}`
+    },
+    {
+      id: 'content',
+      label: 'Content + Topical Authority',
+      prompt: `You are an expert local SEO content strategist. Audit the content and topical authority for ${name}, a ${service} business in ${loc}. Website: ${website}.
+
+Topical authority determines whether Google sees this site as the definitive local resource for the service:
+1. Service page coverage — for a typical ${service} business, list 8-12 specific service pages that should exist. Which ones are likely missing?
+2. Each service page should have: 800+ words, primary keyword in H1+title+first 100 words, FAQ section, schema, internal links to/from related pages. What's likely missing?
+3. Location page strategy — beyond the main city, should there be neighborhood pages, zip code pages, or nearby city pages? What's the priority list?
+4. Blog/content strategy — what educational content would establish topical authority? List 5 specific article titles.
+5. Internal linking audit — are service pages linked from the homepage? Do neighborhood pages link to service pages using entity-rich anchor text?
+6. Thin content — are there pages under 300 words that are hurting the site's perceived quality?
+7. Keyword cannibalization — are multiple pages targeting the same keyword, splitting authority?
+8. Overall topical authority score: 1-10.${FIX_INSTRUCTION}`
     },
     {
       id: 'social',
-      label: 'Social syndication for call signals',
-      prompt: `Social syndication plan for ${ctx.biz} (${ctx.svc}, ${ctx.loc}). Be very brief.
-Data: ${ctx.servicePageCount} service pages, grid avg #${S.gridStats.avg||'?'}, CTC: ${S.hasClickToCall?'YES':'NO'}
-Give: top 2 platforms + why, GMB→social workflow in 2 sentences, posting cadence, 1 post template with call CTA, social score 1-10.`
+      label: 'Social Syndication Strategy',
+      prompt: `You are an expert in local SEO social syndication. Build a social strategy for ${name}, a ${service} business in ${loc}. Website: ${website}.
+
+Social syndication creates a signal cluster that reinforces the GMB entity and website authority:
+1. Which platforms should be prioritized for this specific business type and why?
+2. Content syndication workflow: how does a GMB post get repurposed across platforms, with what link targets on the website?
+3. Posting cadence per platform (posts per week) that is sustainable for a local service business.
+4. Geotagging strategy — how should Instagram and Facebook posts be location-tagged to maximize local relevance signals?
+5. NAP enforcement — exactly how should each social profile bio be written to match GMB NAP exactly?
+6. YouTube closed-loop strategy — how does a YouTube video link to the Google Maps CID to create an internal Google signal triangle?
+7. One ready-to-use content template for each of the top 3 platforms, written specifically for ${service} businesses.
+8. How does IntelSM or a similar social automation tool fit into this workflow to make it scalable?${FIX_INSTRUCTION}`
     }
   ];
 
   let allOutput = '';
-  for (const d of diagnostics) {
-    setStep(d.id, 'active');
-    appendOut(`\n▸ ${d.label}\n${'─'.repeat(48)}\n`);
+
+  for (const diag of diagnostics) {
+    setStep(diag.id, 'active');
+    appendOut(`\n▸ ${diag.label}${diag.search ? ' [web search enabled]' : ''}\n${'─'.repeat(44)}\n`);
     try {
-      const result = await claudeAPI(d.prompt);
-      S.diagnosticOutputs[d.id] = result;
-      allOutput += `\n## ${d.label}\n${result}\n`;
+      const result = await callClaude(diag.prompt, !!diag.search);
+      state.outputs[diag.id] = result;
+      allOutput += `\n## ${diag.label}\n${result}\n`;
       appendOut(result + '\n');
-      setStep(d.id, 'done');
+      parseFixItems(diag.id, result);
+      setStep(diag.id, 'done');
     } catch(err) {
-      appendOut(`⚠ ${d.label} skipped: ${err.message}\n`);
-      setStep(d.id, 'warn');
+      appendOut(`Error: ${err.message}\n`);
+      setStep(diag.id, 'done');
     }
   }
 
-  // Always generate roadmap regardless of how many modules completed
-  S.analysisComplete = true;
-  document.getElementById('topbar-badge').innerHTML = '<span class="pill pill-green"><span class="pill-dot"></span>Complete</span>';
-  const completedModules = Object.keys(S.diagnosticOutputs).length;
-  appendOut(`\n✓ ${completedModules}/7 modules completed.\n▸ Generating roadmap...\n`);
-  try {
-    await generateRoadmap(allOutput || 'Generate a best-effort roadmap based on business type.', buildContext());
-  } catch(roadmapErr) {
-    appendOut(`\n✗ Roadmap error: ${roadmapErr.message}`);
-  }
+  // Social tab
+  document.getElementById('social-output').textContent = state.outputs['social'] || '';
+  renderSocialTab();
+
+  // Fix plan
+  renderFixPlan();
+
+  // Report sections
+  document.getElementById('rep-overview').textContent = `${state.biz.name} | ${state.biz.service} | ${state.biz.loc}\nWebsite: ${state.biz.website}`;
+  document.getElementById('rep-technical').textContent = state.outputs['technical'] || '—';
+  document.getElementById('rep-speed').textContent = state.outputs['speed'] || '—';
+  document.getElementById('rep-onpage').textContent = state.outputs['onpage'] || '—';
+  document.getElementById('rep-gmb').textContent = state.outputs['gmb'] || '—';
+  document.getElementById('rep-schema').textContent = state.outputs['schema'] || '—';
+  document.getElementById('rep-entity').textContent = state.outputs['entity'] || '—';
+  document.getElementById('rep-content').textContent = state.outputs['content'] || '—';
+  document.getElementById('rep-social').textContent = state.outputs['social'] || '—';
+
+  // Roadmap
+  await generateRoadmap(allOutput);
 }
 
-// ─────────────────────────────────────────
-// ROADMAP
-// ─────────────────────────────────────────
-async function generateRoadmap(diagnosticsText, ctx) {
-  appendOut('\n▸ Generating call-focused 90-day roadmap...\n' + '─'.repeat(48) + '\n');
+async function generateRoadmap(allOutput) {
+  appendOut('\n▸ Generating 90-day roadmap...\n' + '─'.repeat(44) + '\n');
+  const { name, service, loc } = state.biz;
+  const prompt = `Based on these full local SEO diagnostic findings for ${name} (${service} in ${loc}):
 
-  const prompt = `90-day call-focused roadmap for ${ctx.biz} (${ctx.svc}, ${ctx.loc}).
+${allOutput}
 
-KEY DATA: ${ctx.pageCount} pages, ${ctx.servicePageCount} service pages, schema: ${ctx.schema}, CTC: ${S.hasClickToCall?'YES':'NO'}, grid avg #${S.gridStats.avg||'?'}, top-3 coverage ${S.gridStats.top3pct||'?'}%, GBP rating: ${S.gbpRating||'unknown'}, reviews: ${S.gbpReviewCount||'unknown'}
-
-DIAGNOSTIC FINDINGS SUMMARY:
-${allOutput.slice(0, 3000)}
-
-Output ONLY this format:
+Build a 90-day roadmap covering GMB, website, schema, citations, and social. Use EXACTLY this format:
 
 PHASE1:
-- [action]
+- [Days 1-30 action]
 - [action]
 - [action]
 - [action]
 - [action]
 
 PHASE2:
-- [action]
+- [Days 31-60 action]
 - [action]
 - [action]
 - [action]
 - [action]
 
 PHASE3:
-- [action]
+- [Days 61-90 action]
 - [action]
 - [action]
 - [action]
 - [action]
 
 SCORES:
-services_gap: [1-10]
-entity_bleed: [1-10]
-map_pack: [1-10]
-call_path: [1-10]
-reviews: [1-10]
-lsa_ai: [1-10]
-social: [1-10]
+Technical Health: [1-10]
+Page Speed / CWV: [1-10]
+On-Page SEO: [1-10]
+GMB Optimization: [1-10]
+Website Entity: [1-10]
+Schema Completeness: [1-10]
+Topical Authority: [1-10]
+Citations: [1-10]
+Social Syndication: [1-10]
+Competitor Gap: [1-10]
 
 SUMMARY:
-[3 sentences max on what is killing calls and fix priority]
-
-FINDINGS:
-[3 bullet points — top call killers]`;
+[4-5 sentences covering the overall strategy, biggest opportunity, and expected outcome]`;
 
   try {
-    const result = await claudeAPI(prompt);
-    S.roadmapOutput = result;
-    document.getElementById('roadmap-output').textContent = result;
+    const result = await callClaude(prompt);
+    state.outputs['roadmap'] = result;
+    appendOut(result + '\n');
     parseRoadmap(result);
-    await saveRun();
-    buildReport(ctx);
   } catch(err) {
-    document.getElementById('roadmap-output').textContent = 'Error: ' + err.message;
+    appendOut('Roadmap error: ' + err.message + '\n');
   }
+
+  state.complete = true;
+  document.getElementById('status-badge').innerHTML = '<span class="pill pill-green"><span class="pill-dot"></span>Complete</span>';
+  document.getElementById('nav-fixplan').classList.add('done');
+  document.getElementById('nav-roadmap').classList.add('done');
 }
 
-function parseRoadmap(text) {
-  ['1','2','3'].forEach((n,i) => {
-    const m = text.match(new RegExp(`PHASE${n}:([\\s\\S]*?)(?=PHASE${parseInt(n)+1}:|SCORES:|$)`, 'i'));
-    if (m) {
-      const items = m[1].split('\n').map(l=>l.replace(/^[-•*]\s*/,'').trim()).filter(l=>l.length>5).slice(0,5);
-      document.getElementById(`phase${n}-items`).innerHTML = items.map(i=>`<span>${i}</span>`).join('');
-    }
-  });
-
-  S.scores = {};
-  Object.keys(SCORE_LABELS).forEach(k => {
-    const m = text.match(new RegExp(k+':\\s*(\\d+)', 'i'));
-    S.scores[k] = m ? parseInt(m[1]) : 0;
-  });
-
-  document.getElementById('score-bars').innerHTML = Object.entries(SCORE_LABELS).map(([key, label]) => {
-    const score = S.scores[key] || 0;
-    const color = score < 4 ? 'var(--red)' : score < 6 ? 'var(--amber)' : 'var(--green)';
-    return `<div class="score-row">
-      <div class="score-label">${label}</div>
-      <div class="score-bar-wrap"><div class="score-fill" style="width:${score*10}%;background:${color};"></div></div>
-      <div class="score-num">${score}/10</div>
-    </div>`;
-  }).join('');
-}
-
-function buildReport(ctx) {
-  const now = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('rp-biz').textContent = S.businessName || 'Client';
-  document.getElementById('rp-date').textContent = `Local SEO Call Diagnostic · ${now}`;
-  const summary  = S.roadmapOutput.match(/SUMMARY:([\s\S]*?)(?=FINDINGS:|$)/i);
-  const findings = S.roadmapOutput.match(/FINDINGS:([\s\S]*?)$/i);
-  document.getElementById('rp-summary').textContent  = summary  ? summary[1].trim()  : '—';
-  document.getElementById('rp-findings').textContent = findings ? findings[1].trim() : '—';
-  document.getElementById('rp-data').textContent =
-    `Website: ${ctx.pageCount} pages · ${ctx.servicePageCount} service pages · Schema: ${ctx.schema} · Click-to-call: ${S.hasClickToCall?'YES':'NO'}\n` +
-    `GBP: ${S.gbpRating ? S.gbpRating+'★' : 'rating unknown'} · ${S.gbpReviewCount ? S.gbpReviewCount+' reviews' : 'review count unknown'} · NAP: ${S.gbpPhone && S.detectedPhone ? (S.gbpPhone.replace(/\D/g,'').slice(-10)===S.detectedPhone.replace(/\D/g,'').slice(-10)?'MATCH ✓':'MISMATCH ✗') : 'not verified'}\n` +
-    `Grid: ${ctx.grid}\n` +
-    `GSC: ${S.gscRows.length} queries · Top: "${S.topQueries[0]?.query||'—'}" · Low-CTR opportunities: ${S.lowCTRQueries.length}`;
-  const p1 = document.getElementById('phase1-items').innerText;
-  const p2 = document.getElementById('phase2-items').innerText;
-  const p3 = document.getElementById('phase3-items').innerText;
-  document.getElementById('rp-roadmap').textContent =
-    `Phase 1 — Fix the Leaks (Days 1–30):\n${p1}\n\n` +
-    `Phase 2 — Build Authority (Days 31–60):\n${p2}\n\n` +
-    `Phase 3 — Dominate the Pack (Days 61–90):\n${p3}`;
-}
-
-// ─────────────────────────────────────────
-// SUPABASE
-// ─────────────────────────────────────────
-async function saveRun() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return;
-  try {
-    const payload = {
-      business_name:       S.businessName,
-      website_url:         S.websiteUrl,
-      primary_service:     S.category || S.primaryService,
-      location:            S.location,
-      grid_stats:          S.gridStats,
-      competitors:         S.competitors,
-      gsc_summary: {
-        total_queries:     S.gscRows.length,
-        top_query:         S.topQueries[0]?.query || '',
-        low_ctr_count:     S.lowCTRQueries.length,
-        avg_position:      S.topQueries.length ? (S.topQueries.slice(0,10).reduce((a,r)=>a+r.position,0)/Math.min(10,S.topQueries.length)).toFixed(1) : 0
-      },
-      site_summary: {
-        total_pages:       S.sitemapPages.length,
-        service_pages:     (S.crawlData.servicePages||[]).length,
-        schema_types:      S.schemaTypes,
-        has_ctc:           S.hasClickToCall,
-        load_time_ms:      S.loadTime
-      },
-      diagnostic_outputs:  S.diagnosticOutputs,
-      roadmap_output:      S.roadmapOutput,
-      scores:              S.scores,
-      run_date:            new Date().toISOString()
-    };
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/diagnostic_runs`, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'return=representation'},
-      body: JSON.stringify(payload)
-    });
-    if (res.ok) {
-      document.getElementById('topbar-badge').innerHTML = '<span class="pill pill-green"><span class="pill-dot"></span>Saved ✓</span>';
-    }
-  } catch(err) { console.error('Save error:', err); }
-}
-
-async function loadHistory() {
-  const el = document.getElementById('history-list');
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    el.innerHTML = '<div class="alert alert-blue" style="margin:0;">Add Supabase credentials to the HTML file to enable history.</div>';
-    return;
-  }
-  el.innerHTML = '<div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Loading...</div>';
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/diagnostic_runs?select=id,business_name,location,scores,run_date,gsc_summary,site_summary&order=run_date.desc&limit=100`,
-      {headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
-    const runs = await res.json();
-    if (!runs.length) { el.innerHTML = '<div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No runs saved yet.</div>'; return; }
-    el.innerHTML = runs.map(r => {
-      const scores = r.scores || {};
-      const vals = Object.values(scores).filter(v=>v>0);
-      const avg = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : '—';
-      const date = new Date(r.run_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-      const avgColor = parseFloat(avg)<4?'var(--red)':parseFloat(avg)<6?'var(--amber)':'var(--green)';
-      const pages = r.site_summary?.total_pages || '—';
-      const queries = r.gsc_summary?.total_queries || '—';
-      return `<div class="history-row" onclick="loadRun('${r.id}')">
-        <div>
-          <div style="font-size:13px;font-weight:500;color:var(--text);">${r.business_name}</div>
-          <div style="font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px;">${r.location||'—'} · ${date} · ${pages} pages · ${queries} GSC queries</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="font-size:13px;font-family:var(--mono);color:${avgColor};">avg ${avg}/10</div>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="var(--muted)" stroke-width="1.3" stroke-linecap="round"/></svg>
-        </div>
-      </div>`;
-    }).join('');
-  } catch(err) {
-    el.innerHTML = `<div class="alert alert-red" style="margin:0;">Error: ${err.message}</div>`;
-  }
-}
-
-async function loadRun(id) {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return;
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/diagnostic_runs?id=eq.${id}&select=*`,
-      {headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
-    const data = await res.json();
-    if (!data.length) return;
-    const run = data[0];
-    S.businessName       = run.business_name;
-    S.location           = run.location;
-    S.diagnosticOutputs  = run.diagnostic_outputs || {};
-    S.roadmapOutput      = run.roadmap_output || '';
-    S.scores             = run.scores || {};
-    S.gridStats          = run.grid_stats || {};
-    S.competitors        = run.competitors || [];
-    document.getElementById('client-indicator').textContent = run.business_name;
-    if (S.roadmapOutput) parseRoadmap(S.roadmapOutput);
-    if (S.roadmapOutput) buildReport({pageCount:'—',servicePageCount:'—',schema:'—',grid:'—'});
-    if (S.diagnosticOutputs) {
-      let combined = '';
-      Object.entries(S.diagnosticOutputs).forEach(([k,v])=>combined+=`\n## ${k}\n${v}\n`);
-      document.getElementById('output-box').textContent = combined;
-    }
-    goTo('roadmap');
-  } catch(err) { console.error(err); }
-}
-
-async function loadCompareSelects() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return;
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/diagnostic_runs?select=id,business_name,run_date&order=run_date.desc&limit=100`,
-      {headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
-    const runs = await res.json();
-    const opts = runs.map(r=>`<option value="${r.id}">${r.business_name} · ${new Date(r.run_date).toLocaleDateString()}</option>`).join('');
-    ['compare-a','compare-b'].forEach(id=>{
-      document.getElementById(id).innerHTML = '<option value="">Select a run...</option>'+opts;
-    });
-  } catch {}
-}
-
-async function compareRuns() {
-  const idA = document.getElementById('compare-a').value;
-  const idB = document.getElementById('compare-b').value;
-  if (!idA || !idB || !SUPABASE_URL) return;
-  try {
-    const [rA, rB] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/diagnostic_runs?id=eq.${idA}&select=*`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}}).then(r=>r.json()),
-      fetch(`${SUPABASE_URL}/rest/v1/diagnostic_runs?id=eq.${idB}&select=*`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}}).then(r=>r.json())
-    ]);
-    const a = rA[0], b = rB[0];
-    if (!a||!b) return;
-    const sA = a.scores||{}, sB = b.scores||{};
-    const dA = new Date(a.run_date).toLocaleDateString(), dB = new Date(b.run_date).toLocaleDateString();
-
-    let html = `<div style="display:flex;gap:20px;margin-bottom:12px;">
-      <div style="font-size:11px;color:var(--muted);font-family:var(--mono);">A: ${a.business_name} · ${dA}</div>
-      <div style="font-size:11px;color:var(--muted);font-family:var(--mono);">B: ${b.business_name} · ${dB}</div>
-    </div>`;
-    html += Object.entries(SCORE_LABELS).map(([key,label]) => {
-      const sva=sA[key]||0, svb=sB[key]||0, delta=svb-sva;
-      const deltaStr = delta>0?`<span class="delta-up">+${delta}</span>`:delta<0?`<span style="color:var(--red);">${delta}</span>`:`<span style="color:var(--muted);">—</span>`;
-      const colorB = svb<4?'var(--red)':svb<6?'var(--amber)':'var(--green)';
-      return `<div class="score-row">
-        <div class="score-label">${label}</div>
-        <div style="font-size:12px;font-family:var(--mono);color:var(--muted);width:30px;">${sva}/10</div>
-        <div style="color:var(--muted);font-size:12px;">→</div>
-        <div class="score-bar-wrap"><div class="score-fill" style="width:${svb*10}%;background:${colorB};"></div></div>
-        <div class="score-num">${svb}/10</div>
-        <div class="score-delta-col">${deltaStr}</div>
-      </div>`;
-    }).join('');
-
-    document.getElementById('compare-scores').innerHTML = html;
-    const avgA = Object.values(sA).filter(v=>v>0).reduce((a,b)=>a+b,0)/7;
-    const avgB = Object.values(sB).filter(v=>v>0).reduce((a,b)=>a+b,0)/7;
-    const od = (avgB-avgA).toFixed(1);
-    document.getElementById('compare-notes').textContent =
-      `Overall: ${avgA.toFixed(1)} → ${avgB.toFixed(1)} (${od>0?'+':''}${od})\n\n`+
-      `Baseline: ${a.business_name} · ${dA}\nLatest:   ${b.business_name} · ${dB}\n\n`+
-      `Site A: ${a.site_summary?.total_pages||'—'} pages · ${a.gsc_summary?.total_queries||'—'} GSC queries\n`+
-      `Site B: ${b.site_summary?.total_pages||'—'} pages · ${b.gsc_summary?.total_queries||'—'} GSC queries\n\n`+
-      `Biggest gain: ${getBiggest(sA,sB,'up')}\n`+
-      `Biggest decline: ${getBiggest(sA,sB,'down')}`;
-    document.getElementById('compare-output').style.display = 'block';
-  } catch(err) { console.error(err); }
-}
-
-function getBiggest(sA, sB, dir) {
-  let best=null, bestD=0;
-  Object.keys(SCORE_LABELS).forEach(k=>{
-    const d=(sB[k]||0)-(sA[k]||0), abs=Math.abs(d);
-    if((dir==='up'&&d>0||dir==='down'&&d<0)&&abs>bestD){bestD=abs;best=k;}
-  });
-  return best?`${SCORE_LABELS[best]} (${dir==='up'?'+':''}${dir==='up'?bestD:-bestD})`:'None';
-}
-
-// ─────────────────────────────────────────
-// CLAUDE API
-// ─────────────────────────────────────────
-async function claudeAPI(prompt) {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => reject(new Error('Request timed out after 25s')), 25000);
-    fetch('/api/chat', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514', max_tokens:800,
-        system:'You are a local SEO expert focused on driving phone calls. Analyze real data directly. Be specific and concise. Always cite actual data points provided.',
-        messages:[{role:'user',content:prompt}]
-      })
-    })
-    .then(res => { clearTimeout(timeout); return res.json(); })
-    .then(data => {
-      if (data.content && data.content[0]) resolve(data.content[0].text);
-      else reject(new Error('Empty API response'));
-    })
-    .catch(err => { clearTimeout(timeout); reject(err); });
-  });
-}
-
-// ─────────────────────────────────────────
-// UI HELPERS
-// ─────────────────────────────────────────
-function renderSteps() {
-  document.getElementById('steps-container').innerHTML = STEPS.map(s=>`
-    <div class="step-row">
-      <div class="step-num idle" id="stepnum-${s.id}">–</div>
-      <div style="flex:1;">
-        <div class="step-title">${s.label}</div>
-        <div class="step-desc">${s.desc}</div>
-        <div class="progress-bar" id="prog-${s.id}" style="display:none;"><div class="progress-fill" style="width:0%"></div></div>
-      </div>
-    </div>`).join('');
-}
-
-function setStep(id, status) {
-  const num=document.getElementById('stepnum-'+id);
-  const prog=document.getElementById('prog-'+id);
-  if(!num)return;
-  num.className='step-num '+status;
-  if(status==='done'){num.textContent='✓';if(prog)prog.style.display='none';}
-  else if(status==='active'){num.textContent='●';if(prog){prog.style.display='block';prog.querySelector('.progress-fill').style.width='60%';}}
-  else num.textContent='–';
-}
-
-function renderDataSourcesActive() {
-  const sources = [
-    {label:'Website crawl',  active: S.sitemapPages.length > 0,  detail: S.sitemapPages.length+' pages'},
-    {label:'GSC data',       active: S.gscRows.length > 0,       detail: S.gscRows.length+' queries'},
-    {label:'Grid CSV',       active: !!S.gridStats.points,       detail: S.gridStats.points+' grid points'},
-    {label:'Schema check',   active: S.schemaTypes.length > 0,   detail: S.schemaTypes.join(', ')||'none found'},
-    {label:'Click-to-call',  active: S.hasClickToCall,           detail: S.hasClickToCall?'detected':'not found'},
-    {label:'Competitor data',active: S.competitors.length > 0,   detail: S.competitors.length+' competitors'}
-  ];
-  document.getElementById('data-sources-active').innerHTML = sources.map(s=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);">
-      <div style="width:8px;height:8px;border-radius:50%;background:${s.active?'var(--green)':'var(--muted)'};flex-shrink:0;"></div>
-      <div style="flex:1;font-size:12px;color:${s.active?'var(--text)':'var(--muted)'};">${s.label}</div>
-      <div style="font-size:11px;font-family:var(--mono);color:var(--muted);">${s.detail}</div>
-    </div>`).join('');
-}
-
-function appendOut(text) {
-  const el=document.getElementById('output-box');
-  el.textContent+=text;
-  el.scrollTop=el.scrollHeight;
-}
-
+// ── UTILS ────────────────────────────────────────
 function copyEl(id, btn) {
-  const el=document.getElementById(id);
-  navigator.clipboard.writeText(el.innerText||el.textContent);
-  const orig=btn.textContent;
-  btn.textContent='Copied!';
-  setTimeout(()=>btn.textContent=orig,1500);
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText || el.textContent).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1800);
+  });
 }
 
-function fromUrl(url) {
-  try{return new URL(url).hostname.replace('www.','').split('.')[0].replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());}
-  catch{return 'Client';}
-}
+// Init
+renderSocialTab();
 </script>
 </body>
 </html>
