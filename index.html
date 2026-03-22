@@ -747,6 +747,7 @@ async function startDiagnostics() {
   state.biz = { name, service, loc, website };
   state.outputs = {};
   state.fixItems = [];
+  state.allOutput = '';  // stored on state — never out of scope
   state.running = true;
 
   showScreen('analysis');
@@ -949,22 +950,29 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
   ];
 
   let allOutput = '';
+  const total = diagnostics.length;
 
-  for (const diag of diagnostics) {
+  for (let idx = 0; idx < diagnostics.length; idx++) {
+    const diag = diagnostics[idx];
     setStep(diag.id, 'active');
-    appendOut(`\n▸ ${diag.label}${diag.search ? ' [web search enabled]' : ''}\n${'─'.repeat(44)}\n`);
+    appendOut(`\n▸ [${idx+1}/${total}] ${diag.label}${diag.search ? ' [🔍 web search]' : ''}\n${'─'.repeat(48)}\n`);
     try {
       const result = await callClaude(diag.prompt, !!diag.search);
       state.outputs[diag.id] = result;
       allOutput += `\n## ${diag.label}\n${result}\n`;
+      state.allOutput = allOutput; // keep state in sync
       appendOut(result + '\n');
       parseFixItems(diag.id, result);
       setStep(diag.id, 'done');
     } catch(err) {
-      appendOut(`Error: ${err.message}\n`);
+      const msg = `Error in ${diag.label}: ${err.message}`;
+      appendOut(msg + '\n');
+      allOutput += `\n## ${diag.label}\nError: ${err.message}\n`;
+      state.allOutput = allOutput;
       setStep(diag.id, 'done');
     }
   }
+  appendOut(`\n✓ ${total}/${total} modules completed.\n`);
 
   // Social tab
   document.getElementById('social-output').textContent = state.outputs['social'] || '';
@@ -989,11 +997,13 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
 }
 
 async function generateRoadmap(allOutput) {
-  appendOut('\n▸ Generating 90-day roadmap...\n' + '─'.repeat(44) + '\n');
+  // Fallback to state if param somehow empty (scope safety)
+  const outputData = (allOutput && allOutput.length > 10) ? allOutput : (state.allOutput || '');
+  appendOut('\n▸ Generating 90-day roadmap...\n' + '─'.repeat(48) + '\n');
   const { name, service, loc } = state.biz;
   const prompt = `Based on these full local SEO diagnostic findings for ${name} (${service} in ${loc}):
 
-${allOutput}
+${outputData}
 
 Build a 90-day roadmap covering GMB, website, schema, citations, and social. Use EXACTLY this format:
 
