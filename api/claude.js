@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+﻿export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -11,7 +11,8 @@ export default async function handler(req, res) {
   const headers = {
     'Content-Type': 'application/json',
     'x-api-key': apiKey,
-    'anthropic-version': '2023-06-01'
+    'anthropic-version': '2023-06-01',
+    'anthropic-beta': 'web-search-2025-03-05'
   };
 
   try {
@@ -20,7 +21,7 @@ export default async function handler(req, res) {
     const model = req.body.model || 'claude-sonnet-4-20250514';
     const max_tokens = req.body.max_tokens || 2000;
 
-    // Run full multi-turn loop server-side — one round trip from browser
+    // Run full multi-turn loop server-side â€” one round trip from browser
     for (let i = 0; i < 10; i++) {
       const body = { model, max_tokens, messages };
       if (tools) body.tools = tools;
@@ -55,7 +56,7 @@ export default async function handler(req, res) {
         messages.push({ role: 'user', content: toolResults });
 
       } else {
-        // Done — return final text response to browser
+        // Done â€” return final text response to browser
         return res.status(200).json(data);
       }
     }
@@ -66,3 +67,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: err.message });
   }
 }
+
