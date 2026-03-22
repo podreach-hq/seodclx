@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEO Diagnostics â€” seodclx.com</title>
+<title>SEO Diagnostics — seodclx.com</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -37,14 +37,14 @@
 html, body { height: 100%; }
 body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; overflow: hidden; }
 
-/* â”€â”€ LAYOUT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── LAYOUT ─────────────────────────────────── */
 .shell { display: flex; height: 100vh; }
 .sidebar { width: 214px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 22px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .content { flex: 1; overflow-y: auto; padding: 20px 22px; }
 
-/* â”€â”€ SIDEBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── SIDEBAR ─────────────────────────────────── */
 .brand { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); }
 .brand-name { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
 .brand-sub { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 3px; }
@@ -62,7 +62,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); }
 .build-info { font-size: 10px; font-family: var(--mono); color: var(--muted); line-height: 1.6; }
 
-/* â”€â”€ TOPBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TOPBAR ─────────────────────────────────── */
 .topbar-title { font-size: 13px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 10px; }
 .topbar-actions { display: flex; align-items: center; gap: 8px; }
 .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-family: var(--mono); padding: 3px 9px; border-radius: 20px; border: 1px solid var(--border2); }
@@ -75,18 +75,18 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .pill-green .pill-dot { background: var(--green); }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-/* â”€â”€ CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── CARDS ─────────────────────────────────── */
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
 .card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
 .card + .card { margin-top: 12px; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
-/* â”€â”€ SCREENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── SCREENS ─────────────────────────────────── */
 .screen { display: none; }
 .screen.active { display: block; }
 
-/* â”€â”€ FORM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── FORM ─────────────────────────────────── */
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 11px; font-weight: 500; color: var(--muted2); margin-bottom: 5px; letter-spacing: 0.04em; }
 .field input, .field select { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; padding: 9px 12px; font-size: 13px; font-family: var(--sans); color: var(--text); outline: none; transition: border-color 0.15s; }
@@ -94,7 +94,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .field input::placeholder { color: var(--muted); }
 .field select option { background: var(--surface2); }
 
-/* â”€â”€ BUTTONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── BUTTONS ─────────────────────────────────── */
 .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; font-family: var(--sans); cursor: pointer; transition: all 0.15s; border: none; outline: none; }
 .btn-primary { background: var(--accent); color: #fff; }
 .btn-primary:hover { background: #1a6fe8; }
@@ -102,13 +102,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .btn-ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted2); }
 .btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
 
-/* â”€â”€ OUTPUT BOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── OUTPUT BOX ─────────────────────────────────── */
 .output-box { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; font-family: var(--mono); font-size: 11.5px; line-height: 1.7; color: var(--muted2); max-height: 340px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 .copy-btn { font-size: 11px; font-family: var(--mono); padding: 3px 9px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border2); color: var(--muted2); cursor: pointer; transition: all 0.12s; }
 .copy-btn:hover { color: var(--text); border-color: var(--border2); }
 
-/* â”€â”€ STEP LIST â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── STEP LIST ─────────────────────────────────── */
 .step-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
 .step-item:last-child { border-bottom: none; }
 .step-icon { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
@@ -124,7 +124,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .step-item.done .step-label { color: var(--muted2); }
 .step-tag { font-size: 9.5px; font-family: var(--mono); margin-top: 2px; color: var(--muted); }
 
-/* â”€â”€ SIGNAL FLOW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── SIGNAL FLOW ─────────────────────────────────── */
 .signal-flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .signal-node { font-size: 11px; font-family: var(--mono); padding: 5px 10px; border-radius: 5px; border: 1px solid var(--border2); }
 .sn-gmb { background: rgba(45,127,249,0.1); color: var(--accent); border-color: rgba(45,127,249,0.3); }
@@ -134,20 +134,20 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .sn-entity { background: rgba(34,197,94,0.1); color: var(--green); border-color: rgba(34,197,94,0.3); }
 .signal-arrow { color: var(--muted); font-size: 12px; font-family: var(--mono); }
 
-/* â”€â”€ METRICS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── METRICS ─────────────────────────────────── */
 .metric { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; }
 .metric-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .metric-val { font-size: 22px; font-family: var(--mono); font-weight: 500; margin-top: 5px; line-height: 1; }
 .metric-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-/* â”€â”€ SCORE BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── SCORE BAR ─────────────────────────────────── */
 .score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .score-label { font-size: 12px; color: var(--muted2); width: 160px; flex-shrink: 0; }
 .score-track { flex: 1; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
 .score-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
 .score-num { font-size: 11px; font-family: var(--mono); color: var(--muted2); width: 28px; text-align: right; flex-shrink: 0; }
 
-/* â”€â”€ ROADMAP PHASES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── ROADMAP PHASES ─────────────────────────────────── */
 .phase-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
 .phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .phase-num { font-size: 10px; font-family: var(--mono); font-weight: 600; padding: 3px 8px; border-radius: 4px; }
@@ -158,7 +158,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .phase-item { display: flex; gap: 8px; padding: 4px 0; font-size: 12.5px; color: var(--muted2); line-height: 1.5; }
 .phase-bullet { color: var(--muted); flex-shrink: 0; margin-top: 1px; }
 
-/* â”€â”€ FIX PLAN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── FIX PLAN ─────────────────────────────────── */
 .fix-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; }
 .fix-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
 .fix-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
@@ -171,12 +171,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .fix-step { display: flex; gap: 9px; padding: 4px 0; font-size: 12px; color: var(--muted2); line-height: 1.5; }
 .fix-step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); flex-shrink: 0; min-width: 18px; margin-top: 1px; }
 
-/* â”€â”€ REPORT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── REPORT ─────────────────────────────────── */
 .report-section { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
 .report-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 .report-text { font-size: 12.5px; color: var(--muted2); line-height: 1.7; white-space: pre-wrap; font-family: var(--mono); }
 
-/* â”€â”€ SOCIAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── SOCIAL ─────────────────────────────────── */
 .platform-tag { font-size: 10px; font-family: var(--mono); font-weight: 500; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
 .pt-instagram { background: rgba(251,146,60,0.12); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
 .pt-facebook { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(45,127,249,0.3); }
@@ -184,23 +184,23 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 .pt-youtube { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
 .pt-tiktok { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
 
-/* â”€â”€ COMPETITOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── COMPETITOR ─────────────────────────────────── */
 .competitor-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
 .competitor-item:last-child { border-bottom: none; }
 .competitor-rank { font-family: var(--mono); font-size: 11px; color: var(--muted2); }
 
-/* â”€â”€ EMPTY STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── EMPTY STATE ─────────────────────────────────── */
 .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
 .empty-state .icon { font-size: 28px; margin-bottom: 12px; opacity: 0.4; }
 .empty-state p { font-size: 13px; line-height: 1.6; }
 
-/* â”€â”€ SCROLLBAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── SCROLLBAR ─────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--border2); }
 
-/* â”€â”€ TABS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TABS ─────────────────────────────────── */
 .tab-bar { display: flex; gap: 2px; background: var(--surface2); border-radius: 7px; padding: 3px; margin-bottom: 14px; border: 1px solid var(--border); }
 .tab-btn { flex: 1; padding: 6px 10px; font-size: 11.5px; font-family: var(--sans); font-weight: 500; border: none; background: transparent; color: var(--muted2); border-radius: 5px; cursor: pointer; transition: all 0.12s; }
 .tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
@@ -214,11 +214,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 <body>
 <div class="shell">
 
-<!-- â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- ══ SIDEBAR ══════════════════════════════════════ -->
 <div class="sidebar">
   <div class="brand">
     <div class="brand-name">SEO Diagnostics</div>
-    <div class="brand-sub">seodclx.com Â· v2.1</div>
+    <div class="brand-sub">seodclx.com · v2.1</div>
   </div>
   <div class="nav">
     <div class="nav-section">Workflow</div>
@@ -231,7 +231,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
     <div class="nav-section">Results</div>
     <div class="nav-item" onclick="showScreen('fixplan')" id="nav-fixplan">
       <div class="nav-dot"></div> Fix Plan
-      <span class="nav-badge" id="fix-count-badge">â€”</span>
+      <span class="nav-badge" id="fix-count-badge">—</span>
     </div>
     <div class="nav-item" onclick="showScreen('roadmap')" id="nav-roadmap">
       <div class="nav-dot"></div> Roadmap
@@ -244,11 +244,11 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
     </div>
   </div>
   <div class="sidebar-footer">
-    <div class="build-info">10 diagnostic modules<br>Technical Â· Speed Â· On-Page<br>GMB Â· Schema Â· Entity Â· Social</div>
+    <div class="build-info">10 diagnostic modules<br>Technical · Speed · On-Page<br>GMB · Schema · Entity · Social</div>
   </div>
 </div>
 
-<!-- â•â• MAIN â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+<!-- ══ MAIN ══════════════════════════════════════ -->
 <div class="main">
   <div class="topbar">
     <div class="topbar-title">
@@ -261,7 +261,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
 
   <div class="content">
 
-    <!-- â•â• SETUP â•â• -->
+    <!-- ══ SETUP ══ -->
     <div id="screen-setup" class="screen active fade-in">
       <div class="grid-2">
         <div>
@@ -288,7 +288,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <input type="file" id="csv-file" accept=".csv" onchange="handleCSV(this)" style="font-size:11px;padding:6px;">
             </div>
             <div class="field">
-              <label>Upload GSC CSV export <span style="color:var(--muted);font-weight:400;">(optional â€” Queries or Pages tab)</span></label>
+              <label>Upload GSC CSV export <span style="color:var(--muted);font-weight:400;">(optional — Queries or Pages tab)</span></label>
               <input type="file" id="gsc-file" accept=".csv" onchange="handleGSC(this)" style="font-size:11px;padding:6px;">
             </div>
           </div>
@@ -313,36 +313,36 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               </div>
               <div class="signal-flow" style="margin-top:6px;">
                 <div class="signal-node sn-social">Social</div>
-                <div class="signal-arrow">â†’</div>
+                <div class="signal-arrow">→</div>
                 <div class="signal-node sn-entity">Entity Authority</div>
-                <div class="signal-arrow">â†’</div>
+                <div class="signal-arrow">→</div>
                 <div class="signal-node" style="background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.3);">Rankings</div>
               </div>
             </div>
             <div class="card-label" style="margin-top:14px;">10 diagnostic modules</div>
             <div id="module-list">
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Technical Crawl &amp; Indexation</div><div class="step-tag">robots.txt Â· sitemap Â· redirects Â· noindex Â· canonicals</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Core Web Vitals &amp; Page Speed</div><div class="step-tag">LCP Â· CLS Â· INP Â· TTFB Â· mobile score</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">On-Page Technical SEO</div><div class="step-tag">titles Â· meta Â· H1 Â· alt tags Â· dupes Â· canonicals</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Site Crawl + Entity Signals</div><div class="step-tag">sitemap Â· page content Â· entity language</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Competitor Gap Analysis</div><div class="step-tag">service gaps Â· keyword voids Â· grid data</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">GMB Profile Audit</div><div class="step-tag">categories Â· NAP Â· posts Â· photos Â· Q&amp;A</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Schema / Structured Data</div><div class="step-tag">LocalBusiness Â· Service Â· FAQ Â· Review Â· Geo</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Entity Health Check</div><div class="step-tag">NAP consistency Â· citations Â· brand signals</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Content + Topical Authority</div><div class="step-tag">service pages Â· internal linking Â· gaps</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Social Syndication Strategy</div><div class="step-tag">platform audit Â· cadence Â· link targets</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Technical Crawl &amp; Indexation</div><div class="step-tag">robots.txt · sitemap · redirects · noindex · canonicals</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Core Web Vitals &amp; Page Speed</div><div class="step-tag">LCP · CLS · INP · TTFB · mobile score</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">On-Page Technical SEO</div><div class="step-tag">titles · meta · H1 · alt tags · dupes · canonicals</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Site Crawl + Entity Signals</div><div class="step-tag">sitemap · page content · entity language</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Competitor Gap Analysis</div><div class="step-tag">service gaps · keyword voids · grid data</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">GMB Profile Audit</div><div class="step-tag">categories · NAP · posts · photos · Q&amp;A</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Schema / Structured Data</div><div class="step-tag">LocalBusiness · Service · FAQ · Review · Geo</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Entity Health Check</div><div class="step-tag">NAP consistency · citations · brand signals</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Content + Topical Authority</div><div class="step-tag">service pages · internal linking · gaps</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Social Syndication Strategy</div><div class="step-tag">platform audit · cadence · link targets</div></div></div>
             </div>
           </div>
           <div style="margin-top:12px;">
             <button class="btn btn-primary" id="run-btn" onclick="startDiagnostics()" disabled style="width:100%;justify-content:center;padding:12px 0;">
-              Run Full Diagnostics â†’
+              Run Full Diagnostics →
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- â•â• ANALYSIS â•â• -->
+    <!-- ══ ANALYSIS ══ -->
     <div id="screen-analysis" class="screen fade-in">
       <div class="grid-2">
         <div class="card">
@@ -352,7 +352,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
         <div class="card">
           <div class="card-label">Top competitors from CSV</div>
           <div id="competitors-container">
-            <div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No CSV uploaded â€” using AI discovery</div>
+            <div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No CSV uploaded — using AI discovery</div>
           </div>
         </div>
       </div>
@@ -365,7 +365,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
       </div>
     </div>
 
-    <!-- â•â• FIX PLAN â•â• -->
+    <!-- ══ FIX PLAN ══ -->
     <div id="screen-fixplan" class="screen fade-in">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <div>
@@ -376,13 +376,13 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
       </div>
       <div id="fix-plan-container">
         <div class="empty-state">
-          <div class="icon">ðŸ”§</div>
+          <div class="icon">🔧</div>
           <p>Run diagnostics first.<br>All issues with step-by-step fix instructions will appear here.</p>
         </div>
       </div>
     </div>
 
-    <!-- â•â• ROADMAP â•â• -->
+    <!-- ══ ROADMAP ══ -->
     <div id="screen-roadmap" class="screen fade-in">
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('roadmap','phases')">90-Day Phases</button>
@@ -391,12 +391,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
       </div>
       <div id="roadmap-phases" class="tab-panel active">
         <div id="phases-container">
-          <div class="empty-state"><div class="icon">ðŸ—ºï¸</div><p>Roadmap generates after diagnostics complete.</p></div>
+          <div class="empty-state"><div class="icon">🗺️</div><p>Roadmap generates after diagnostics complete.</p></div>
         </div>
       </div>
       <div id="roadmap-scores" class="tab-panel">
         <div class="card" id="scores-container">
-          <div class="empty-state"><div class="icon">ðŸ“Š</div><p>Scores appear after diagnostics complete.</p></div>
+          <div class="empty-state"><div class="icon">📊</div><p>Scores appear after diagnostics complete.</p></div>
         </div>
       </div>
       <div id="roadmap-summary" class="tab-panel">
@@ -404,18 +404,18 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
       </div>
     </div>
 
-    <!-- â•â• SOCIAL â•â• -->
+    <!-- ══ SOCIAL ══ -->
     <div id="screen-social" class="screen fade-in">
       <div class="grid-2">
         <div class="card">
-          <div class="card-label">Signal flow â€” social to GMB</div>
+          <div class="card-label">Signal flow — social to GMB</div>
           <div class="signal-flow" style="margin-bottom:12px;">
             <div class="signal-node sn-gmb">GMB Post</div>
-            <div class="signal-arrow">â†’</div>
+            <div class="signal-arrow">→</div>
             <div class="signal-node sn-social">Social</div>
-            <div class="signal-arrow">â†’</div>
+            <div class="signal-arrow">→</div>
             <div class="signal-node sn-site">Service Page</div>
-            <div class="signal-arrow">â†’</div>
+            <div class="signal-arrow">→</div>
             <div class="signal-node sn-entity">Entity Cluster</div>
           </div>
           <div class="card-label">Platform priorities</div>
@@ -435,7 +435,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
       </div>
     </div>
 
-    <!-- â•â• REPORT â•â• -->
+    <!-- ══ REPORT ══ -->
     <div id="screen-report" class="screen fade-in">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
         <div style="font-size:15px;font-weight:600;">Client Report</div>
@@ -445,7 +445,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
         </div>
       </div>
       <div id="full-report">
-        <div class="report-section"><h3>Business Overview</h3><div class="report-text" id="rep-overview">â€”</div></div>
+        <div class="report-section"><h3>Business Overview</h3><div class="report-text" id="rep-overview">—</div></div>
         <div class="report-section"><h3>Technical Crawl & Indexation</h3><div class="report-text" id="rep-technical">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Core Web Vitals & Page Speed</h3><div class="report-text" id="rep-speed">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>On-Page Technical SEO</h3><div class="report-text" id="rep-onpage">Run diagnostics to generate report...</div></div>
@@ -470,7 +470,7 @@ const state = {
   running: false, complete: false
 };
 
-// â”€â”€ NAVIGATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── NAVIGATION ────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -494,7 +494,7 @@ function switchTab(group, tab) {
   event.target.classList.add('active');
 }
 
-// â”€â”€ SETUP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SETUP ────────────────────────────────────────
 function checkReady() {
   const ready = ['biz-name','biz-service','biz-location'].every(id => document.getElementById(id).value.trim());
   document.getElementById('run-btn').disabled = !ready;
@@ -561,8 +561,8 @@ function parseGSCCsv(raw) {
   // Aggregate totals
   const totalClicks = rows.reduce((s,r) => s + toNum(r[clkKey]), 0);
   const totalImps   = rows.reduce((s,r) => s + toNum(r[impKey]), 0);
-  const avgPos      = rows.length ? (rows.reduce((s,r) => s + toNum(r[posKey]), 0) / rows.length).toFixed(1) : 'â€”';
-  const avgCtr      = totalImps > 0 ? ((totalClicks / totalImps) * 100).toFixed(1) + '%' : 'â€”';
+  const avgPos      = rows.length ? (rows.reduce((s,r) => s + toNum(r[posKey]), 0) / rows.length).toFixed(1) : '—';
+  const avgCtr      = totalImps > 0 ? ((totalClicks / totalImps) * 100).toFixed(1) + '%' : '—';
 
   // Sort helpers
   const byImp  = [...rows].sort((a,b) => toNum(b[impKey]) - toNum(a[impKey]));
@@ -573,8 +573,8 @@ function parseGSCCsv(raw) {
     .sort((a,b) => toNum(b[impKey]) - toNum(a[impKey]));
 
   const fmt = r => isQueries
-    ? `"${r[qKey]}" â€” ${r[impKey]} impr / ${r[clkKey]} clicks / pos ${parseFloat(r[posKey]||0).toFixed(1)}`
-    : `${r[pgKey]} â€” ${r[impKey]} impr / ${r[clkKey]} clicks`;
+    ? `"${r[qKey]}" — ${r[impKey]} impr / ${r[clkKey]} clicks / pos ${parseFloat(r[posKey]||0).toFixed(1)}`
+    : `${r[pgKey]} — ${r[impKey]} impr / ${r[clkKey]} clicks`;
 
   const lines2 = [
     `Export type: ${isQueries ? 'Queries' : isPages ? 'Pages' : 'Unknown'} (${rows.length} rows)`,
@@ -589,7 +589,7 @@ function parseGSCCsv(raw) {
     `TOP 10 BY CLICKS:`,
     ...byClk.slice(0,10).map(r => `  ${fmt(r)}`),
     '',
-    `HIGH IMPRESSIONS / LOW CTR (opportunity â€” fix title & meta):`,
+    `HIGH IMPRESSIONS / LOW CTR (opportunity — fix title & meta):`,
     ...(hiImpLowCtr.slice(0,10).map(r => `  ${fmt(r)}`) || ['  None detected']),
     '',
     `ZERO CLICKS (indexation waste or thin content):`,
@@ -623,7 +623,7 @@ function parseCompetitors(csv) {
     .map(([n,c]) => ({name: n, appearances: c}));
 }
 
-// â”€â”€ CLAUDE API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── CLAUDE API ────────────────────────────────────────
 async function callClaude(prompt, useSearch = false) {
   const body = {
     model: 'claude-sonnet-4-20250514',
@@ -648,18 +648,18 @@ async function callClaude(prompt, useSearch = false) {
   return data.content?.filter(b => b.type === 'text').map(b => b.text).join('') || '';
 }
 
-// â”€â”€ STEP UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── STEP UI ────────────────────────────────────────
 const MODULE_DEFS = [
-  { id: 'technical', label: 'Technical Crawl & Indexation',  tag: 'robots.txt Â· sitemap Â· redirects Â· noindex Â· canonicals', search: false },
-  { id: 'speed',     label: 'Core Web Vitals & Page Speed',  tag: 'LCP Â· CLS Â· INP Â· TTFB Â· mobile score', search: false },
-  { id: 'onpage',    label: 'On-Page Technical SEO',         tag: 'titles Â· meta Â· H1 Â· alt tags Â· dupes Â· canonicals', search: false },
-  { id: 'crawl',     label: 'Site Crawl + Entity Signals',   tag: 'sitemap Â· content Â· entity language', search: false },
-  { id: 'compete',   label: 'Competitor Gap Analysis',       tag: 'service voids Â· keyword gaps Â· grid', search: false },
-  { id: 'gmb',       label: 'GMB Profile Audit',             tag: 'categories Â· NAP Â· posts Â· photos', search: false },
-  { id: 'schema',    label: 'Schema / Structured Data',      tag: 'LocalBusiness Â· Service Â· FAQ Â· Geo', search: false },
-  { id: 'entity',    label: 'Entity Health Check',           tag: 'NAP consistency Â· citations Â· brand', search: false },
-  { id: 'content',   label: 'Content + Topical Authority',  tag: 'service pages Â· internal links Â· gaps', search: false },
-  { id: 'social',    label: 'Social Syndication Strategy',  tag: 'platforms Â· cadence Â· link targets', search: false }
+  { id: 'technical', label: 'Technical Crawl & Indexation',  tag: 'robots.txt · sitemap · redirects · noindex · canonicals', search: true },
+  { id: 'speed',     label: 'Core Web Vitals & Page Speed',  tag: 'LCP · CLS · INP · TTFB · mobile score', search: true },
+  { id: 'onpage',    label: 'On-Page Technical SEO',         tag: 'titles · meta · H1 · alt tags · dupes · canonicals', search: true },
+  { id: 'crawl',     label: 'Site Crawl + Entity Signals',   tag: 'sitemap · content · entity language', search: false },
+  { id: 'compete',   label: 'Competitor Gap Analysis',       tag: 'service voids · keyword gaps · grid', search: false },
+  { id: 'gmb',       label: 'GMB Profile Audit',             tag: 'categories · NAP · posts · photos', search: true },
+  { id: 'schema',    label: 'Schema / Structured Data',      tag: 'LocalBusiness · Service · FAQ · Geo', search: true },
+  { id: 'entity',    label: 'Entity Health Check',           tag: 'NAP consistency · citations · brand', search: true },
+  { id: 'content',   label: 'Content + Topical Authority',  tag: 'service pages · internal links · gaps', search: false },
+  { id: 'social',    label: 'Social Syndication Strategy',  tag: 'platforms · cadence · link targets', search: false }
 ];
 
 function buildSteps() {
@@ -688,7 +688,7 @@ function appendOut(text) {
   el.scrollTop = el.scrollHeight;
 }
 
-// â”€â”€ FIX PLAN PARSING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── FIX PLAN PARSING ────────────────────────────────────────
 function parseFixItems(moduleId, text) {
   // Look for ISSUE: blocks
   const issueRegex = /ISSUE:\s*(.+?)[\r\n]+PRIORITY:\s*(High|Medium|Low)[\r\n]+([\s\S]*?)(?=ISSUE:|$)/gi;
@@ -709,7 +709,7 @@ function parseFixItems(moduleId, text) {
 function renderFixPlan() {
   const container = document.getElementById('fix-plan-container');
   if (state.fixItems.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">âœ…</div><p>No structured fix items found.<br>Check the Analysis tab for raw output.</p></div>';
+    container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>No structured fix items found.<br>Check the Analysis tab for raw output.</p></div>';
     return;
   }
   const sorted = [...state.fixItems].sort((a,b) => {
@@ -740,11 +740,11 @@ function renderFixPlan() {
   ).join('\n\n');
 }
 
-// â”€â”€ COMPETITOR DISPLAY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── COMPETITOR DISPLAY ────────────────────────────────────────
 function renderCompetitors() {
   const el = document.getElementById('competitors-container');
   if (state.competitors.length === 0) {
-    el.innerHTML = '<div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No CSV â€” using AI competitor discovery</div>';
+    el.innerHTML = '<div style="color:var(--muted);font-size:12px;font-family:var(--mono);">No CSV — using AI competitor discovery</div>';
     return;
   }
   el.innerHTML = state.competitors.map((c,i) => `
@@ -754,7 +754,7 @@ function renderCompetitors() {
     </div>`).join('');
 }
 
-// â”€â”€ ROADMAP PARSING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── ROADMAP PARSING ────────────────────────────────────────
 function parseRoadmap(text) {
   const p1 = text.match(/PHASE1:([\s\S]*?)(?=PHASE2:|SCORES:|$)/i)?.[1] || '';
   const p2 = text.match(/PHASE2:([\s\S]*?)(?=PHASE3:|SCORES:|$)/i)?.[1] || '';
@@ -762,21 +762,21 @@ function parseRoadmap(text) {
   const scoresBlock = text.match(/SCORES:([\s\S]*?)(?=SUMMARY:|FINDINGS:|$)/i)?.[1] || '';
   const summary = text.match(/SUMMARY:([\s\S]*?)(?=FINDINGS:|SOCIAL|$)/i)?.[1]?.trim() || '';
 
-  const toItems = t => t.split('\n').map(l=>l.replace(/^[-â€¢*]\s*/,'')).filter(l=>l.trim().length>4);
+  const toItems = t => t.split('\n').map(l=>l.replace(/^[-•*]\s*/,'')).filter(l=>l.trim().length>4);
 
   // Phases
   const phasesEl = document.getElementById('phases-container');
   phasesEl.innerHTML = [
-    {num:'PHASE 1',title:'Days 1â€“30 â€” Critical Fixes',items:toItems(p1),cls:'phase-1'},
-    {num:'PHASE 2',title:'Days 31â€“60 â€” Authority Building',items:toItems(p2),cls:'phase-2'},
-    {num:'PHASE 3',title:'Days 61â€“90 â€” Domination Layer',items:toItems(p3),cls:'phase-3'}
+    {num:'PHASE 1',title:'Days 1–30 — Critical Fixes',items:toItems(p1),cls:'phase-1'},
+    {num:'PHASE 2',title:'Days 31–60 — Authority Building',items:toItems(p2),cls:'phase-2'},
+    {num:'PHASE 3',title:'Days 61–90 — Domination Layer',items:toItems(p3),cls:'phase-3'}
   ].map(p => `
     <div class="phase-card ${p.cls}">
       <div class="phase-header">
         <span class="phase-num">${p.num}</span>
         <span class="phase-title">${p.title}</span>
       </div>
-      ${p.items.map(i=>`<div class="phase-item"><span class="phase-bullet">â€º</span><span>${i}</span></div>`).join('')}
+      ${p.items.map(i=>`<div class="phase-item"><span class="phase-bullet">›</span><span>${i}</span></div>`).join('')}
     </div>`).join('');
 
   // Scores
@@ -800,7 +800,7 @@ function parseRoadmap(text) {
   document.getElementById('rep-roadmap').textContent = text;
 }
 
-// â”€â”€ SOCIAL TAB â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── SOCIAL TAB ────────────────────────────────────────
 function renderSocialTab() {
   const platforms = [
     {name:'Instagram', cls:'pt-instagram', reason:'Location tags + visual content reinforce geo-relevance. Every post should tag the service area.'},
@@ -816,9 +816,9 @@ function renderSocialTab() {
     </div>`).join('');
 
   const cadence = [
-    {platform:'GMB Posts', cls:'pt-facebook', freq:'2â€“3x / wk', note:'Keyword + CTA + service page link'},
-    {platform:'Instagram', cls:'pt-instagram', freq:'4â€“5x / wk', note:'Location tag every post'},
-    {platform:'Facebook',  cls:'pt-facebook',  freq:'3â€“4x / wk', note:'Mirror GMB posts + local groups'},
+    {platform:'GMB Posts', cls:'pt-facebook', freq:'2–3x / wk', note:'Keyword + CTA + service page link'},
+    {platform:'Instagram', cls:'pt-instagram', freq:'4–5x / wk', note:'Location tag every post'},
+    {platform:'Facebook',  cls:'pt-facebook',  freq:'3–4x / wk', note:'Mirror GMB posts + local groups'},
     {platform:'YouTube',   cls:'pt-youtube',   freq:'1x / wk',   note:'Service explainer with CID link'},
     {platform:'LinkedIn',  cls:'pt-linkedin',  freq:'2x / wk',   note:'Entity + authority brand posts'},
     {platform:'TikTok',    cls:'pt-tiktok',    freq:'3x / wk',   note:'Location hashtags + service demos'}
@@ -831,32 +831,32 @@ function renderSocialTab() {
     </div>`).join('');
 }
 
-// â”€â”€ MAIN DIAGNOSTICS RUNNER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── MAIN DIAGNOSTICS RUNNER ────────────────────────────────────────
 async function startDiagnostics() {
   const name    = document.getElementById('biz-name').value.trim();
   const service = document.getElementById('biz-service').value.trim();
   const loc     = document.getElementById('biz-location').value.trim();
   const website = document.getElementById('biz-website').value.trim() || 'not provided';
 
-  // GSC data â€” from parsed CSV upload
+  // GSC data — from parsed CSV upload
   const gscData   = state.gscData || null;
   const gscContext = gscData
-    ? `\n\nGOOGLE SEARCH CONSOLE DATA (real export â€” treat as ground truth):\n${gscData}`
-    : '\n\nGSC DATA: Not provided â€” infer from business type and location where possible.';
+    ? `\n\nGOOGLE SEARCH CONSOLE DATA (real export — treat as ground truth):\n${gscData}`
+    : '\n\nGSC DATA: Not provided — infer from business type and location where possible.';
   const gscFields = gscData ? gscData.split('\n') : [];
 
   const compList = state.competitors.length
     ? state.competitors.slice(0,5).map(c=>c.name).join(', ')
     : 'discover the top 5 competitors yourself';
   const csvNote = state.csvData
-    ? `Grid CSV provided â€” top competitors by rank appearances: ${compList}`
+    ? `Grid CSV provided — top competitors by rank appearances: ${compList}`
     : 'No grid CSV. Identify likely top local competitors for this service and location.';
 
   state.gscData   = state.gscData || null; // already set by handleGSC if uploaded
   state.biz = { name, service, loc, website };
   state.outputs = {};
   state.fixItems = [];
-  state.allOutput = '';  // stored on state â€” never out of scope
+  state.allOutput = '';  // stored on state — never out of scope
   state.running = true;
 
   showScreen('analysis');
@@ -873,75 +873,75 @@ ISSUE: [short descriptive name of the issue]
 PRIORITY: High
 [or PRIORITY: Medium or PRIORITY: Low]
 STEPS:
-1. [specific action â€” tool, URL, or setting to use]
+1. [specific action — tool, URL, or setting to use]
 2. [next specific action]
 3. [continue until the issue is fully resolved]
 
-Output at least 2 issues with full fix steps. Be specific â€” include exact fields to edit, exact schema properties to add, exact tools to use. Do not use generic instructions.`;
+Output at least 2 issues with full fix steps. Be specific — include exact fields to edit, exact schema properties to add, exact tools to use. Do not use generic instructions.`;
 
   const diagnostics = [
     {
       id: 'technical',
       label: 'Technical Crawl & Indexation',
-      search: false,
+      search: true,
       prompt: `You are a technical SEO expert. Search the web to find real data about ${name}'s website at ${website}. Use web search to look up: "${website} site:${website}" and "${name} ${loc} site issues" to find any crawl or indexation problems.
 
 Then audit these technical ranking blockers for ${website}:
 
-1. ROBOTS.TXT â€” Search for ${website}/robots.txt. Is it accessible? Are any critical paths blocked (service pages, location pages, sitemap)? Is Googlebot specifically disallowed anywhere?
-2. SITEMAP â€” Search for ${website}/sitemap.xml and ${website}/sitemap_index.xml. Does it exist? Is it submitted in Google Search Console? Are all key service and location pages included? Any 404s or redirect URLs listed in the sitemap?
-3. REDIRECT CHAINS â€” Are there redirect chains (Aâ†’Bâ†’C) on key pages? Does the www vs non-www version redirect cleanly? Does HTTP redirect to HTTPS without a chain?
-4. NOINDEX TAGS â€” Are any important pages accidentally noindexed? Is there a pattern of noindex on category or location pages?
-5. CANONICAL TAGS â€” Are canonical tags present and pointing to the correct URL? Any self-referencing canonicals on paginated or duplicate content pages?
-6. CRAWL BUDGET ISSUES â€” Does the site have large numbers of thin or duplicate parameter-based URLs consuming crawl budget?
-7. HTTPS / SSL â€” Is the SSL certificate valid and not expiring soon? Are all internal links HTTPS not HTTP?
-8. DUPLICATE CONTENT â€” Are there duplicate versions of pages accessible (www/non-www, http/https, trailing slash/no slash)?
-9. BROKEN LINKS â€” Any known 404 pages for key service or location URLs?
-10. ORPHAN PAGES â€” Pages that are indexed but have zero internal links pointing to them. These are invisible to both users and Google's crawl flow. Common orphan patterns: old blog posts, legacy service pages, thank-you pages, location pages that were created but never linked from the nav or sitemap. If GSC shows pages getting impressions but zero clicks AND those pages have no internal links, they are orphaned â€” Google found them via sitemap but won't trust them without internal link equity. List likely orphan patterns for this site type.
-11. GOOGLE SEARCH CONSOLE SIGNALS â€” Based on what you can find and the GSC data provided, are there any known manual actions, coverage errors, or indexation drops for this domain?
+1. ROBOTS.TXT — Search for ${website}/robots.txt. Is it accessible? Are any critical paths blocked (service pages, location pages, sitemap)? Is Googlebot specifically disallowed anywhere?
+2. SITEMAP — Search for ${website}/sitemap.xml and ${website}/sitemap_index.xml. Does it exist? Is it submitted in Google Search Console? Are all key service and location pages included? Any 404s or redirect URLs listed in the sitemap?
+3. REDIRECT CHAINS — Are there redirect chains (A→B→C) on key pages? Does the www vs non-www version redirect cleanly? Does HTTP redirect to HTTPS without a chain?
+4. NOINDEX TAGS — Are any important pages accidentally noindexed? Is there a pattern of noindex on category or location pages?
+5. CANONICAL TAGS — Are canonical tags present and pointing to the correct URL? Any self-referencing canonicals on paginated or duplicate content pages?
+6. CRAWL BUDGET ISSUES — Does the site have large numbers of thin or duplicate parameter-based URLs consuming crawl budget?
+7. HTTPS / SSL — Is the SSL certificate valid and not expiring soon? Are all internal links HTTPS not HTTP?
+8. DUPLICATE CONTENT — Are there duplicate versions of pages accessible (www/non-www, http/https, trailing slash/no slash)?
+9. BROKEN LINKS — Any known 404 pages for key service or location URLs?
+10. ORPHAN PAGES — Pages that are indexed but have zero internal links pointing to them. These are invisible to both users and Google's crawl flow. Common orphan patterns: old blog posts, legacy service pages, thank-you pages, location pages that were created but never linked from the nav or sitemap. If GSC shows pages getting impressions but zero clicks AND those pages have no internal links, they are orphaned — Google found them via sitemap but won't trust them without internal link equity. List likely orphan patterns for this site type.
+11. GOOGLE SEARCH CONSOLE SIGNALS — Based on what you can find and the GSC data provided, are there any known manual actions, coverage errors, or indexation drops for this domain?
 
 Overall technical crawl health score: 1-10.${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'speed',
       label: 'Core Web Vitals & Page Speed',
-      search: false,
+      search: true,
       prompt: `You are a Core Web Vitals and page speed expert. Search the web for real performance data on ${website}. Search for: "PageSpeed Insights ${website}" and "${name} page speed score" and "web.dev measure ${website}".
 
 Audit these speed and performance ranking factors:
 
-1. LARGEST CONTENTFUL PAINT (LCP) â€” Target is under 2.5s. What is the likely LCP element (hero image, H1, banner)? Is the LCP image lazy-loaded (which kills LCP)? Is it properly preloaded?
-2. CUMULATIVE LAYOUT SHIFT (CLS) â€” Target is under 0.1. Are there images without defined dimensions? Injected content above the fold? Web fonts causing layout shifts?
-3. INTERACTION TO NEXT PAINT (INP) â€” Target is under 200ms. Are there heavy JavaScript bundles blocking interactivity? Third-party scripts (chat widgets, tracking pixels) delaying main thread?
-4. TIME TO FIRST BYTE (TTFB) â€” Target is under 800ms. Is the site on shared hosting, VPS, or managed WordPress? Is there server-side caching? Is a CDN in use?
-5. MOBILE PERFORMANCE â€” Mobile score vs desktop score. Is the mobile experience degraded by unoptimized images or render-blocking resources?
-6. IMAGE OPTIMIZATION â€” Are images served in WebP or AVIF format? Are images appropriately sized for viewport? Is lazy loading applied correctly (not on above-fold images)?
-7. RENDER-BLOCKING RESOURCES â€” Are CSS and JS files blocking first paint? Are critical CSS styles inlined?
-8. CACHING â€” Are static assets cached with appropriate cache headers? Is browser caching configured?
-9. THIRD-PARTY SCRIPTS â€” Which third-party scripts are loaded (Google Analytics, GTM, chat, reviews)? Are any loaded synchronously in the head?
-10. HOSTING INFRASTRUCTURE â€” Based on what you can find, what hosting provider is being used? Is it appropriate for the site's traffic needs?
+1. LARGEST CONTENTFUL PAINT (LCP) — Target is under 2.5s. What is the likely LCP element (hero image, H1, banner)? Is the LCP image lazy-loaded (which kills LCP)? Is it properly preloaded?
+2. CUMULATIVE LAYOUT SHIFT (CLS) — Target is under 0.1. Are there images without defined dimensions? Injected content above the fold? Web fonts causing layout shifts?
+3. INTERACTION TO NEXT PAINT (INP) — Target is under 200ms. Are there heavy JavaScript bundles blocking interactivity? Third-party scripts (chat widgets, tracking pixels) delaying main thread?
+4. TIME TO FIRST BYTE (TTFB) — Target is under 800ms. Is the site on shared hosting, VPS, or managed WordPress? Is there server-side caching? Is a CDN in use?
+5. MOBILE PERFORMANCE — Mobile score vs desktop score. Is the mobile experience degraded by unoptimized images or render-blocking resources?
+6. IMAGE OPTIMIZATION — Are images served in WebP or AVIF format? Are images appropriately sized for viewport? Is lazy loading applied correctly (not on above-fold images)?
+7. RENDER-BLOCKING RESOURCES — Are CSS and JS files blocking first paint? Are critical CSS styles inlined?
+8. CACHING — Are static assets cached with appropriate cache headers? Is browser caching configured?
+9. THIRD-PARTY SCRIPTS — Which third-party scripts are loaded (Google Analytics, GTM, chat, reviews)? Are any loaded synchronously in the head?
+10. HOSTING INFRASTRUCTURE — Based on what you can find, what hosting provider is being used? Is it appropriate for the site's traffic needs?
 
 Overall page speed / Core Web Vitals score: 1-10.${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'onpage',
       label: 'On-Page Technical SEO',
-      search: false,
+      search: true,
       prompt: `You are an on-page SEO expert. Search the web to find the actual homepage and key service pages for ${name} at ${website}. Search for: "site:${website}" to see indexed pages and "${name} ${service} ${loc}" to see how the site appears in search results.
 
 Audit every on-page technical ranking factor:
 
-1. TITLE TAGS â€” Is the homepage title tag in the format: Primary Keyword | Business Name | City, State? Are title tags under 60 characters? Are any title tags duplicated across pages? Are service pages missing the city modifier in the title?
-2. META DESCRIPTIONS â€” Are meta descriptions present on all key pages? Are they under 160 characters? Do they contain a CTA and primary keyword? Are any duplicated?
-3. H1 TAGS â€” Does each page have exactly one H1? Does the H1 contain the primary keyword and city? Are H1s unique across pages? Any pages with multiple H1s or no H1?
-4. HEADER HIERARCHY â€” Is H2/H3 structure logical and keyword-rich? Do headers use LSI keywords and related terms that reinforce topical authority?
-5. IMAGE ALT TAGS â€” Are all images given descriptive alt text that includes service + location keywords where appropriate? Are any alt tags empty or stuffed with keywords?
-6. KEYWORD CANNIBALIZATION â€” Are multiple pages targeting the same primary keyword (e.g. two pages both optimized for "garage door repair Belleville IL")? This splits authority and suppresses both pages.
-7. THIN CONTENT â€” Are there pages under 400 words? WordPress default pages (Sample Page, Privacy Policy stubs) accidentally indexed?
-8. URL STRUCTURE â€” Are URLs clean, hyphenated, and keyword-rich (e.g. /garage-door-spring-repair-belleville-il/)? Are there parameter-based or session ID URLs?
-9. INTERNAL LINK ANCHOR TEXT â€” Are internal links using keyword-rich anchor text or generic text like "click here" and "read more"? Generic anchors waste link equity.
-10. OUTBOUND LINKS â€” Does the site link out to authoritative sources (manufacturer sites, licensing boards, Google Maps listing)? Outbound links to trusted sources reinforce topical relevance.
-11. PAGE COUNT AND DEPTH â€” How many pages are indexed? Are key pages within 3 clicks of the homepage? Are any important pages buried too deep in the architecture?
+1. TITLE TAGS — Is the homepage title tag in the format: Primary Keyword | Business Name | City, State? Are title tags under 60 characters? Are any title tags duplicated across pages? Are service pages missing the city modifier in the title?
+2. META DESCRIPTIONS — Are meta descriptions present on all key pages? Are they under 160 characters? Do they contain a CTA and primary keyword? Are any duplicated?
+3. H1 TAGS — Does each page have exactly one H1? Does the H1 contain the primary keyword and city? Are H1s unique across pages? Any pages with multiple H1s or no H1?
+4. HEADER HIERARCHY — Is H2/H3 structure logical and keyword-rich? Do headers use LSI keywords and related terms that reinforce topical authority?
+5. IMAGE ALT TAGS — Are all images given descriptive alt text that includes service + location keywords where appropriate? Are any alt tags empty or stuffed with keywords?
+6. KEYWORD CANNIBALIZATION — Are multiple pages targeting the same primary keyword (e.g. two pages both optimized for "garage door repair Belleville IL")? This splits authority and suppresses both pages.
+7. THIN CONTENT — Are there pages under 400 words? WordPress default pages (Sample Page, Privacy Policy stubs) accidentally indexed?
+8. URL STRUCTURE — Are URLs clean, hyphenated, and keyword-rich (e.g. /garage-door-spring-repair-belleville-il/)? Are there parameter-based or session ID URLs?
+9. INTERNAL LINK ANCHOR TEXT — Are internal links using keyword-rich anchor text or generic text like "click here" and "read more"? Generic anchors waste link equity.
+10. OUTBOUND LINKS — Does the site link out to authoritative sources (manufacturer sites, licensing boards, Google Maps listing)? Outbound links to trusted sources reinforce topical relevance.
+11. PAGE COUNT AND DEPTH — How many pages are indexed? Are key pages within 3 clicks of the homepage? Are any important pages buried too deep in the architecture?
 
 Use the GSC data below to identify: which queries have high impressions but low CTR (title/meta problem), which pages generate zero clicks (thin content or indexation waste), and what the average position tells us about overall authority gaps.
 
@@ -982,33 +982,33 @@ For ${name} (${service} in ${loc}), analyze the competitive landscape:
       prompt: `You are an expert Google Business Profile auditor. Audit the GMB setup for ${name}, a ${service} business in ${loc}. Website: ${website}.
 
 Evaluate every GMB ranking factor:
-1. Primary category â€” is it optimally set for the highest-value service? What should it be?
-2. Secondary categories â€” what 3-5 additional categories should be added?
-3. Business description â€” does it contain the primary keyword + location naturally? What should it say?
-4. Services section â€” are all service offerings listed with individual descriptions?
-5. GMB website URL â€” should point to the primary service page, not just the homepage
+1. Primary category — is it optimally set for the highest-value service? What should it be?
+2. Secondary categories — what 3-5 additional categories should be added?
+3. Business description — does it contain the primary keyword + location naturally? What should it say?
+4. Services section — are all service offerings listed with individual descriptions?
+5. GMB website URL — should point to the primary service page, not just the homepage
 6. Photos: quantity, quality, geo-tagged originals vs social exports?
-7. GMB posts â€” frequency, CTA usage, keyword inclusion?
-8. Q&A section â€” are common service questions populated with keyword-rich answers?
-9. Review velocity â€” is the business actively generating reviews? What's the ask strategy?
-10. NAP consistency â€” name, address, phone format identical to website and citations?
-11. GSC BRAND SIGNAL â€” Using the GSC data: are there branded queries appearing (business name searches)? Low or zero branded impressions means the GMB isn't driving brand recognition. What does the average position and CTR tell us about how the GBP listing appears in local pack vs organic results?${gscContext}${FIX_INSTRUCTION}`
+7. GMB posts — frequency, CTA usage, keyword inclusion?
+8. Q&A section — are common service questions populated with keyword-rich answers?
+9. Review velocity — is the business actively generating reviews? What's the ask strategy?
+10. NAP consistency — name, address, phone format identical to website and citations?
+11. GSC BRAND SIGNAL — Using the GSC data: are there branded queries appearing (business name searches)? Low or zero branded impressions means the GMB isn't driving brand recognition. What does the average position and CTR tell us about how the GBP listing appears in local pack vs organic results?${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'schema',
       label: 'Schema / Structured Data Audit',
       prompt: `You are an expert in structured data and local SEO schema implementation. Audit the schema setup for ${name}, a ${service} business in ${loc}. Website: ${website}.
 
-This is a critical ranking factor â€” structured data is the technical bridge between the website and the GMB entity. Audit:
+This is a critical ranking factor — structured data is the technical bridge between the website and the GMB entity. Audit:
 
-1. LocalBusiness schema â€” is it present? Is @type correct for this business (e.g. HomeAndConstructionBusiness, ProfessionalService)? Are all required properties populated: name, address, telephone, url, openingHours, geo (latitude/longitude)?
-2. Service schema â€” is there individual Service schema on each service page with: name, description, serviceType, areaServed, provider linking back to the LocalBusiness?
-3. FAQPage schema â€” are FAQs present on key pages with properly structured Question/Answer pairs that match search intent?
-4. Review/AggregateRating schema â€” is review data structured so Google can display star ratings in search results?
-5. BreadcrumbList schema â€” is site hierarchy marked up for cleaner SERP display?
-6. geo coordinates â€” are lat/long in the schema pinned to the exact business address, not just the city center?
-7. areaServed â€” are service area cities and zip codes listed in the schema?
-8. sameAs links â€” does the schema link out to GMB, Facebook, LinkedIn, Yelp, and other brand profiles?
+1. LocalBusiness schema — is it present? Is @type correct for this business (e.g. HomeAndConstructionBusiness, ProfessionalService)? Are all required properties populated: name, address, telephone, url, openingHours, geo (latitude/longitude)?
+2. Service schema — is there individual Service schema on each service page with: name, description, serviceType, areaServed, provider linking back to the LocalBusiness?
+3. FAQPage schema — are FAQs present on key pages with properly structured Question/Answer pairs that match search intent?
+4. Review/AggregateRating schema — is review data structured so Google can display star ratings in search results?
+5. BreadcrumbList schema — is site hierarchy marked up for cleaner SERP display?
+6. geo coordinates — are lat/long in the schema pinned to the exact business address, not just the city center?
+7. areaServed — are service area cities and zip codes listed in the schema?
+8. sameAs links — does the schema link out to GMB, Facebook, LinkedIn, Yelp, and other brand profiles?
 9. Is there any conflicting or duplicate schema that could confuse Google's entity graph?
 10. Overall schema completeness score: 1-10 and why.
 
@@ -1020,14 +1020,14 @@ Be extremely specific about what properties are likely missing and what values t
       prompt: `You are an expert local SEO entity auditor. Evaluate the entity health for ${name}, a ${service} business in ${loc}.
 
 Entity health determines how consistently Google understands who this business is across the web:
-1. NAP consistency â€” is the business name, address, and phone number spelled and formatted identically everywhere? What variations cause entity confusion?
-2. Top citation sources â€” which directories (Yelp, BBB, Angi, HomeAdvisor, Houzz, etc.) should have this business listed for the ${service} industry?
-3. Citation gaps â€” what are the 10 most important missing citations for this business type and location?
-4. Brand mentions â€” are there online mentions of the business name without a link (unlinked mentions) that should be converted?
-5. Duplicate listings â€” are there likely duplicate GMB or directory listings that suppress the primary listing?
-6. Social profile consistency â€” do all social profiles use the exact same NAP, category, and description as the GMB?
-7. Google Knowledge Panel â€” does one exist? Is it claimed and populated?
-8. Entity disambiguation â€” could Google confuse this business with another entity of the same or similar name?
+1. NAP consistency — is the business name, address, and phone number spelled and formatted identically everywhere? What variations cause entity confusion?
+2. Top citation sources — which directories (Yelp, BBB, Angi, HomeAdvisor, Houzz, etc.) should have this business listed for the ${service} industry?
+3. Citation gaps — what are the 10 most important missing citations for this business type and location?
+4. Brand mentions — are there online mentions of the business name without a link (unlinked mentions) that should be converted?
+5. Duplicate listings — are there likely duplicate GMB or directory listings that suppress the primary listing?
+6. Social profile consistency — do all social profiles use the exact same NAP, category, and description as the GMB?
+7. Google Knowledge Panel — does one exist? Is it claimed and populated?
+8. Entity disambiguation — could Google confuse this business with another entity of the same or similar name?
 9. Overall entity health score: 1-10.${FIX_INSTRUCTION}`
     },
     {
@@ -1036,15 +1036,15 @@ Entity health determines how consistently Google understands who this business i
       prompt: `You are an expert local SEO content strategist. Audit the content and topical authority for ${name}, a ${service} business in ${loc}. Website: ${website}.
 
 Topical authority determines whether Google sees this site as the definitive local resource for the service:
-1. Service page coverage â€” for a typical ${service} business, list 8-12 specific service pages that should exist. Which ones are likely missing?
+1. Service page coverage — for a typical ${service} business, list 8-12 specific service pages that should exist. Which ones are likely missing?
 2. Each service page should have: 800+ words, primary keyword in H1+title+first 100 words, FAQ section, schema, internal links to/from related pages. What's likely missing?
-3. Location page strategy â€” beyond the main city, should there be neighborhood pages, zip code pages, or nearby city pages? What's the priority list?
-4. Blog/content strategy â€” what educational content would establish topical authority? List 5 specific article titles.
-5. Internal linking audit â€” are service pages linked from the homepage? Do neighborhood pages link to service pages using entity-rich anchor text?
-6. Thin content â€” are there pages under 300 words that are hurting the site's perceived quality?
-7. Keyword cannibalization â€” are multiple pages targeting the same keyword, splitting authority?
-8. GSC QUERY ANALYSIS â€” Using the GSC data provided: which queries are driving impressions but not clicks (content/intent mismatch)? Which branded queries are present or absent (brand awareness signal)? What queries are completely missing that should exist for this business type? What does zero-click page data reveal about content quality problems?
-9. ORPHAN PAGE AUDIT â€” Cross-reference the GSC zero-click pages with expected site architecture. Any page getting zero clicks that should be a key service or location page is likely either orphaned (no internal links), thin, or cannibalizing another page. Flag each zero-click page from GSC and diagnose: orphan, thin content, cannibalization, or wrong intent.
+3. Location page strategy — beyond the main city, should there be neighborhood pages, zip code pages, or nearby city pages? What's the priority list?
+4. Blog/content strategy — what educational content would establish topical authority? List 5 specific article titles.
+5. Internal linking audit — are service pages linked from the homepage? Do neighborhood pages link to service pages using entity-rich anchor text?
+6. Thin content — are there pages under 300 words that are hurting the site's perceived quality?
+7. Keyword cannibalization — are multiple pages targeting the same keyword, splitting authority?
+8. GSC QUERY ANALYSIS — Using the GSC data provided: which queries are driving impressions but not clicks (content/intent mismatch)? Which branded queries are present or absent (brand awareness signal)? What queries are completely missing that should exist for this business type? What does zero-click page data reveal about content quality problems?
+9. ORPHAN PAGE AUDIT — Cross-reference the GSC zero-click pages with expected site architecture. Any page getting zero clicks that should be a key service or location page is likely either orphaned (no internal links), thin, or cannibalizing another page. Flag each zero-click page from GSC and diagnose: orphan, thin content, cannibalization, or wrong intent.
 10. Overall topical authority score: 1-10.${gscContext}${FIX_INSTRUCTION}`
     },
     {
@@ -1056,9 +1056,9 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
 1. Which platforms should be prioritized for this specific business type and why?
 2. Content syndication workflow: how does a GMB post get repurposed across platforms, with what link targets on the website?
 3. Posting cadence per platform (posts per week) that is sustainable for a local service business.
-4. Geotagging strategy â€” how should Instagram and Facebook posts be location-tagged to maximize local relevance signals?
-5. NAP enforcement â€” exactly how should each social profile bio be written to match GMB NAP exactly?
-6. YouTube closed-loop strategy â€” how does a YouTube video link to the Google Maps CID to create an internal Google signal triangle?
+4. Geotagging strategy — how should Instagram and Facebook posts be location-tagged to maximize local relevance signals?
+5. NAP enforcement — exactly how should each social profile bio be written to match GMB NAP exactly?
+6. YouTube closed-loop strategy — how does a YouTube video link to the Google Maps CID to create an internal Google signal triangle?
 7. One ready-to-use content template for each of the top 3 platforms, written specifically for ${service} businesses.
 8. How does IntelSM or a similar social automation tool fit into this workflow to make it scalable?${FIX_INSTRUCTION}`
     }
@@ -1070,7 +1070,7 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
   for (let idx = 0; idx < diagnostics.length; idx++) {
     const diag = diagnostics[idx];
     setStep(diag.id, 'active');
-    appendOut(`\nâ–¸ [${idx+1}/${total}] ${diag.label}${diag.search ? ' [ðŸ” web search]' : ''}\n${'â”€'.repeat(48)}\n`);
+    appendOut(`\n▸ [${idx+1}/${total}] ${diag.label}${diag.search ? ' [🔍 web search]' : ''}\n${'─'.repeat(48)}\n`);
     try {
       const result = await callClaude(diag.prompt, !!diag.search);
       state.outputs[diag.id] = result;
@@ -1087,7 +1087,7 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
       setStep(diag.id, 'done');
     }
   }
-  appendOut(`\nâœ“ ${total}/${total} modules completed.\n`);
+  appendOut(`\n✓ ${total}/${total} modules completed.\n`);
 
   // Social tab
   document.getElementById('social-output').textContent = state.outputs['social'] || '';
@@ -1102,14 +1102,14 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
     `Website: ${state.biz.website}`,
     state.gscData ? `\nGSC Data Provided:\n${state.gscData.split('\n').slice(0,6).join('\n')}` : '\nGSC Data: Not provided'
   ].join('\n');
-  document.getElementById('rep-technical').textContent = state.outputs['technical'] || 'â€”';
-  document.getElementById('rep-speed').textContent = state.outputs['speed'] || 'â€”';
-  document.getElementById('rep-onpage').textContent = state.outputs['onpage'] || 'â€”';
-  document.getElementById('rep-gmb').textContent = state.outputs['gmb'] || 'â€”';
-  document.getElementById('rep-schema').textContent = state.outputs['schema'] || 'â€”';
-  document.getElementById('rep-entity').textContent = state.outputs['entity'] || 'â€”';
-  document.getElementById('rep-content').textContent = state.outputs['content'] || 'â€”';
-  document.getElementById('rep-social').textContent = state.outputs['social'] || 'â€”';
+  document.getElementById('rep-technical').textContent = state.outputs['technical'] || '—';
+  document.getElementById('rep-speed').textContent = state.outputs['speed'] || '—';
+  document.getElementById('rep-onpage').textContent = state.outputs['onpage'] || '—';
+  document.getElementById('rep-gmb').textContent = state.outputs['gmb'] || '—';
+  document.getElementById('rep-schema').textContent = state.outputs['schema'] || '—';
+  document.getElementById('rep-entity').textContent = state.outputs['entity'] || '—';
+  document.getElementById('rep-content').textContent = state.outputs['content'] || '—';
+  document.getElementById('rep-social').textContent = state.outputs['social'] || '—';
 
   // Roadmap
   await generateRoadmap(allOutput);
@@ -1118,7 +1118,7 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
 async function generateRoadmap(allOutput) {
   // Fallback to state if param somehow empty (scope safety)
   const outputData = (allOutput && allOutput.length > 10) ? allOutput : (state.allOutput || '');
-  appendOut('\nâ–¸ Generating 90-day roadmap...\n' + 'â”€'.repeat(48) + '\n');
+  appendOut('\n▸ Generating 90-day roadmap...\n' + '─'.repeat(48) + '\n');
   const { name, service, loc } = state.biz;
   const prompt = `Based on these full local SEO diagnostic findings for ${name} (${service} in ${loc}):
 
@@ -1177,7 +1177,7 @@ SUMMARY:
   document.getElementById('nav-roadmap').classList.add('done');
 }
 
-// â”€â”€ UTILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── UTILS ────────────────────────────────────────
 function copyEl(id, btn) {
   const el = document.getElementById(id);
   navigator.clipboard.writeText(el.innerText || el.textContent).then(() => {
@@ -1192,4 +1192,3 @@ renderSocialTab();
 </script>
 </body>
 </html>
-
