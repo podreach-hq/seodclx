@@ -287,6 +287,15 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <label>Upload rank grid CSV <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
               <input type="file" id="csv-file" accept=".csv" onchange="handleCSV(this)" style="font-size:11px;padding:6px;">
             </div>
+            <div class="field">
+              <label>Upload GSC CSV export <span style="color:var(--muted);font-weight:400;">(optional — Queries or Pages tab)</span></label>
+              <input type="file" id="gsc-file" accept=".csv" onchange="handleGSC(this)" style="font-size:11px;padding:6px;">
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px;" id="gsc-preview-card" style="display:none;">
+            <div class="card-label">GSC data parsed</div>
+            <div id="gsc-preview" style="font-size:11.5px;font-family:var(--mono);color:var(--muted2);line-height:1.8;"></div>
           </div>
         </div>
         <div>
@@ -500,6 +509,102 @@ function handleCSV(input) {
     parseCompetitors(state.csvData);
   };
   reader.readAsText(file);
+}
+
+function handleGSC(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const raw = e.target.result;
+    state.gscData = parseGSCCsv(raw);
+    renderGSCPreview(state.gscData);
+  };
+  reader.readAsText(file);
+}
+
+function parseGSCCsv(raw) {
+  const lines = raw.trim().split('\n').filter(l => l.trim());
+  if (lines.length < 2) return raw;
+
+  const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+
+  // Detect export type: queries vs pages
+  const isQueries = headers.some(h => h.includes('query') || h.includes('top queries'));
+  const isPages   = headers.some(h => h.includes('page') || h.includes('landing'));
+
+  const rows = lines.slice(1).map(line => {
+    // Handle quoted commas
+    const cols = [];
+    let cur = '', inQ = false;
+    for (const ch of line) {
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else cur += ch;
+    }
+    cols.push(cur.trim());
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (cols[i] || '').replace(/"/g,'').trim());
+    return obj;
+  });
+
+  // Find column names dynamically
+  const qKey   = headers.find(h => h.includes('query') || h.includes('top queries')) || 'query';
+  const pgKey  = headers.find(h => h.includes('page') || h.includes('landing')) || 'page';
+  const clkKey = headers.find(h => h.includes('click')) || 'clicks';
+  const impKey = headers.find(h => h.includes('impression')) || 'impressions';
+  const ctrKey = headers.find(h => h.includes('ctr')) || 'ctr';
+  const posKey = headers.find(h => h.includes('position')) || 'position';
+
+  const toNum = v => parseFloat((v||'0').replace(/[,%]/g,'')) || 0;
+
+  // Aggregate totals
+  const totalClicks = rows.reduce((s,r) => s + toNum(r[clkKey]), 0);
+  const totalImps   = rows.reduce((s,r) => s + toNum(r[impKey]), 0);
+  const avgPos      = rows.length ? (rows.reduce((s,r) => s + toNum(r[posKey]), 0) / rows.length).toFixed(1) : '—';
+  const avgCtr      = totalImps > 0 ? ((totalClicks / totalImps) * 100).toFixed(1) + '%' : '—';
+
+  // Sort helpers
+  const byImp  = [...rows].sort((a,b) => toNum(b[impKey]) - toNum(a[impKey]));
+  const byClk  = [...rows].sort((a,b) => toNum(b[clkKey]) - toNum(a[clkKey]));
+  const noClk  = rows.filter(r => toNum(r[clkKey]) === 0).sort((a,b) => toNum(b[impKey]) - toNum(a[impKey]));
+  const hiImpLowCtr = [...rows]
+    .filter(r => toNum(r[impKey]) > 20 && toNum((r[ctrKey]||'0').replace('%','')) < 3)
+    .sort((a,b) => toNum(b[impKey]) - toNum(a[impKey]));
+
+  const fmt = r => isQueries
+    ? `"${r[qKey]}" — ${r[impKey]} impr / ${r[clkKey]} clicks / pos ${parseFloat(r[posKey]||0).toFixed(1)}`
+    : `${r[pgKey]} — ${r[impKey]} impr / ${r[clkKey]} clicks`;
+
+  const lines2 = [
+    `Export type: ${isQueries ? 'Queries' : isPages ? 'Pages' : 'Unknown'} (${rows.length} rows)`,
+    `Total clicks: ${Math.round(totalClicks).toLocaleString()}`,
+    `Total impressions: ${Math.round(totalImps).toLocaleString()}`,
+    `Average CTR: ${avgCtr}`,
+    `Average position: ${avgPos}`,
+    '',
+    `TOP 10 BY IMPRESSIONS:`,
+    ...byImp.slice(0,10).map(r => `  ${fmt(r)}`),
+    '',
+    `TOP 10 BY CLICKS:`,
+    ...byClk.slice(0,10).map(r => `  ${fmt(r)}`),
+    '',
+    `HIGH IMPRESSIONS / LOW CTR (opportunity — fix title & meta):`,
+    ...(hiImpLowCtr.slice(0,10).map(r => `  ${fmt(r)}`) || ['  None detected']),
+    '',
+    `ZERO CLICKS (indexation waste or thin content):`,
+    ...noClk.slice(0,15).map(r => `  ${fmt(r)}`),
+  ];
+
+  return lines2.join('\n');
+}
+
+function renderGSCPreview(data) {
+  const card = document.getElementById('gsc-preview-card');
+  const el   = document.getElementById('gsc-preview');
+  if (!data) return;
+  card.style.display = 'block';
+  el.textContent = data;
 }
 
 function parseCompetitors(csv) {
@@ -737,6 +842,14 @@ async function startDiagnostics() {
   const service = document.getElementById('biz-service').value.trim();
   const loc     = document.getElementById('biz-location').value.trim();
   const website = document.getElementById('biz-website').value.trim() || 'not provided';
+
+  // GSC data — from parsed CSV upload
+  const gscData   = state.gscData || null;
+  const gscContext = gscData
+    ? `\n\nGOOGLE SEARCH CONSOLE DATA (real export — treat as ground truth):\n${gscData}`
+    : '\n\nGSC DATA: Not provided — infer from business type and location where possible.';
+  const gscFields = gscData ? gscData.split('\n') : [];
+
   const compList = state.competitors.length
     ? state.competitors.slice(0,5).map(c=>c.name).join(', ')
     : 'discover the top 5 competitors yourself';
@@ -744,6 +857,7 @@ async function startDiagnostics() {
     ? `Grid CSV provided — top competitors by rank appearances: ${compList}`
     : 'No grid CSV. Identify likely top local competitors for this service and location.';
 
+  state.gscData   = state.gscData || null; // already set by handleGSC if uploaded
   state.biz = { name, service, loc, website };
   state.outputs = {};
   state.fixItems = [];
@@ -788,9 +902,9 @@ Then audit these technical ranking blockers for ${website}:
 7. HTTPS / SSL — Is the SSL certificate valid and not expiring soon? Are all internal links HTTPS not HTTP?
 8. DUPLICATE CONTENT — Are there duplicate versions of pages accessible (www/non-www, http/https, trailing slash/no slash)?
 9. BROKEN LINKS — Any known 404 pages for key service or location URLs?
-10. GOOGLE SEARCH CONSOLE SIGNALS — Based on what you can find, are there any known manual actions, coverage errors, or indexation drops for this domain?
+10. GOOGLE SEARCH CONSOLE SIGNALS — Based on what you can find and the GSC data provided, are there any known manual actions, coverage errors, or indexation drops for this domain?
 
-Overall technical crawl health score: 1-10.${FIX_INSTRUCTION}`
+Overall technical crawl health score: 1-10.${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'speed',
@@ -811,7 +925,7 @@ Audit these speed and performance ranking factors:
 9. THIRD-PARTY SCRIPTS — Which third-party scripts are loaded (Google Analytics, GTM, chat, reviews)? Are any loaded synchronously in the head?
 10. HOSTING INFRASTRUCTURE — Based on what you can find, what hosting provider is being used? Is it appropriate for the site's traffic needs?
 
-Overall page speed / Core Web Vitals score: 1-10.${FIX_INSTRUCTION}`
+Overall page speed / Core Web Vitals score: 1-10.${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'onpage',
@@ -833,7 +947,9 @@ Audit every on-page technical ranking factor:
 10. OUTBOUND LINKS — Does the site link out to authoritative sources (manufacturer sites, licensing boards, Google Maps listing)? Outbound links to trusted sources reinforce topical relevance.
 11. PAGE COUNT AND DEPTH — How many pages are indexed? Are key pages within 3 clicks of the homepage? Are any important pages buried too deep in the architecture?
 
-Overall on-page technical score: 1-10.${FIX_INSTRUCTION}`
+Use the GSC data below to identify: which queries have high impressions but low CTR (title/meta problem), which pages generate zero clicks (thin content or indexation waste), and what the average position tells us about overall authority gaps.
+
+Overall on-page technical score: 1-10.${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'crawl',
@@ -879,7 +995,8 @@ Evaluate every GMB ranking factor:
 7. GMB posts — frequency, CTA usage, keyword inclusion?
 8. Q&A section — are common service questions populated with keyword-rich answers?
 9. Review velocity — is the business actively generating reviews? What's the ask strategy?
-10. NAP consistency — name, address, phone format identical to website and citations?${FIX_INSTRUCTION}`
+10. NAP consistency — name, address, phone format identical to website and citations?
+11. GSC BRAND SIGNAL — Using the GSC data: are there branded queries appearing (business name searches)? Low or zero branded impressions means the GMB isn't driving brand recognition. What does the average position and CTR tell us about how the GBP listing appears in local pack vs organic results?${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'schema',
@@ -930,7 +1047,8 @@ Topical authority determines whether Google sees this site as the definitive loc
 5. Internal linking audit — are service pages linked from the homepage? Do neighborhood pages link to service pages using entity-rich anchor text?
 6. Thin content — are there pages under 300 words that are hurting the site's perceived quality?
 7. Keyword cannibalization — are multiple pages targeting the same keyword, splitting authority?
-8. Overall topical authority score: 1-10.${FIX_INSTRUCTION}`
+8. GSC QUERY ANALYSIS — Using the GSC data provided: which queries are driving impressions but not clicks (content/intent mismatch)? Which branded queries are present or absent (brand awareness signal)? What queries are completely missing that should exist for this business type? What does zero-click page data reveal about content quality problems?
+9. Overall topical authority score: 1-10.${gscContext}${FIX_INSTRUCTION}`
     },
     {
       id: 'social',
@@ -982,7 +1100,11 @@ Social syndication creates a signal cluster that reinforces the GMB entity and w
   renderFixPlan();
 
   // Report sections
-  document.getElementById('rep-overview').textContent = `${state.biz.name} | ${state.biz.service} | ${state.biz.loc}\nWebsite: ${state.biz.website}`;
+  document.getElementById('rep-overview').textContent = [
+    `${state.biz.name} | ${state.biz.service} | ${state.biz.loc}`,
+    `Website: ${state.biz.website}`,
+    state.gscData ? `\nGSC Data Provided:\n${state.gscData.split('\n').slice(0,6).join('\n')}` : '\nGSC Data: Not provided'
+  ].join('\n');
   document.getElementById('rep-technical').textContent = state.outputs['technical'] || '—';
   document.getElementById('rep-speed').textContent = state.outputs['speed'] || '—';
   document.getElementById('rep-onpage').textContent = state.outputs['onpage'] || '—';
