@@ -244,7 +244,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
     </div>
   </div>
   <div class="sidebar-footer">
-    <div class="build-info">14 diagnostic modules<br>Technical · Speed · On-Page · GMB<br>Schema · Entity · AIO · Conversion<br>Reviews · Internal Links · Social</div>
+    <div class="build-info">15 diagnostic modules<br>Technical · Speed · On-Page · GMB<br>Schema · Entity · AIO · Conversion<br>Reviews · Links · Title/Meta · Social</div>
   </div>
 </div>
 
@@ -288,8 +288,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <input type="file" id="csv-file" accept=".csv" onchange="handleCSV(this)" style="font-size:11px;padding:6px;">
             </div>
             <div class="field">
-              <label>Upload GSC CSV export <span style="color:var(--muted);font-weight:400;">(optional — Queries or Pages tab)</span></label>
-              <input type="file" id="gsc-file" accept=".csv" onchange="handleGSC(this)" style="font-size:11px;padding:6px;">
+              <label>Upload GSC export <span style="color:var(--muted);font-weight:400;">(optional — zip file or single CSV)</span></label>
+              <input type="file" id="gsc-file" accept=".zip,.csv" onchange="handleGSC(this)" style="font-size:11px;padding:6px;">
+              <div id="gsc-upload-status" style="font-size:10px;font-family:var(--mono);color:var(--muted);margin-top:4px;"></div>
             </div>
             <div class="field">
               <label>Paste recent customer reviews <span style="color:var(--muted);font-weight:400;">(optional — for sentiment analysis)</span></label>
@@ -323,7 +324,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
                 <div class="signal-node" style="background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.3);">Rankings</div>
               </div>
             </div>
-            <div class="card-label" style="margin-top:14px;">14 diagnostic modules</div>
+            <div class="card-label" style="margin-top:14px;">15 diagnostic modules</div>
             <div id="module-list">
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Technical Crawl &amp; Indexation</div><div class="step-tag">robots.txt · sitemap · redirects · noindex · canonicals</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Core Web Vitals &amp; Page Speed</div><div class="step-tag">LCP · CLS · INP · TTFB · mobile score</div></div></div>
@@ -339,6 +340,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Conversion Rate Audit</div><div class="step-tag">CTA · click-to-call · trust signals · mobile UX</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Review Sentiment Analysis</div><div class="step-tag">keyword patterns · sentiment · response rate</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Internal Linking Architecture</div><div class="step-tag">hub-and-spoke · anchor text · crawl flow</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Title &amp; Meta Optimizer</div><div class="step-tag">GSC queries → exact rewrites · CTR lift · position boost</div></div></div>
             </div>
           </div>
           <div style="margin-top:12px;">
@@ -466,6 +468,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
         <div class="report-section"><h3>Conversion Rate Audit</h3><div class="report-text" id="rep-conversion">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Review Sentiment Analysis</h3><div class="report-text" id="rep-reviews">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Internal Linking Architecture</h3><div class="report-text" id="rep-linking">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Title &amp; Meta Optimizer — Exact Rewrites</h3><div class="report-text" id="rep-titlemeta">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>90-Day Roadmap</h3><div class="report-text" id="rep-roadmap">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Prioritized Fix Plan</h3><div class="report-text" id="rep-fixes">Run diagnostics to generate report...</div></div>
       </div>
@@ -526,13 +529,90 @@ function handleCSV(input) {
 function handleGSC(input) {
   const file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const raw = e.target.result;
-    state.gscData = parseGSCCsv(raw);
-    renderGSCPreview(state.gscData);
-  };
-  reader.readAsText(file);
+
+  const status = document.getElementById('gsc-upload-status');
+  status.textContent = 'Reading file...';
+
+  const isZip = file.name.toLowerCase().endsWith('.zip');
+
+  if (isZip) {
+    // Send zip to server for extraction
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        status.textContent = 'Extracting zip...';
+        const base64 = e.target.result.split(',')[1];
+        const res = await fetch('/api/unzip', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ zipBase64: base64 })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        // Parse all available CSVs
+        state.gscFiles = data.files;
+        state.gscData = buildGSCContext(data.files);
+        renderGSCPreview(state.gscData, Object.keys(data.files));
+        status.textContent = `✓ Extracted: ${Object.keys(data.files).map(k => k + '.csv').join(', ')}`;
+      } catch(err) {
+        status.textContent = '✗ Error: ' + err.message;
+      }
+    };
+    reader.readAsDataURL(file);
+  } else {
+    // Single CSV fallback
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const raw = e.target.result;
+      state.gscFiles = { single: raw };
+      state.gscData = parseGSCCsv(raw);
+      renderGSCPreview(state.gscData, ['single CSV']);
+      status.textContent = '✓ CSV loaded';
+    };
+    reader.readAsText(file);
+  }
+}
+
+function buildGSCContext(files) {
+  const sections = [];
+
+  // Queries CSV — most valuable
+  if (files.queries) {
+    sections.push('=== QUERIES (keywords + performance) ===\n' + parseGSCCsv(files.queries));
+  }
+
+  // Pages CSV — URL-level data
+  if (files.pages) {
+    sections.push('=== PAGES (URL-level performance) ===\n' + parseGSCCsv(files.pages));
+  }
+
+  // Devices CSV
+  if (files.devices) {
+    const lines = files.devices.trim().split('\n').slice(0,10);
+    sections.push('=== DEVICES ===\n' + lines.join('\n'));
+  }
+
+  // Countries CSV
+  if (files.countries) {
+    const lines = files.countries.trim().split('\n').slice(0,8);
+    sections.push('=== COUNTRIES (top markets) ===\n' + lines.join('\n'));
+  }
+
+  // Dates CSV — trend data
+  if (files.dates || files.date) {
+    const raw = files.dates || files.date;
+    const lines = raw.trim().split('\n').slice(0,15);
+    sections.push('=== DATES (recent trend) ===\n' + lines.join('\n'));
+  }
+
+  // Search type
+  if (files['search_type'] || files.search_type) {
+    const raw = files['search_type'] || files.search_type;
+    sections.push('=== SEARCH TYPE ===\n' + raw.trim().split('\n').slice(0,6).join('\n'));
+  }
+
+  return sections.join('\n\n');
 }
 
 function parseGSCCsv(raw) {
@@ -611,12 +691,16 @@ function parseGSCCsv(raw) {
   return lines2.join('\n');
 }
 
-function renderGSCPreview(data) {
+function renderGSCPreview(data, fileList) {
   const card = document.getElementById('gsc-preview-card');
   const el   = document.getElementById('gsc-preview');
   if (!data) return;
   card.style.display = 'block';
-  el.textContent = data;
+  if (fileList && fileList.length > 1) {
+    el.textContent = `Files loaded: ${fileList.join(', ')}\n\n` + data.split('\n').slice(0,30).join('\n') + '\n...';
+  } else {
+    el.textContent = data.split('\n').slice(0,30).join('\n') + '\n...';
+  }
 }
 
 function parseCompetitors(csv) {
@@ -675,7 +759,8 @@ const MODULE_DEFS = [
   { id: 'aio',       label: 'AI Overview / SGE Eligibility', tag: 'featured snippets · AIO triggers · FAQ · schema', search: false },
   { id: 'conversion',label: 'Conversion Rate Audit',        tag: 'CTA · click-to-call · trust signals · mobile UX', search: false },
   { id: 'reviews',   label: 'Review Sentiment Analysis',    tag: 'keyword patterns · sentiment · response rate', search: false },
-  { id: 'linking',   label: 'Internal Linking Architecture', tag: 'hub-and-spoke · anchor text · crawl flow', search: false }
+  { id: 'linking',   label: 'Internal Linking Architecture', tag: 'hub-and-spoke · anchor text · crawl flow', search: false },
+  { id: 'titlemeta', label: 'Title & Meta Optimizer',        tag: 'GSC queries → exact rewrites · CTR lift · position boost', search: false }
 ];
 
 function buildSteps() {
@@ -749,7 +834,8 @@ function renderFixPlan() {
     technical: 'Technical Crawl', speed: 'Core Web Vitals', onpage: 'On-Page Technical',
     crawl: 'Site Crawl', compete: 'Competitor Gap', gmb: 'GMB Audit',
     schema: 'Schema', entity: 'Entity Health', content: 'Content', social: 'Social',
-    aio: 'AI Overview', conversion: 'Conversion Rate', reviews: 'Review Sentiment', linking: 'Internal Linking'
+    aio: 'AI Overview', conversion: 'Conversion Rate', reviews: 'Review Sentiment',
+    linking: 'Internal Linking', titlemeta: 'Title & Meta Optimizer'
   };
   container.innerHTML = sorted.map(fix => `
     <div class="fix-card">
@@ -1153,6 +1239,43 @@ STEPS:
 2. [exact fix]
 
 Internal linking score: X/10.`
+    },
+    {
+      id: 'titlemeta',
+      label: 'Title & Meta Optimizer',
+      search: false,
+      prompt: `You are an expert local SEO title tag and meta description optimizer. Analyze the GSC data for ${name} (${service}, ${loc}). Website: ${website}.
+
+${gscContext}
+
+Your job is to cross-reference the Pages and Queries data to identify the top 10 highest-opportunity pages — those with HIGH impressions, LOW CTR (under 5%), and positions between 4-25 where a title/meta fix will have the most impact.
+
+For each of the top 10 pages output EXACTLY this format:
+
+PAGE: [URL or page identifier]
+IMPRESSIONS: [number] | CTR: [%] | POSITION: [number]
+TOP KEYWORDS: [top 3 keywords driving impressions to this page]
+CURRENT TITLE: [what it likely says or "Unknown — needs audit"]
+REWRITTEN TITLE: [exact new title tag, under 60 characters, includes primary keyword + location]
+CURRENT META: [what it likely says or "Missing"]
+REWRITTEN META: [exact new meta description, 150-155 characters, includes keyword + location + CTA]
+RECOMMENDED H1: [exact H1 tag for this page]
+ESTIMATED CTR LIFT: [realistic % improvement, e.g. "0% → 4-6%"]
+ESTIMATED MONTHLY CLICKS: [impressions × new CTR]
+
+Then output:
+
+ISSUE: [page-level issue name]
+PRIORITY: High
+STEPS:
+1. [exact where to make the change in WordPress/CMS]
+2. [exact title tag to paste in]
+3. [exact meta description to paste in]
+4. [exact H1 to use]
+
+Focus on pages ranking positions 4-20 first — these have the highest CTR improvement potential. Position 1-3 already gets clicks. Position 21+ needs ranking improvement not just CTR fixes.
+
+Title & Meta Optimization score: X/10.`
     }
   ];
 
@@ -1206,6 +1329,7 @@ Internal linking score: X/10.`
   document.getElementById('rep-conversion').textContent = state.outputs['conversion'] || '—';
   document.getElementById('rep-reviews').textContent = state.outputs['reviews'] || '—';
   document.getElementById('rep-linking').textContent = state.outputs['linking'] || '—';
+  document.getElementById('rep-titlemeta').textContent = state.outputs['titlemeta'] || '—';
 
   // Roadmap
   await generateRoadmap(allOutput);
