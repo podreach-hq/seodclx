@@ -244,7 +244,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
     </div>
   </div>
   <div class="sidebar-footer">
-    <div class="build-info">16 diagnostic modules<br>Technical Â· Speed Â· On-Page Â· GMB<br>Schema Â· Entity Â· AIO Â· Conversion<br>Reviews Â· Links Â· Title/Meta Ã—2</div>
+    <div class="build-info">17 diagnostic modules<br>Technical Â· Speed Â· On-Page Â· GMB<br>Schema Â· Entity Â· AIO Â· Conversion<br>Reviews Â· Links Â· Title/Meta Â· FAQ</div>
   </div>
 </div>
 
@@ -324,7 +324,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
                 <div class="signal-node" style="background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.3);">Rankings</div>
               </div>
             </div>
-            <div class="card-label" style="margin-top:14px;">16 diagnostic modules</div>
+            <div class="card-label" style="margin-top:14px;">17 diagnostic modules</div>
             <div id="module-list">
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Technical Crawl &amp; Indexation</div><div class="step-tag">robots.txt Â· sitemap Â· redirects Â· noindex Â· canonicals</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Core Web Vitals &amp; Page Speed</div><div class="step-tag">LCP Â· CLS Â· INP Â· TTFB Â· mobile score</div></div></div>
@@ -342,6 +342,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Internal Linking Architecture</div><div class="step-tag">hub-and-spoke Â· anchor text Â· crawl flow</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Title &amp; Meta Optimizer (Pages 1â€“10)</div><div class="step-tag">GSC queries â†’ exact rewrites Â· CTR lift</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Title &amp; Meta Optimizer (Pages 11â€“20)</div><div class="step-tag">next tier opportunities Â· ranking improvements</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">FAQ Audit &amp; Schema Generator</div><div class="step-tag">10+ FAQs per page Â· JSON-LD schema Â· AIO Â· SERP expansion</div></div></div>
             </div>
           </div>
           <div style="margin-top:12px;">
@@ -471,6 +472,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
         <div class="report-section"><h3>Internal Linking Architecture</h3><div class="report-text" id="rep-linking">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Title &amp; Meta Optimizer â€” Pages 1â€“10</h3><div class="report-text" id="rep-titlemeta">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Title &amp; Meta Optimizer â€” Pages 11â€“20</h3><div class="report-text" id="rep-titlemeta2">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>FAQ Audit &amp; Schema Generator</h3><div class="report-text" id="rep-faq">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>90-Day Roadmap</h3><div class="report-text" id="rep-roadmap">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Prioritized Fix Plan</h3><div class="report-text" id="rep-fixes">Run diagnostics to generate report...</div></div>
       </div>
@@ -763,7 +765,8 @@ const MODULE_DEFS = [
   { id: 'reviews',   label: 'Review Sentiment Analysis',    tag: 'keyword patterns Â· sentiment Â· response rate', search: false },
   { id: 'linking',   label: 'Internal Linking Architecture', tag: 'hub-and-spoke Â· anchor text Â· crawl flow', search: false },
   { id: 'titlemeta',  label: 'Title & Meta Optimizer (Pages 1â€“10)',  tag: 'GSC queries â†’ exact rewrites Â· CTR lift Â· position boost', search: false },
-  { id: 'titlemeta2', label: 'Title & Meta Optimizer (Pages 11â€“20)', tag: 'GSC queries â†’ exact rewrites Â· CTR lift Â· position boost', search: false }
+  { id: 'titlemeta2', label: 'Title & Meta Optimizer (Pages 11â€“20)', tag: 'GSC queries â†’ exact rewrites Â· CTR lift Â· position boost', search: false },
+  { id: 'faq',        label: 'FAQ Audit & Schema Generator',         tag: '10+ FAQs per page Â· schema markup Â· AIO Â· SERP expansion', search: false }
 ];
 
 function buildSteps() {
@@ -838,7 +841,7 @@ function renderFixPlan() {
     crawl: 'Site Crawl', compete: 'Competitor Gap', gmb: 'GMB Audit',
     schema: 'Schema', entity: 'Entity Health', content: 'Content', social: 'Social',
     aio: 'AI Overview', conversion: 'Conversion Rate', reviews: 'Review Sentiment',
-    linking: 'Internal Linking', titlemeta: 'Title & Meta (1-10)', titlemeta2: 'Title & Meta (11-20)'
+    linking: 'Internal Linking', titlemeta: 'Title & Meta (1-10)', titlemeta2: 'Title & Meta (11-20)', faq: 'FAQ Audit'
   };
   container.innerHTML = sorted.map(fix => `
     <div class="fix-card">
@@ -1313,6 +1316,86 @@ STEPS:
 4. [How to verify improvements in GSC after 2-3 weeks]
 
 Title & Meta score (pages 11-20): X/10.`
+    },
+    {
+      id: 'faq',
+      label: 'FAQ Audit & Schema Generator',
+      search: false,
+      prompt: `You are an expert local SEO and conversion strategist auditing FAQs for ${name} (${service}, ${loc}). Website: ${website}.
+
+FAQs sit in the middle of the local SEO conversion chain: visitor lands on page â†’ FAQs handle objections and build trust â†’ visitor calls. A weak or missing FAQ breaks that chain. A strong FAQ also expands SERP real estate, feeds AI Overviews, and captures voice search.
+
+## PART 1 â€” FAQ AUDIT
+
+For each key service page, audit whether FAQs currently exist and grade them:
+
+PAGE: [page name]
+FAQs PRESENT: Yes / No / Partial
+COUNT: [number found or 0]
+GRADE: A / B / C / F
+GRADE REASONING: [why â€” are they generic? missing location? not answering real objections? too short? no schema?]
+CONVERSION CHAIN GAPS: [what objections are NOT being handled that would stop someone from calling â€” e.g. "no pricing transparency", "doesn't address damage concerns", "missing licensing/insurance question"]
+
+## PART 2 â€” FAQ IMPROVEMENT PLAN
+
+For each page that scores C or below (or has no FAQs), write the 10 FAQs that would actually move someone to call. These must follow the conversion chain logic:
+
+AWARENESS FAQs (questions someone asks before they even consider hiring):
+- What does [service] do / why do I need it?
+- How often should I [service]?
+
+CONSIDERATION FAQs (questions someone asks when comparing options):
+- How much does [service] cost in [location]?
+- What should I look for in a [service] company?
+- Are you licensed and insured?
+
+DECISION FAQs (questions someone asks right before calling):
+- How quickly can you schedule?
+- Do I need to be home?
+- What if I'm not satisfied with the results?
+- Do you offer free estimates?
+- What areas do you serve?
+
+For each FAQ write:
+
+Q: [exact question â€” natural language, how a real customer asks it]
+A: [answer â€” 40-60 words, includes service + location naturally, directly handles the objection, ends with a confidence statement or soft CTA]
+CONVERSION ROLE: [awareness / consideration / decision]
+SCHEMA READY: Yes
+
+## PART 3 â€” JSON-LD SCHEMA
+
+For the PRIMARY service page output the complete ready-to-paste FAQPage schema:
+
+\`\`\`json
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "[Q]",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "[A]"
+      }
+    }
+  ]
+}
+\`\`\`
+
+## PART 4 â€” IMPLEMENTATION
+
+ISSUE: FAQs missing or not conversion-optimized
+PRIORITY: High
+STEPS:
+1. [Where to add FAQs in the CMS â€” e.g. "WordPress: edit each service page, add accordion FAQ section using Elementor or native blocks above the contact form"]
+2. [Where to add the JSON-LD schema â€” e.g. "Yoast SEO â†’ Advanced â†’ Schema tab â†’ Custom Schema, OR paste JSON-LD block before </head> in header.php"]
+3. Test at search.google.com/test/rich-results â€” confirm FAQPage rich results eligible
+4. Monitor GSC â†’ Enhancements â†’ FAQ for impression data within 2-4 weeks
+5. [One specific FAQ that should be added immediately to stop the most common objection for this business type]
+
+FAQ & Conversion score: X/10.`
     }
   ];
 
@@ -1324,7 +1407,7 @@ Title & Meta score (pages 11-20): X/10.`
     setStep(diag.id, 'active');
     appendOut(`\nâ–¸ [${idx+1}/${total}] ${diag.label}\n${'â”€'.repeat(48)}\n`);
     try {
-      const tokens = (diag.id === 'titlemeta' || diag.id === 'titlemeta2') ? 4000 : 1000;
+      const tokens = (diag.id === 'titlemeta' || diag.id === 'titlemeta2' || diag.id === 'faq') ? 4000 : 1000;
       const result = await callClaude(diag.prompt, false, tokens);
       state.outputs[diag.id] = result;
       allOutput += `\n## ${diag.label}\n${result}\n`;
@@ -1369,6 +1452,7 @@ Title & Meta score (pages 11-20): X/10.`
   document.getElementById('rep-linking').textContent = state.outputs['linking'] || 'â€”';
   document.getElementById('rep-titlemeta').textContent = state.outputs['titlemeta'] || 'â€”';
   document.getElementById('rep-titlemeta2').textContent = state.outputs['titlemeta2'] || 'â€”';
+  document.getElementById('rep-faq').textContent = state.outputs['faq'] || 'â€”';
 
   // Roadmap
   await generateRoadmap(allOutput);
@@ -1455,7 +1539,4 @@ renderSocialTab();
 </script>
 </body>
 </html>
-
-
-
 
