@@ -244,7 +244,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
     </div>
   </div>
   <div class="sidebar-footer">
-    <div class="build-info">10 diagnostic modules<br>Technical · Speed · On-Page<br>GMB · Schema · Entity · Social</div>
+    <div class="build-info">14 diagnostic modules<br>Technical · Speed · On-Page · GMB<br>Schema · Entity · AIO · Conversion<br>Reviews · Internal Links · Social</div>
   </div>
 </div>
 
@@ -291,6 +291,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <label>Upload GSC CSV export <span style="color:var(--muted);font-weight:400;">(optional — Queries or Pages tab)</span></label>
               <input type="file" id="gsc-file" accept=".csv" onchange="handleGSC(this)" style="font-size:11px;padding:6px;">
             </div>
+            <div class="field">
+              <label>Paste recent customer reviews <span style="color:var(--muted);font-weight:400;">(optional — for sentiment analysis)</span></label>
+              <textarea id="reviews-input" rows="5" placeholder="Paste 5-20 Google reviews here, one per line or separated by dashes..." style="width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:9px 12px;font-size:12px;font-family:var(--mono);color:var(--text);outline:none;resize:vertical;line-height:1.6;"></textarea>
+            </div>
           </div>
 
           <div class="card" style="margin-top:12px;" id="gsc-preview-card" style="display:none;">
@@ -319,7 +323,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
                 <div class="signal-node" style="background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.3);">Rankings</div>
               </div>
             </div>
-            <div class="card-label" style="margin-top:14px;">10 diagnostic modules</div>
+            <div class="card-label" style="margin-top:14px;">14 diagnostic modules</div>
             <div id="module-list">
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Technical Crawl &amp; Indexation</div><div class="step-tag">robots.txt · sitemap · redirects · noindex · canonicals</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Core Web Vitals &amp; Page Speed</div><div class="step-tag">LCP · CLS · INP · TTFB · mobile score</div></div></div>
@@ -331,6 +335,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Entity Health Check</div><div class="step-tag">NAP consistency · citations · brand signals</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Content + Topical Authority</div><div class="step-tag">service pages · internal linking · gaps</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Social Syndication Strategy</div><div class="step-tag">platform audit · cadence · link targets</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">AI Overview / SGE Eligibility</div><div class="step-tag">featured snippets · AIO triggers · FAQ · schema</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Conversion Rate Audit</div><div class="step-tag">CTA · click-to-call · trust signals · mobile UX</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Review Sentiment Analysis</div><div class="step-tag">keyword patterns · sentiment · response rate</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Internal Linking Architecture</div><div class="step-tag">hub-and-spoke · anchor text · crawl flow</div></div></div>
             </div>
           </div>
           <div style="margin-top:12px;">
@@ -454,6 +462,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
         <div class="report-section"><h3>Entity Health &amp; Citations</h3><div class="report-text" id="rep-entity">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Content &amp; Topical Authority Gaps</h3><div class="report-text" id="rep-content">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Social Syndication Plan</h3><div class="report-text" id="rep-social">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>AI Overview / SGE Eligibility</h3><div class="report-text" id="rep-aio">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Conversion Rate Audit</h3><div class="report-text" id="rep-conversion">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Review Sentiment Analysis</h3><div class="report-text" id="rep-reviews">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Internal Linking Architecture</h3><div class="report-text" id="rep-linking">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>90-Day Roadmap</h3><div class="report-text" id="rep-roadmap">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Prioritized Fix Plan</h3><div class="report-text" id="rep-fixes">Run diagnostics to generate report...</div></div>
       </div>
@@ -659,7 +671,11 @@ const MODULE_DEFS = [
   { id: 'schema',    label: 'Schema / Structured Data',      tag: 'LocalBusiness · Service · FAQ · Geo', search: false },
   { id: 'entity',    label: 'Entity Health Check',           tag: 'NAP consistency · citations · brand', search: false },
   { id: 'content',   label: 'Content + Topical Authority',  tag: 'service pages · internal links · gaps', search: false },
-  { id: 'social',    label: 'Social Syndication Strategy',  tag: 'platforms · cadence · link targets', search: false }
+  { id: 'social',    label: 'Social Syndication Strategy',  tag: 'platforms · cadence · link targets', search: false },
+  { id: 'aio',       label: 'AI Overview / SGE Eligibility', tag: 'featured snippets · AIO triggers · FAQ · schema', search: false },
+  { id: 'conversion',label: 'Conversion Rate Audit',        tag: 'CTA · click-to-call · trust signals · mobile UX', search: false },
+  { id: 'reviews',   label: 'Review Sentiment Analysis',    tag: 'keyword patterns · sentiment · response rate', search: false },
+  { id: 'linking',   label: 'Internal Linking Architecture', tag: 'hub-and-spoke · anchor text · crawl flow', search: false }
 ];
 
 function buildSteps() {
@@ -732,7 +748,8 @@ function renderFixPlan() {
   const moduleName = {
     technical: 'Technical Crawl', speed: 'Core Web Vitals', onpage: 'On-Page Technical',
     crawl: 'Site Crawl', compete: 'Competitor Gap', gmb: 'GMB Audit',
-    schema: 'Schema', entity: 'Entity Health', content: 'Content', social: 'Social'
+    schema: 'Schema', entity: 'Entity Health', content: 'Content', social: 'Social',
+    aio: 'AI Overview', conversion: 'Conversion Rate', reviews: 'Review Sentiment', linking: 'Internal Linking'
   };
   container.innerHTML = sorted.map(fix => `
     <div class="fix-card">
@@ -890,6 +907,11 @@ STEPS:
 3. [continue until the issue is fully resolved]
 
 Output at least 2 issues with full fix steps. Be specific — include exact fields to edit, exact schema properties to add, exact tools to use. Do not use generic instructions.`;
+
+  const reviewsRaw = document.getElementById('reviews-input')?.value.trim() || '';
+  const reviewsContext = reviewsRaw
+    ? `\n\nCUSTOMER REVIEWS PROVIDED (analyze these):\n${reviewsRaw}`
+    : '\n\nNo reviews provided — infer likely sentiment patterns for this business type and location.';
 
   const diagnostics = [
     {
@@ -1061,6 +1083,76 @@ STEPS:
 2. [exact action]
 
 Social syndication score: X/10.`
+    },
+    {
+      id: 'aio',
+      label: 'AI Overview / SGE Eligibility',
+      search: false,
+      prompt: `AI Overview and SGE eligibility audit for ${name} (${service}, ${loc}). Website: ${website}.
+
+Analyze: Which queries for ${service} businesses in ${loc} are likely triggering AI Overviews right now? Is this business type eligible to be cited in AIO results? What specific content formats (FAQ, how-to, step-by-step, comparison) trigger AIO citations for this service category? What schema types (FAQPage, HowTo, Service) are required to be included? Are there zero-click risk queries where AIO will steal traffic? What content gaps prevent this site from being cited vs competitors? What is the E-E-A-T signal requirement for AIO inclusion in home services?
+
+For each issue:
+ISSUE: [name]
+PRIORITY: High/Medium/Low
+STEPS:
+1. [exact fix]
+2. [exact fix]
+
+AIO eligibility score: X/10.`
+    },
+    {
+      id: 'conversion',
+      label: 'Conversion Rate Audit',
+      search: false,
+      prompt: `Conversion rate audit for ${name} (${service}, ${loc}). Website: ${website}.
+
+Audit every element that affects whether a visitor calls or books: Is there a click-to-call button visible above the fold on mobile without scrolling? Is the phone number in the header sticky on mobile? Are there trust signals in the first viewport (reviews count, years in business, licensed/insured badge, BBB logo)? Is there a clear primary CTA on every service page? Are contact forms short (3 fields max) or friction-heavy? Is there a clear value proposition in the H1 or hero section? Are before/after photos present to build confidence? Is pricing transparency present or completely hidden? Is there a guarantee or risk-reversal statement? How many clicks does it take from homepage to booking?
+
+For each issue:
+ISSUE: [name]
+PRIORITY: High/Medium/Low
+STEPS:
+1. [exact fix with specific placement]
+2. [exact fix]
+
+Conversion rate score: X/10.`
+    },
+    {
+      id: 'reviews',
+      label: 'Review Sentiment Analysis',
+      search: false,
+      prompt: `Review sentiment analysis for ${name} (${service}, ${loc}).${reviewsContext}
+
+Analyze: What recurring positive themes appear (speed, quality, professionalism, price)? What recurring complaints or weaknesses appear? Are reviews keyword-rich with service and location mentions or generic ("great job!")? What is the estimated review velocity (reviews per month)? Are there any reviews mentioning competitors by name? What is the response rate to reviews? What gaps exist between what customers praise and what the website emphasizes? What review acquisition strategy would generate the most keyword-rich, locally relevant reviews? What specific ask language would prompt customers to mention the service type and location naturally?
+
+For each issue:
+ISSUE: [name]
+PRIORITY: High/Medium/Low
+STEPS:
+1. [exact fix]
+2. [exact fix]
+
+Review health score: X/10.`
+    },
+    {
+      id: 'linking',
+      label: 'Internal Linking Architecture',
+      search: false,
+      prompt: `Internal linking architecture audit for ${name} (${service}, ${loc}). Website: ${website}.
+
+Build the complete hub-and-spoke internal linking map this site needs. Identify: What is the homepage's primary entity and what 6-8 service pages should it link to with exact keyword-rich anchor text? What should each service page link to (related services, location pages, blog posts) with exact anchor text? Which pages should link to the homepage and with what anchor text? Are there likely orphan pages getting no internal links? What is the ideal crawl depth — every key page should be reachable in 3 clicks max. Identify the 5 most critical missing internal links that are costing the most ranking authority right now.
+
+Output the full recommended linking structure as a map, then:
+
+For each issue:
+ISSUE: [name]
+PRIORITY: High/Medium/Low
+STEPS:
+1. [exact page, exact anchor text, exact destination]
+2. [exact fix]
+
+Internal linking score: X/10.`
     }
   ];
 
@@ -1110,6 +1202,10 @@ Social syndication score: X/10.`
   document.getElementById('rep-entity').textContent = state.outputs['entity'] || '—';
   document.getElementById('rep-content').textContent = state.outputs['content'] || '—';
   document.getElementById('rep-social').textContent = state.outputs['social'] || '—';
+  document.getElementById('rep-aio').textContent = state.outputs['aio'] || '—';
+  document.getElementById('rep-conversion').textContent = state.outputs['conversion'] || '—';
+  document.getElementById('rep-reviews').textContent = state.outputs['reviews'] || '—';
+  document.getElementById('rep-linking').textContent = state.outputs['linking'] || '—';
 
   // Roadmap
   await generateRoadmap(allOutput);
@@ -1157,6 +1253,10 @@ Schema Completeness: [1-10]
 Topical Authority: [1-10]
 Citations: [1-10]
 Social Syndication: [1-10]
+AI Overview Readiness: [1-10]
+Conversion Rate: [1-10]
+Review Health: [1-10]
+Internal Linking: [1-10]
 Competitor Gap: [1-10]
 
 SUMMARY:
