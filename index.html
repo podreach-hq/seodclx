@@ -244,7 +244,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
     </div>
   </div>
   <div class="sidebar-footer">
-    <div class="build-info">15 diagnostic modules<br>Technical Â· Speed Â· On-Page Â· GMB<br>Schema Â· Entity Â· AIO Â· Conversion<br>Reviews Â· Links Â· Title/Meta Â· Social</div>
+    <div class="build-info">16 diagnostic modules<br>Technical Â· Speed Â· On-Page Â· GMB<br>Schema Â· Entity Â· AIO Â· Conversion<br>Reviews Â· Links Â· Title/Meta Ã—2</div>
   </div>
 </div>
 
@@ -324,7 +324,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
                 <div class="signal-node" style="background:var(--amber-dim);color:var(--amber);border:1px solid rgba(245,158,11,0.3);">Rankings</div>
               </div>
             </div>
-            <div class="card-label" style="margin-top:14px;">15 diagnostic modules</div>
+            <div class="card-label" style="margin-top:14px;">16 diagnostic modules</div>
             <div id="module-list">
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Technical Crawl &amp; Indexation</div><div class="step-tag">robots.txt Â· sitemap Â· redirects Â· noindex Â· canonicals</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Core Web Vitals &amp; Page Speed</div><div class="step-tag">LCP Â· CLS Â· INP Â· TTFB Â· mobile score</div></div></div>
@@ -340,7 +340,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Conversion Rate Audit</div><div class="step-tag">CTA Â· click-to-call Â· trust signals Â· mobile UX</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Review Sentiment Analysis</div><div class="step-tag">keyword patterns Â· sentiment Â· response rate</div></div></div>
               <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Internal Linking Architecture</div><div class="step-tag">hub-and-spoke Â· anchor text Â· crawl flow</div></div></div>
-              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Title &amp; Meta Optimizer</div><div class="step-tag">GSC queries â†’ exact rewrites Â· CTR lift Â· position boost</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Title &amp; Meta Optimizer (Pages 1â€“10)</div><div class="step-tag">GSC queries â†’ exact rewrites Â· CTR lift</div></div></div>
+              <div class="step-item"><div class="step-icon idle"><div class="step-dot"></div></div><div><div class="step-label">Title &amp; Meta Optimizer (Pages 11â€“20)</div><div class="step-tag">next tier opportunities Â· ranking improvements</div></div></div>
             </div>
           </div>
           <div style="margin-top:12px;">
@@ -468,7 +469,8 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); font
         <div class="report-section"><h3>Conversion Rate Audit</h3><div class="report-text" id="rep-conversion">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Review Sentiment Analysis</h3><div class="report-text" id="rep-reviews">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Internal Linking Architecture</h3><div class="report-text" id="rep-linking">Run diagnostics to generate report...</div></div>
-        <div class="report-section"><h3>Title &amp; Meta Optimizer â€” Exact Rewrites</h3><div class="report-text" id="rep-titlemeta">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Title &amp; Meta Optimizer â€” Pages 1â€“10</h3><div class="report-text" id="rep-titlemeta">Run diagnostics to generate report...</div></div>
+        <div class="report-section"><h3>Title &amp; Meta Optimizer â€” Pages 11â€“20</h3><div class="report-text" id="rep-titlemeta2">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>90-Day Roadmap</h3><div class="report-text" id="rep-roadmap">Run diagnostics to generate report...</div></div>
         <div class="report-section"><h3>Prioritized Fix Plan</h3><div class="report-text" id="rep-fixes">Run diagnostics to generate report...</div></div>
       </div>
@@ -760,7 +762,8 @@ const MODULE_DEFS = [
   { id: 'conversion',label: 'Conversion Rate Audit',        tag: 'CTA Â· click-to-call Â· trust signals Â· mobile UX', search: false },
   { id: 'reviews',   label: 'Review Sentiment Analysis',    tag: 'keyword patterns Â· sentiment Â· response rate', search: false },
   { id: 'linking',   label: 'Internal Linking Architecture', tag: 'hub-and-spoke Â· anchor text Â· crawl flow', search: false },
-  { id: 'titlemeta', label: 'Title & Meta Optimizer',        tag: 'GSC queries â†’ exact rewrites Â· CTR lift Â· position boost', search: false }
+  { id: 'titlemeta',  label: 'Title & Meta Optimizer (Pages 1â€“10)',  tag: 'GSC queries â†’ exact rewrites Â· CTR lift Â· position boost', search: false },
+  { id: 'titlemeta2', label: 'Title & Meta Optimizer (Pages 11â€“20)', tag: 'GSC queries â†’ exact rewrites Â· CTR lift Â· position boost', search: false }
 ];
 
 function buildSteps() {
@@ -835,7 +838,7 @@ function renderFixPlan() {
     crawl: 'Site Crawl', compete: 'Competitor Gap', gmb: 'GMB Audit',
     schema: 'Schema', entity: 'Entity Health', content: 'Content', social: 'Social',
     aio: 'AI Overview', conversion: 'Conversion Rate', reviews: 'Review Sentiment',
-    linking: 'Internal Linking', titlemeta: 'Title & Meta Optimizer'
+    linking: 'Internal Linking', titlemeta: 'Title & Meta (1-10)', titlemeta2: 'Title & Meta (11-20)'
   };
   container.innerHTML = sorted.map(fix => `
     <div class="fix-card">
@@ -1242,45 +1245,74 @@ Internal linking score: X/10.`
     },
     {
       id: 'titlemeta',
-      label: 'Title & Meta Optimizer',
+      label: 'Title & Meta Optimizer (Pages 1â€“10)',
       search: false,
       prompt: `You are an expert local SEO title tag, meta description, and ranking improvement strategist. Analyze the GSC data for ${name} (${service}, ${loc}). Website: ${website}.
 
 ${gscContext}
 
-Identify the top 20 highest-opportunity pages sorted by priority:
-- GROUP 1 (positions 1-10, low CTR) â€” title/meta fix only, rankings already strong
-- GROUP 2 (positions 11-25, decent impressions) â€” title/meta fix PLUS content improvement to climb rankings
-- GROUP 3 (positions 26-50, meaningful impressions) â€” needs content overhaul plus title/meta to break onto page 1
+Output the TOP 10 highest-opportunity pages sorted by priority:
+- GROUP 1 (positions 1-10, low CTR) â€” title/meta fix only
+- GROUP 2 (positions 11-25, decent impressions) â€” title/meta fix PLUS content improvement
+- GROUP 3 (positions 26-50, meaningful impressions) â€” content overhaul plus title/meta
 
 For EVERY page output EXACTLY this format:
 
 PAGE: [URL or keyword/page identifier]
 GROUP: [1, 2, or 3]
 IMPRESSIONS: [number] | CTR: [%] | POSITION: [number]
-TOP KEYWORDS: [top 2-3 keywords driving impressions]
-CURRENT TITLE: [what it likely says or "Unknown â€” needs audit"]
-REWRITTEN TITLE: [exact new title, under 60 chars, primary keyword + location]
-CURRENT META: [what it likely says or "Missing"]
+TOP KEYWORDS: [top 2-3 keywords]
+CURRENT TITLE: [likely current or "Unknown â€” needs audit"]
+REWRITTEN TITLE: [exact new title, under 60 chars, keyword + location]
+CURRENT META: [likely current or "Missing"]
 REWRITTEN META: [exact new meta, 150-155 chars, keyword + location + CTA]
 RECOMMENDED H1: [exact H1 for this page]
-RANKING IMPROVEMENT: [1-3 specific content/structural changes needed to improve position â€” e.g. "Add 500 words covering soft washing techniques specific to Delaware coastal properties", "Create dedicated Seaford location page rather than targeting from generic services page", "Add FAQ schema with 5 questions about fence cleaning costs and process"]
+RANKING IMPROVEMENT: [1-3 specific content/structural changes to improve position]
 ESTIMATED CTR LIFT: [e.g. "0% â†’ 6-8%"]
 ESTIMATED MONTHLY CLICKS: [impressions Ã— new CTR]
 
----
+Title & Meta score (pages 1-10): X/10.`
+    },
+    {
+      id: 'titlemeta2',
+      label: 'Title & Meta Optimizer (Pages 11â€“20)',
+      search: false,
+      prompt: `You are an expert local SEO title tag, meta description, and ranking improvement strategist. Analyze the GSC data for ${name} (${service}, ${loc}). Website: ${website}.
 
-After all 20 pages output:
+${gscContext}
+
+You already covered the top 10 pages. Now output pages 11-20 â€” the NEXT TIER of opportunity pages. Look for:
+- Pages ranking 15-40 with 20+ impressions and low CTR
+- Keywords with commercial intent being missed
+- Location + service combinations with ranking gaps
+- Any branded or navigational queries underperforming
+
+For EVERY page output EXACTLY this format:
+
+PAGE: [URL or keyword/page identifier]
+GROUP: [1, 2, or 3]
+IMPRESSIONS: [number] | CTR: [%] | POSITION: [number]
+TOP KEYWORDS: [top 2-3 keywords]
+CURRENT TITLE: [likely current or "Unknown â€” needs audit"]
+REWRITTEN TITLE: [exact new title, under 60 chars, keyword + location]
+CURRENT META: [likely current or "Missing"]
+REWRITTEN META: [exact new meta, 150-155 chars, keyword + location + CTA]
+RECOMMENDED H1: [exact H1 for this page]
+RANKING IMPROVEMENT: [1-3 specific content/structural changes to improve position]
+ESTIMATED CTR LIFT: [e.g. "0% â†’ 6-8%"]
+ESTIMATED MONTHLY CLICKS: [impressions Ã— new CTR]
+
+After all 10 pages:
 
 ISSUE: Title and meta descriptions not optimized for CTR
 PRIORITY: High
 STEPS:
-1. [CMS path to edit titles â€” e.g. "In WordPress go to Yoast SEO â†’ Edit snippet on each page"]
-2. [First priority page to fix with exact title to paste]
+1. [CMS path â€” e.g. "WordPress â†’ Yoast SEO â†’ Edit snippet on each page"]
+2. [Highest priority page with exact title to paste]
 3. [Second priority page with exact title to paste]
-4. [How to verify changes in GSC after 2-3 weeks]
+4. [How to verify improvements in GSC after 2-3 weeks]
 
-Title & Meta Optimization score: X/10.`
+Title & Meta score (pages 11-20): X/10.`
     }
   ];
 
@@ -1292,7 +1324,7 @@ Title & Meta Optimization score: X/10.`
     setStep(diag.id, 'active');
     appendOut(`\nâ–¸ [${idx+1}/${total}] ${diag.label}\n${'â”€'.repeat(48)}\n`);
     try {
-      const tokens = diag.id === 'titlemeta' ? 3000 : 1000;
+      const tokens = (diag.id === 'titlemeta' || diag.id === 'titlemeta2') ? 4000 : 1000;
       const result = await callClaude(diag.prompt, false, tokens);
       state.outputs[diag.id] = result;
       allOutput += `\n## ${diag.label}\n${result}\n`;
@@ -1336,6 +1368,7 @@ Title & Meta Optimization score: X/10.`
   document.getElementById('rep-reviews').textContent = state.outputs['reviews'] || 'â€”';
   document.getElementById('rep-linking').textContent = state.outputs['linking'] || 'â€”';
   document.getElementById('rep-titlemeta').textContent = state.outputs['titlemeta'] || 'â€”';
+  document.getElementById('rep-titlemeta2').textContent = state.outputs['titlemeta2'] || 'â€”';
 
   // Roadmap
   await generateRoadmap(allOutput);
@@ -1422,4 +1455,6 @@ renderSocialTab();
 </script>
 </body>
 </html>
+
+
 
